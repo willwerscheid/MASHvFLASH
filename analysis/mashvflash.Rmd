@@ -1,0 +1,250 @@
+---
+title: "Mash vs. Flash"
+author: "Jason Willwerscheid"
+date: "4/20/2018"
+output: pdf_document
+---
+
+```{r setup, echo=F, include=F}
+devtools::load_all("/Users/willwerscheid/GitHub/flashr2")
+library(mashr)
+library(MASS)
+options(digits=2)
+set.seed(1)
+```
+
+```{r setup2}
+# FLASH v MASH ------------------------------------------------------
+flash_v_mash <- function(Y, true_Y, nfactors) {
+  data <- flash_set_data(Y, S = 1)
+  fl <- fit_flash(data, nfactors)
+  m <- fit_mash(Y)
+
+  # Sample from FLASH fit
+  fl_sampler <- flash_lf_sampler(Y, fl, ebnm_fn=ebnm_pn, fixed="factors")
+
+  nsamp <- 200
+  fl_samp <- fl_sampler(nsamp)
+
+  res <- list()
+  res$fl_mse <- flash_pm_mse(fl_samp, true_Y)
+  res$m_mse <- mash_pm_mse(m, true_Y)
+  res$fl_ci <- flash_ci_acc(fl_samp, true_Y)
+  res$m_ci <- mash_ci_acc(m, true_Y)
+  res$fl_lfsr <- flash_lfsr(fl_samp, true_Y)
+  res$m_lfsr <-  mash_lfsr(m, true_Y)
+  res
+}
+
+plot_res <- function(res) {
+  old_par <- par("mfrow")
+  par(mfrow=c(1, 2))
+  x <- seq(0.025, 0.475, by=0.05)
+  plot(x, res$fl_lfsr, type='l', ylim=c(0, 0.6), xlab="FLASH", ylab="lfsr")
+  abline(0, 1)
+  plot(x, res$m_lfsr, type='l', ylim=c(0, 0.6), xlab="MASH", ylab="lfsr")
+  abline(0, 1)
+  par(mfrow=old_par)
+}
+
+
+# Fit using FLASH ---------------------------------------------------
+fit_flash <- function(data, nfactors) {
+  p <- ncol(data$Y)
+  fl <- flash_add_greedy(data, nfactors, var_type = "zero")
+  fl <- flash_add_fixed_f(data, diag(rep(1, p)), fl)
+  flash_backfit(data, fl, nullcheck = F, var_type = "zero")
+}
+
+# Fit using MASH ---------------------------------------------------
+fit_mash <- function(Y) {
+  data <- mash_set_data(Y)
+  U.c = cov_canonical(data)
+  m.1by1 <- mash_1by1(data)
+  strong <- get_significant_results(m.1by1, 0.05)
+  U.pca <- cov_pca(data, 5, strong)
+  U.ed <- cov_ed(data, U.pca, strong)
+  mash(data, c(U.c,U.ed))
+}
+
+
+# MSE of posterior means (FLASH) ------------------------------------
+flash_pm_mse <- function(fl_samp, true_Y) {
+  n <- nrow(true_Y)
+  p <- ncol(true_Y)
+  nsamp <- length(fl_samp)
+
+  post_means <- matrix(0, nrow=n, ncol=p)
+  for (i in 1:nsamp) {
+    post_means <- post_means + fl_samp[[i]]
+  }
+  post_means <- post_means / nsamp
+  sum((post_means - true_Y)^2) / (n * p)
+}
+# Compare with just using FLASH LF:
+# sum((flash_get_lf(fl)- true_flash_Y)^2) / (n * p)
+
+
+# MSE for MASH ------------------------------------------------------
+mash_pm_mse <- function(m, true_Y) {
+  n <- nrow(true_Y)
+  p <- ncol(true_Y)
+  sum((get_pm(m) - true_Y)^2) / (n * p)
+}
+
+
+# CI coverage for FLASH ---------------------------------------------
+flash_ci_acc <- function(fl_samp, true_Y) {
+  n <- nrow(true_Y)
+  p <- ncol(true_Y)
+  nsamp <- length(fl_samp)
+
+  flat_samp <- matrix(0, nrow=n*p, ncol=nsamp)
+  for (i in 1:nsamp) {
+    flat_samp[, i] <- as.vector(fl_samp[[i]])
+  }
+  CI <- t(apply(flat_samp, 1, function(x) {quantile(x, c(0.025, 0.975))}))
+  sum((as.vector(true_Y) > CI[, 1])
+      & (as.vector(true_Y < CI[, 2]))) / (n * p)
+}
+
+# CI coverage for MASH ----------------------------------------------
+mash_ci_acc <- function(m, true_Y) {
+  sum((true_Y > get_pm(m) - 1.96 * get_psd(m))
+      & (true_Y < get_pm(m) + 1.96 * get_psd(m))) / (n * p)
+}
+
+
+# LFSR for FLASH ----------------------------------------------------
+flash_lfsr <- function(fl_samp, true_Y, step=0.05) {
+  n <- nrow(true_Y)
+  p <- ncol(true_Y)
+  nsamp <- length(fl_samp)
+
+  lfsr <- matrix(0, nrow=n, ncol=p)
+  for (i in 1:nsamp) {
+    lfsr <- lfsr + (fl_samp[[i]] > 0) + 0.5*(fl_samp[[i]] == 0)
+  }
+  signs <- lfsr >= nsamp / 2
+  correct_signs <- true_Y > 0
+  gotitright <- signs == correct_signs
+  lfsr <- pmin(lfsr, 100 - lfsr) / 100
+
+  nsteps <- floor(.5 / step)
+  fsr_by_lfsr <- rep(0, nsteps)
+  for (k in 1:nsteps) {
+    idx <- (lfsr >= (step * (k - 1)) & lfsr < (step * k))
+    fsr_by_lfsr[k] <- ifelse(sum(idx) == 0, 0,
+                             1 - sum(gotitright[idx]) / sum(idx))
+  }
+  fsr_by_lfsr
+}
+
+
+# LFSR for MASH -----------------------------------------------------
+mash_lfsr <- function(m, true_Y, step=0.05) {
+  lfsr <- get_lfsr(m)
+  signs <- get_pm(m) > 0
+  correct_signs <- true_Y > 0
+  gotitright <- signs == correct_signs
+
+  nsteps <- floor(.5 / step)
+  fsr_by_lfsr <- rep(0, nsteps)
+  for (k in 1:nsteps) {
+    idx <- (lfsr >= (step * (k - 1)) & lfsr < (step * k))
+    fsr_by_lfsr[k] <- ifelse(sum(idx) == 0, 0,
+                             1 - sum(gotitright[idx]) / sum(idx))
+  }
+  fsr_by_lfsr
+}
+
+# Simulate from FLASH model -----------------------------------------
+n <- 1000
+p <- 10
+flash_factors <- 5
+
+# Use one factor of all ones and one more interesting factor
+nfactors <- 2
+k <- p + nfactors
+ff <- matrix(0, nrow=k, ncol=p)
+ff[1, ] <- rep(10, p)
+ff[2, ] <- c(seq(10, 2, by=-2), rep(0, p - 5))
+diag(ff[3:k, ]) <- 3
+ll <- matrix(rnorm(n * k), nrow=n, ncol=k)
+true_flash_Y <- ll %*% ff
+flash_Y <- true_flash_Y + rnorm(n*p)
+# RESULTS
+flash_res <- flash_v_mash(flash_Y, true_flash_Y, flash_factors)
+
+# Simulate from basic FLASH model -----------------------------------
+ff <- ff[1:nfactors, ]
+ll <- matrix(rnorm(n * nfactors), nrow=n, ncol=nfactors)
+true_basic_Y <- ll %*% ff
+basic_Y <- true_basic_Y + rnorm(n*p)
+# RESULTS
+basic_res <- flash_v_mash(basic_Y, true_basic_Y, flash_factors)
+
+# Simulate from MASH model ------------------------------------------
+Sigma <- list()
+Sigma[[1]] <- matrix(1, nrow=p, ncol=p)
+Sigma[[2]] <- matrix(0, nrow=p, ncol=p)
+for (i in 1:p) {
+  for (j in 1:p) {
+    Sigma[[2]][i, j] <- max(1 - abs(i - j) / 4, 0)
+  }
+}
+for (k in 1:p) {
+  Sigma[[k + 2]] <- matrix(0, nrow=p, ncol=p)
+  Sigma[[k + 2]][k, k] <- 1
+}
+which_sigma <- sample(1:12, 1000, T, prob=c(.3, .3, rep(.4/p, p)))
+true_mash_Y <- matrix(0, nrow=n, ncol=p)
+for (i in 1:n) {
+  true_mash_Y[i, ] <- 5*mvrnorm(1, rep(0, p), Sigma[[which_sigma[i]]])
+}
+mash_Y <- true_mash_Y + rnorm(n * p)
+# RESULTS
+mash_res <- flash_v_mash(mash_Y, true_mash_Y, flash_factors)
+```
+
+In each case below, I follow the vignettes to produce a MASH fit (I use both canonical and data-driven covariance matrices). I fit a FLASH object (fixing the standard errors) by adding up to 10 factors greedily, then adding $p$ fixed one-hot vectors, and finally backfitting.
+
+The two fits perform similarly. The MASH fit does somewhat better on data generated from the MASH model; more surprisingly, it performs comparably to FLASH on data generated from both the standard two-factor FLASH model. Both do poorly on the "augmented FLASH model" (described below), with MSEs near 1 (which would be obtained by simply using $Y$ as an estimate).
+
+## Flash Model
+
+First I simulate from the basic FLASH model $Y = LF + E$ with $E_{ij} \sim N(0, 1)$. Here, $Y \in \mathbb{R}^{1000 \times 10}$, $L \in \mathbb{R}^{1000 \times 2}$ has i.i.d. $N(0, 1)$ entries, and $F$ is as follows:
+
+```{r ff, echo=F}
+ff
+```
+
+**The MSE of the FLASH fit is `r basic_res$fl_mse`, vs. `r basic_res$m_mse` for the MASH fit. The proportion of 95% confidence intervals that contain the true value $LF_{ij}$ is `r basic_res$fl_ci` for FLASH and `r basic_res$m_ci` for MASH.** The true false sign rate vs lfsr appears as follows:
+
+```{r lfsr1, echo=F}
+plot_res(basic_res)
+```
+
+## Augmented Flash Model
+
+Next I simulate from the "augmented" FLASH model
+$$ Y = L \begin{pmatrix} F \\ 3I_{10} \end{pmatrix} + E $$
+with $F$ as above.
+
+**The MSE of the FLASH fit is `r flash_res$fl_mse`, vs. `r flash_res$m_mse` for the MASH fit. The proportion of 95% confidence intervals that contain the true value is `r flash_res$fl_ci` for FLASH and `r flash_res$m_ci` for MASH.** The true false sign rate vs lfsr appears as follows:
+
+```{r lfsr2, echo=F}
+plot_res(flash_res)
+```
+
+## MASH Model
+
+Finally I simulate from the MASH model
+$$ X \sim \sum \pi_i N(0, \Sigma_i),\ Y = X + E $$
+with $E_{ij} \sim N(0, 1)$. I set $\Sigma_1$ to be the all ones matrix, $\Sigma_2$ to be a banded covariance matrix with non-zero entries on the first three off-diagonals, and $\Sigma_3$ through $\Sigma_{12}$ to have a single non-zero entry (corresponding to tissue-specific effects). $\pi$ is set to $(0.3, 0.3, 0.04, 0.04, \ldots, 0.04)$.
+
+**The MSE of the FLASH fit is `r mash_res$fl_mse`, vs. `r mash_res$m_mse` for the MASH fit. The proportion of 95% confidence intervals that contain the true value is `r mash_res$fl_ci` for FLASH and `r mash_res$m_ci` for MASH.** The true false sign rate vs lfsr appears as follows:
+
+```{r lfsr3, echo=F}
+plot_res(mash_res)
+```
