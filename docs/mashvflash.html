@@ -321,7 +321,7 @@ div.section {
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
-<p><details> <summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has staged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p><details> <summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </details>
 </li>
 <li>
@@ -340,27 +340,84 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/53ca12cfc814dac4103403256f3b2725ae85ff71" target="_blank">53ca12c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/a76f3cf9f3dad726abb36bc409df06e9c31f57d2" target="_blank">a76f3cf</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  docs/figure/
-
 Unstaged changes:
     Modified:   analysis/mashvflash.Rmd
-
-Staged changes:
-    New:        analysis/mashvflash.Rmd
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
 </li>
 </ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/a76f3cf9f3dad726abb36bc409df06e9c31f57d2/analysis/mashvflash.Rmd" target="_blank">a76f3cf</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-09
+</td>
+<td style="text-align:left;">
+add mashvflash rmd
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/a76f3cf9f3dad726abb36bc409df06e9c31f57d2/docs/mashvflash.html" target="_blank">a76f3cf</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-09
+</td>
+<td style="text-align:left;">
+add mashvflash rmd
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
 <hr />
+<div id="code" class="section level2">
+<h2>Code</h2>
 <pre class="r"><code># FLASH v MASH ------------------------------------------------------
 flash_v_mash &lt;- function(Y, true_Y, nfactors) {
   data &lt;- flash_set_data(Y, S = 1)
@@ -528,9 +585,9 @@ flash_res &lt;- flash_v_mash(flash_Y, true_flash_Y, flash_factors)</code></pre>
 <pre><code>fitting factor/loading 4</code></pre>
 <pre><code>fitting factor/loading 5</code></pre>
 <pre><code> - Computing 1000 x 463 likelihood matrix.
- - Likelihood calculations took 0.11 seconds.
+ - Likelihood calculations took 0.10 seconds.
  - Fitting model with 463 mixture components.
- - Model fitting took 0.12 seconds.
+ - Model fitting took 0.15 seconds.
  - Computing posterior matrices.
  - Computation allocated took 0.01 seconds.</code></pre>
 <pre class="r"><code># Simulate from basic FLASH model -----------------------------------
@@ -548,13 +605,13 @@ basic_res &lt;- flash_v_mash(basic_Y, true_basic_Y, flash_factors)</code></pre>
  - Fitting model with 463 mixture components.</code></pre>
 <pre><code>Warning in REBayes::KWDual(A, rep(1, k), normalize(w), control = control): estimated mixing distribution has some negative values:
                consider reducing rtol</code></pre>
-<pre><code>Warning in mixIP(matrix_lik = structure(c(4.36775455987624e-15, 0, 0,
+<pre><code>Warning in mixIP(matrix_lik = structure(c(4.36775455996202e-15, 0, 0,
 0, : Optimization step yields mixture weights that are either too small,
 or negative; weights have been corrected and renormalized after the
 optimization.</code></pre>
-<pre><code> - Model fitting took 0.24 seconds.
+<pre><code> - Model fitting took 0.22 seconds.
  - Computing posterior matrices.
- - Computation allocated took 0.28 seconds.</code></pre>
+ - Computation allocated took 0.26 seconds.</code></pre>
 <pre class="r"><code># Simulate from MASH model ------------------------------------------
 Sigma &lt;- list()
 Sigma[[1]] &lt;- matrix(1, nrow=p, ncol=p)
@@ -584,11 +641,12 @@ mash_res &lt;- flash_v_mash(mash_Y, true_mash_Y, flash_factors)</code></pre>
 <pre><code> - Computing 1000 x 400 likelihood matrix.
  - Likelihood calculations took 0.08 seconds.
  - Fitting model with 400 mixture components.
- - Model fitting took 0.58 seconds.
+ - Model fitting took 0.51 seconds.
  - Computing posterior matrices.
  - Computation allocated took 0.03 seconds.</code></pre>
 <p>In each case below, I follow the vignettes to produce a MASH fit (I use both canonical and data-driven covariance matrices). I fit a FLASH object (fixing the standard errors) by adding up to 10 factors greedily, then adding <span class="math inline">\(p\)</span> fixed one-hot vectors, and finally backfitting.</p>
 <p>The two fits perform similarly. The MASH fit does somewhat better on data generated from the MASH model; more surprisingly, it performs comparably to FLASH on data generated from both the standard two-factor FLASH model. Both do poorly on the “augmented FLASH model” (described below), with MSEs near 1 (which would be obtained by simply using <span class="math inline">\(Y\)</span> as an estimate).</p>
+</div>
 <div id="flash-model" class="section level2">
 <h2>Flash Model</h2>
 <p>First I simulate from the basic FLASH model <span class="math inline">\(Y = LF + E\)</span> with <span class="math inline">\(E_{ij} \sim N(0, 1)\)</span>. Here, <span class="math inline">\(Y \in \mathbb{R}^{1000 \times 10}\)</span>, <span class="math inline">\(L \in \mathbb{R}^{1000 \times 2}\)</span> has i.i.d. <span class="math inline">\(N(0, 1)\)</span> entries, and <span class="math inline">\(F\)</span> is as follows:</p>
@@ -597,18 +655,108 @@ mash_res &lt;- flash_v_mash(mash_Y, true_mash_Y, flash_factors)</code></pre>
 [2,]   10    8    6    4    2    0    0    0    0     0</code></pre>
 <p><strong>The MSE of the FLASH fit is 0.2, vs. 0.21 for the MASH fit. The proportion of 95% confidence intervals that contain the true value <span class="math inline">\(LF_{ij}\)</span> is 0.94 for FLASH and 0.96 for MASH.</strong> The true false sign rate vs lfsr appears as follows:</p>
 <p><img src="figure/mashvflash.Rmd/lfsr1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of lfsr1-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/a76f3cf9f3dad726abb36bc409df06e9c31f57d2/docs/figure/mashvflash.Rmd/lfsr1-1.png" target="_blank">a76f3cf</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="augmented-flash-model" class="section level2">
 <h2>Augmented Flash Model</h2>
 <p>Next I simulate from the “augmented” FLASH model <span class="math display">\[ Y = L \begin{pmatrix} F \\ 3I_{10} \end{pmatrix} + E \]</span> with <span class="math inline">\(F\)</span> as above.</p>
 <p><strong>The MSE of the FLASH fit is 0.93, vs. 1.05 for the MASH fit. The proportion of 95% confidence intervals that contain the true value is 0.94 for FLASH and 0.93 for MASH.</strong> The true false sign rate vs lfsr appears as follows:</p>
 <p><img src="figure/mashvflash.Rmd/lfsr2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of lfsr2-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/a76f3cf9f3dad726abb36bc409df06e9c31f57d2/docs/figure/mashvflash.Rmd/lfsr2-1.png" target="_blank">a76f3cf</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="mash-model" class="section level2">
 <h2>MASH Model</h2>
 <p>Finally I simulate from the MASH model <span class="math display">\[ X \sim \sum \pi_i N(0, \Sigma_i),\ Y = X + E \]</span> with <span class="math inline">\(E_{ij} \sim N(0, 1)\)</span>. I set <span class="math inline">\(\Sigma_1\)</span> to be the all ones matrix, <span class="math inline">\(\Sigma_2\)</span> to be a banded covariance matrix with non-zero entries on the first three off-diagonals, and <span class="math inline">\(\Sigma_3\)</span> through <span class="math inline">\(\Sigma_{12}\)</span> to have a single non-zero entry (corresponding to tissue-specific effects). <span class="math inline">\(\pi\)</span> is set to <span class="math inline">\((0.3, 0.3, 0.04, 0.04, \ldots, 0.04)\)</span>.</p>
 <p><strong>The MSE of the FLASH fit is 0.56, vs. 0.43 for the MASH fit. The proportion of 95% confidence intervals that contain the true value is 0.9 for FLASH and 0.94 for MASH.</strong> The true false sign rate vs lfsr appears as follows:</p>
 <p><img src="figure/mashvflash.Rmd/lfsr3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of lfsr3-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/a76f3cf9f3dad726abb36bc409df06e9c31f57d2/docs/figure/mashvflash.Rmd/lfsr3-1.png" target="_blank">a76f3cf</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-09
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
