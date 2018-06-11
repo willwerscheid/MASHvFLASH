@@ -251,7 +251,7 @@ ff
 plot_res(basic_res)
 ```
 
-The FLASH fit took `r basic_res$fl_time`. The MASH fit took `r basic_res$m_time`.
+The FLASH fit took `r basic_res$fl_time` s. The MASH fit took `r basic_res$m_time` s.
 
 ## Augmented Flash Model
 
@@ -265,7 +265,7 @@ with $F$ as above.
 plot_res(flash_res)
 ```
 
-The FLASH fit took `r flash_res$fl_time`. The MASH fit took `r flash_res$m_time`.
+The FLASH fit took `r flash_res$fl_time` s. The MASH fit took `r flash_res$m_time` s.
 
 ## MASH Model
 
@@ -279,4 +279,4 @@ with $E_{ij} \sim N(0, 1)$. I set $\Sigma_1$ to be the all ones matrix, $\Sigma_
 plot_res(mash_res)
 ```
 
-The FLASH fit took `r mash_res$fl_time`. The MASH fit took `r mash_res$m_time`.
+The FLASH fit took `r mash_res$fl_time` s. The MASH fit took `r mash_res$m_time` s.
