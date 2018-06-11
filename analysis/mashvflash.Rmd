@@ -3,7 +3,7 @@ title: "Mash vs. Flash"
 author: "Jason Willwerscheid"
 date: "4/20/2018"
 output: 
-  html_document: 
+  workflowr::wflow_html:
     code_folding: hide
 ---
 
