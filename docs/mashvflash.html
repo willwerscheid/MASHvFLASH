@@ -358,7 +358,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/ea2721a4c6fa3ab74883bf94c6c6687d0457efb9" target="_blank">ea2721a</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/76285202554d56fc0ea43e593608e626dbdbf364" target="_blank">7628520</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -392,6 +392,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/76285202554d56fc0ea43e593608e626dbdbf364/analysis/mashvflash.Rmd" target="_blank">7628520</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/mashvflash.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/624de1dfb3db11bdc40a4a3d946a8fbd7abf40ce/docs/mashvflash.html" target="_blank">624de1d</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -573,8 +607,15 @@ add mashvflash rmd
 <pre class="r"><code># FLASH v MASH ------------------------------------------------------
 flash_v_mash &lt;- function(Y, true_Y, nfactors) {
   data &lt;- flash_set_data(Y, S = 1)
+  res &lt;- list()
+  
+  t &lt;- Sys.time()
   fl &lt;- fit_flash(data, nfactors)
+  res$fl_time &lt;- Sys.time() - t
+  
+  t &lt;- Sys.time()
   m &lt;- fit_mash(Y)
+  res$m_time &lt;- Sys.time() - t
 
   # Sample from FLASH fit
   fl_sampler &lt;- flash_lf_sampler(Y, fl, ebnm_fn=ebnm_pn, fixed=&quot;factors&quot;)
@@ -582,7 +623,6 @@ flash_v_mash &lt;- function(Y, true_Y, nfactors) {
   nsamp &lt;- 200
   fl_samp &lt;- fl_sampler(nsamp)
 
-  res &lt;- list()
   res$fl_mse &lt;- flash_pm_mse(fl_samp, true_Y)
   res$m_mse &lt;- mash_pm_mse(m, true_Y)
   res$fl_ci &lt;- flash_ci_acc(fl_samp, true_Y)
@@ -737,9 +777,9 @@ flash_res &lt;- flash_v_mash(flash_Y, true_flash_Y, flash_factors)</code></pre>
 <pre><code>fitting factor/loading 4</code></pre>
 <pre><code>fitting factor/loading 5</code></pre>
 <pre><code> - Computing 1000 x 463 likelihood matrix.
- - Likelihood calculations took 0.10 seconds.
+ - Likelihood calculations took 0.12 seconds.
  - Fitting model with 463 mixture components.
- - Model fitting took 0.10 seconds.
+ - Model fitting took 0.25 seconds.
  - Computing posterior matrices.
  - Computation allocated took 0.01 seconds.</code></pre>
 <p>FLASH simulation.</p>
@@ -754,17 +794,17 @@ basic_res &lt;- flash_v_mash(basic_Y, true_basic_Y, flash_factors)</code></pre>
 <pre><code>fitting factor/loading 2</code></pre>
 <pre><code>fitting factor/loading 3</code></pre>
 <pre><code> - Computing 1000 x 463 likelihood matrix.
- - Likelihood calculations took 0.10 seconds.
+ - Likelihood calculations took 0.11 seconds.
  - Fitting model with 463 mixture components.</code></pre>
 <pre><code>Warning in REBayes::KWDual(A, rep(1, k), normalize(w), control = control): estimated mixing distribution has some negative values:
                consider reducing rtol</code></pre>
-<pre><code>Warning in mixIP(matrix_lik = structure(c(4.36775456063178e-15, 0, 0,
+<pre><code>Warning in mixIP(matrix_lik = structure(c(4.36775456141209e-15, 0, 0,
 0, : Optimization step yields mixture weights that are either too small,
 or negative; weights have been corrected and renormalized after the
 optimization.</code></pre>
-<pre><code> - Model fitting took 0.22 seconds.
+<pre><code> - Model fitting took 0.24 seconds.
  - Computing posterior matrices.
- - Computation allocated took 0.34 seconds.</code></pre>
+ - Computation allocated took 0.37 seconds.</code></pre>
 <p>MASH simulation.</p>
 <pre class="r"><code># Simulate from MASH model ------------------------------------------
 Sigma &lt;- list()
@@ -793,9 +833,9 @@ mash_res &lt;- flash_v_mash(mash_Y, true_mash_Y, flash_factors)</code></pre>
 <pre><code>fitting factor/loading 4</code></pre>
 <pre><code>fitting factor/loading 5</code></pre>
 <pre><code> - Computing 1000 x 400 likelihood matrix.
- - Likelihood calculations took 0.09 seconds.
+ - Likelihood calculations took 0.10 seconds.
  - Fitting model with 400 mixture components.
- - Model fitting took 0.69 seconds.
+ - Model fitting took 0.58 seconds.
  - Computing posterior matrices.
  - Computation allocated took 0.03 seconds.</code></pre>
 </div>
@@ -828,6 +868,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/624de1dfb3db11bdc40a4a3d946a8fbd7abf40ce/docs/figure/mashvflash.Rmd/lfsr1-1.png" target="_blank">624de1d</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/9f81f0649020df46c440e91d61356176321aa930/docs/figure/mashvflash.Rmd/lfsr1-1.png" target="_blank">9f81f06</a>
@@ -886,6 +937,7 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
+<p>The FLASH fit took 0.56. The MASH fit took 9.07.</p>
 </div>
 <div id="augmented-flash-model" class="section level2">
 <h2>Augmented Flash Model</h2>
@@ -908,6 +960,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/624de1dfb3db11bdc40a4a3d946a8fbd7abf40ce/docs/figure/mashvflash.Rmd/lfsr2-1.png" target="_blank">624de1d</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/9f81f0649020df46c440e91d61356176321aa930/docs/figure/mashvflash.Rmd/lfsr2-1.png" target="_blank">9f81f06</a>
@@ -966,6 +1029,7 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
+<p>The FLASH fit took 13.91. The MASH fit took 2.97.</p>
 </div>
 <div id="mash-model" class="section level2">
 <h2>MASH Model</h2>
@@ -988,6 +1052,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/624de1dfb3db11bdc40a4a3d946a8fbd7abf40ce/docs/figure/mashvflash.Rmd/lfsr3-1.png" target="_blank">624de1d</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-11
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/9f81f0649020df46c440e91d61356176321aa930/docs/figure/mashvflash.Rmd/lfsr3-1.png" target="_blank">9f81f06</a>
@@ -1035,6 +1110,7 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
+<p>The FLASH fit took 30.29. The MASH fit took 2.94.</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
