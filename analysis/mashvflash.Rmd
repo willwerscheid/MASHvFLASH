@@ -2,7 +2,9 @@
 title: "Mash vs. Flash"
 author: "Jason Willwerscheid"
 date: "4/20/2018"
-output: pdf_document
+output: 
+  html_document: 
+    code_folding: hide
 ---
 
 ```{r setup, echo=F, include=F}
