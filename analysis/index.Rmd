@@ -6,4 +6,4 @@ output:
     toc: false
 ---
 
-Click on this [link](mashvflash.html) to see my results.
+Results are [here](mashvflash.html).
