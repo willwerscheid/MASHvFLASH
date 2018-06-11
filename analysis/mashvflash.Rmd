@@ -23,8 +23,15 @@ Setup code.
 # FLASH v MASH ------------------------------------------------------
 flash_v_mash <- function(Y, true_Y, nfactors) {
   data <- flash_set_data(Y, S = 1)
+  res <- list()
+  
+  t <- Sys.time()
   fl <- fit_flash(data, nfactors)
+  res$fl_time <- Sys.time() - t
+  
+  t <- Sys.time()
   m <- fit_mash(Y)
+  res$m_time <- Sys.time() - t
 
   # Sample from FLASH fit
   fl_sampler <- flash_lf_sampler(Y, fl, ebnm_fn=ebnm_pn, fixed="factors")
@@ -32,7 +39,6 @@ flash_v_mash <- function(Y, true_Y, nfactors) {
   nsamp <- 200
   fl_samp <- fl_sampler(nsamp)
 
-  res <- list()
   res$fl_mse <- flash_pm_mse(fl_samp, true_Y)
   res$m_mse <- mash_pm_mse(m, true_Y)
   res$fl_ci <- flash_ci_acc(fl_samp, true_Y)
@@ -245,6 +251,8 @@ ff
 plot_res(basic_res)
 ```
 
+The FLASH fit took `r basic_res$fl_time`. The MASH fit took `r basic_res$m_time`.
+
 ## Augmented Flash Model
 
 Next I simulate from the "augmented" FLASH model
@@ -257,6 +265,8 @@ with $F$ as above.
 plot_res(flash_res)
 ```
 
+The FLASH fit took `r flash_res$fl_time`. The MASH fit took `r flash_res$m_time`.
+
 ## MASH Model
 
 Finally I simulate from the MASH model
@@ -268,3 +278,5 @@ with $E_{ij} \sim N(0, 1)$. I set $\Sigma_1$ to be the all ones matrix, $\Sigma_
 ```{r lfsr3, echo=F}
 plot_res(mash_res)
 ```
+
+The FLASH fit took `r mash_res$fl_time`. The MASH fit took `r mash_res$m_time`.
