@@ -17,6 +17,8 @@ set.seed(1)
 
 ## Code
 
+Setup code.
+
 ```{r setup2}
 # FLASH v MASH ------------------------------------------------------
 flash_v_mash <- function(Y, true_Y, nfactors) {
@@ -161,7 +163,11 @@ mash_lfsr <- function(m, true_Y, step=0.05) {
   }
   fsr_by_lfsr
 }
+```
 
+Augmented FLASH simulation.
+
+```{r setup3}
 # Simulate from FLASH model -----------------------------------------
 n <- 1000
 p <- 10
@@ -179,7 +185,11 @@ true_flash_Y <- ll %*% ff
 flash_Y <- true_flash_Y + rnorm(n*p)
 # RESULTS
 flash_res <- flash_v_mash(flash_Y, true_flash_Y, flash_factors)
+```
 
+FLASH simulation.
+
+```{r setup4}
 # Simulate from basic FLASH model -----------------------------------
 ff <- ff[1:nfactors, ]
 ll <- matrix(rnorm(n * nfactors), nrow=n, ncol=nfactors)
@@ -187,7 +197,11 @@ true_basic_Y <- ll %*% ff
 basic_Y <- true_basic_Y + rnorm(n*p)
 # RESULTS
 basic_res <- flash_v_mash(basic_Y, true_basic_Y, flash_factors)
+```
 
+MASH simulation.
+
+```{r setup5}
 # Simulate from MASH model ------------------------------------------
 Sigma <- list()
 Sigma[[1]] <- matrix(1, nrow=p, ncol=p)
@@ -210,6 +224,8 @@ mash_Y <- true_mash_Y + rnorm(n * p)
 # RESULTS
 mash_res <- flash_v_mash(mash_Y, true_mash_Y, flash_factors)
 ```
+
+## Summary
 
 In each case below, I follow the vignettes to produce a MASH fit (I use both canonical and data-driven covariance matrices). I fit a FLASH object (fixing the standard errors) by adding up to 10 factors greedily, then adding $p$ fixed one-hot vectors, and finally backfitting.
 
