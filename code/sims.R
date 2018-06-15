@@ -11,7 +11,10 @@ get_E <- function(n, p, sd = 1) {
 
 null_sim <- function(n, p, seed = NULL) {
   set.seed(seed)
-  get_E(n, p)
+  Y <- get_E(n, p)
+  true_Y <- matrix(0, n, p)
+
+  list(Y = Y, true_Y = true_Y)
 }
 
 # Simulate from MASH model ----------------------------------------------
@@ -38,7 +41,7 @@ mash_sim <- function(n, p, Sigma, pi = NULL, s = 0.8, seed = NULL) {
     X[, j] <- MASS::mvrnorm(1, rep(0, n), Sigma[[which_sigma[j]]])
   }
   Y <- X + get_E(n, p)
-  list(Y = Y, nonnull = nonnull_fx)
+  list(Y = Y, true_Y = X)
 }
 
 
@@ -59,10 +62,11 @@ flash_sim <- function(n, p, k, fs, fvar, ls, lvar, UVvar = 0, seed = NULL) {
   nonnull_ff <- matrix(sample(c(0, 1), k*p, TRUE, c(fs, 1 - fs)), k, p)
   FF <- nonnull_ff * matrix(rnorm(k*p, 0, sqrt(fvar)), k, p)
 
-  Y <- LL %*% FF + get_E(n, p)
+  X <- LL %*% FF
+  Y <- X + get_E(n, p)
   # add unwanted variation
   Y <- Y + outer(rnorm(n, 0, sqrt(UVvar)), rnorm(p, 0, sqrt(UVvar)))
-  list(Y = Y, LL = LL, FF = FF)
+  list(Y = Y, true_Y = X)
 }
 
 
@@ -73,10 +77,14 @@ flash_sim <- function(n, p, k, fs, fvar, ls, lvar, UVvar = 0, seed = NULL) {
 
 n <- 25
 p <- 1000
-# 1. Everything is null
-null_Y <- null_sim(n, p)
-
+s <- 0.8
 mashvar <- 100
+fvar = 100
+lvar = 100
+
+# 1. Everything is null
+nil <- null_sim(n, p)
+
 Sigma <- list()
 Sigma[[1]] <- diag(rep(mashvar, n))
 # 2. Effects are independent across conditions
@@ -95,13 +103,12 @@ pi <- c(n, n, rep(1, n))
 mash <- mash_sim(n, p, Sigma)
 
 # 5. Rank one model
-fvar = 100
-lvar = 100
-rank1 <- flash_sim(n, p, 1, 0.8, fvar, 0.5, lvar)
+rank1 <- flash_sim(n, p, 1, s, fvar, 0.5, lvar)
 
 # 6. Rank 5 model
-rank5 <- flash_sim(n, p, 5, 0.8, fvar, 0.2, lvar)
+rank5 <- flash_sim(n, p, 5, s, fvar, 0.2, lvar)
 
 UVvar = 25
 # 7. Rank 3 model with unwanted variation
-UV <- flash_sim(n, p, 3, 0.8, fvar, 0.3, lvar, UVvar)
+UV <- flash_sim(n, p, 3, s, fvar, 0.3, lvar, UVvar)
+
