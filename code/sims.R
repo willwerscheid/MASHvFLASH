@@ -72,43 +72,44 @@ flash_sim <- function(n, p, k, fs, fvar, ls, lvar, UVvar = 0, seed = NULL) {
 
 ## SIMULATIONS ----------------------------------------------------------
 
-# I generate a total of seven datasets. One is null; three are from the
-# MASH model; three are from the FLASH model.
+# Functions to generate seven types of datasets. One is null; three are
+# from the MASH model; three are from the FLASH model.
 
-n <- 25
-p <- 1000
-s <- 0.8
-mashvar <- 100
-fvar = 100
-lvar = 100
+sim_fns <- function(n, p, s, mashvar, fvar, lvar, UVvar) {
 
-# 1. Everything is null
-nil <- null_sim(n, p)
+  # 1. Everything is null
+  sim_null <- function(){ null_sim(n, p) }
 
-Sigma <- list()
-Sigma[[1]] <- diag(rep(mashvar, n))
-# 2. Effects are independent across conditions
-ind <- mash_sim(n, p, Sigma)
+  Sigma <- list()
+  Sigma[[1]] <- diag(rep(mashvar, n))
+  # 2. Effects are independent across conditions
+  sim_ind <- function(){ mash_sim(n, p, Sigma) }
 
-Sigma[[2]] <- matrix(mashvar, n, n)
-# 3. Effects are either independent or shared
-indsh <- mash_sim(n, p, Sigma)
+  Sigma[[2]] <- matrix(mashvar, n, n)
+  # 3. Effects are either independent or shared
+  sim_indsh <- function(){ mash_sim(n, p, Sigma) }
 
-for (j in 1:n) {
-  Sigma[[2 + j]] <- matrix(0, n, n)
-  Sigma[[2 + j]][j, j] <- mashvar
+  for (j in 1:n) {
+    Sigma[[2 + j]] <- matrix(0, n, n)
+    Sigma[[2 + j]][j, j] <- mashvar
+  }
+  pi <- c(n, n, rep(1, n))
+  # 4. Effects are independent, shared, or unique to a single condition
+  sim_mash <- function(){ mash_sim(n, p, Sigma) }
+
+  # 5. Rank one model
+  sim_rank1 <- function(){ flash_sim(n, p, 1, s, fvar, 0.5, lvar) }
+
+  # 6. Rank 5 model
+  sim_rank5 <- function(){ flash_sim(n, p, 5, s, fvar, 0.2, lvar) }
+
+  # 7. Rank 3 model with unwanted variation
+  sim_UV <- function(){ flash_sim(n, p, 3, s, fvar, 0.3, lvar, UVvar) }
+
+  c(sim_null, sim_ind, sim_indsh, sim_mash, sim_rank1, sim_rank5, sim_UV)
 }
-pi <- c(n, n, rep(1, n))
-# 4. Effects are independent, shared, or unique to a single condition
-mash <- mash_sim(n, p, Sigma)
 
-# 5. Rank one model
-rank1 <- flash_sim(n, p, 1, s, fvar, 0.5, lvar)
-
-# 6. Rank 5 model
-rank5 <- flash_sim(n, p, 5, s, fvar, 0.2, lvar)
-
-UVvar = 25
-# 7. Rank 3 model with unwanted variation
-UV <- flash_sim(n, p, 3, s, fvar, 0.3, lvar, UVvar)
-
+sim_names <- c("Null simulation", "All independent effects",
+               "Independent and shared", "Independent, shared, and unique",
+               "Rank 1 FLASH model", "Rank 5 FLASH model",
+               "Rank 3 FLASH with UV")
