@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>MASH v FLASH</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MASHvFLASH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/workflowr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">MASH v FLASH</h1>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-06-15</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180609)</code> </summary></p>
+<p>The command <code>set.seed(20180609)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/0c0d6b22487b32387084dd31b4353c782cc56c3b" target="_blank">0c0d6b2</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/0c0d6b22487b32387084dd31b4353c782cc56c3b/analysis/MASHvFLASHsims.Rmd" target="_blank">0c0d6b2</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-15
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<p>All simulated datasets <span class="math inline">\(Y\)</span> were of dimension 25 x 1000.</p>
+<div id="null-model" class="section level2">
+<h2>Null model</h2>
+<p>Here the entries of <span class="math inline">\(Y\)</span> are just independent <span class="math inline">\(N(0, 1)\)</span> draws.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">MASH</th>
+<th align="right">FLASH_OHL</th>
+<th align="right">FLASH_OHF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MSE</td>
+<td align="right">0.002209</td>
+<td align="right">0.0025228</td>
+<td align="right">0.0025228</td>
+</tr>
+<tr class="even">
+<td>95% CI cov</td>
+<td align="right">0.663880</td>
+<td align="right">0.9999920</td>
+<td align="right">0.9999880</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./output/sim1time.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="code" class="section level2">
+<h2>Code</h2>
+<p>for simulating datasets…</p>
+<pre class="r"><code>## SIMULATION FUNCTIONS -------------------------------------------------
+
+# n is number of conditions, p is number of genes
+
+# Noise is i.i.d. N(0, 1)
+get_E &lt;- function(n, p, sd = 1) {
+  matrix(rnorm(n * p, 0, sd), n, p)
+}
+
+# Simulate from null model ----------------------------------------------
+
+null_sim &lt;- function(n, p, seed = NULL) {
+  set.seed(seed)
+  Y &lt;- get_E(n, p)
+  true_Y &lt;- matrix(0, n, p)
+
+  list(Y = Y, true_Y = true_Y)
+}
+
+# Simulate from MASH model ----------------------------------------------
+
+# Sigma is list of covariance matrices
+# pi[j] is probability that effect j has covariance Sigma[[j]]
+# s is sparsity (percentage of null effects)
+mash_sim &lt;- function(n, p, Sigma, pi = NULL, s = 0.8, seed = NULL) {
+  set.seed(NULL)
+  if (is.null(pi)) {
+    pi = rep(1, length(Sigma)) # default to uniform distribution
+  }
+  assertthat::are_equal(length(pi), length(Sigma))
+  for (j in length(Sigma)) {
+    assertthat::are_equal(dim(Sigma[j]), c(n, n))
+  }
+
+  pi &lt;- pi / sum(pi) # normalize pi to sum to one
+  which_sigma &lt;- sample(1:length(pi), p, replace=TRUE, prob=pi)
+  nonnull_fx &lt;- sample(1:p, floor((1 - s)*p), replace=FALSE)
+
+  X &lt;- matrix(0, n, p)
+  for (j in nonnull_fx) {
+    X[, j] &lt;- MASS::mvrnorm(1, rep(0, n), Sigma[[which_sigma[j]]])
+  }
+  Y &lt;- X + get_E(n, p)
+  list(Y = Y, true_Y = X)
+}
+
+
+# Simulate from FLASH model ---------------------------------------------
+
+# fs is sparsity of factors (percentage of null effects)
+# fvar is variance of effects (generated from normal distribution)
+# ls is sparsity of loadings
+# lvar is variance of loadings
+# UVvar is variance of dense rank-one matrix included to mimic something
+#   like unwanted variation (set it to 0 to ignore it)
+flash_sim &lt;- function(n, p, k, fs, fvar, ls, lvar, UVvar = 0, seed = NULL) {
+  set.seed(seed)
+
+  nonnull_ll &lt;- matrix(sample(c(0, 1), n*k, TRUE, c(ls, 1 - ls)), n, k)
+  LL &lt;- nonnull_ll * matrix(rnorm(n*k, 0, sqrt(lvar)), n, k)
+
+  nonnull_ff &lt;- matrix(sample(c(0, 1), k*p, TRUE, c(fs, 1 - fs)), k, p)
+  FF &lt;- nonnull_ff * matrix(rnorm(k*p, 0, sqrt(fvar)), k, p)
+
+  X &lt;- LL %*% FF
+  Y &lt;- X + get_E(n, p)
+  # add unwanted variation
+  Y &lt;- Y + outer(rnorm(n, 0, sqrt(UVvar)), rnorm(p, 0, sqrt(UVvar)))
+  list(Y = Y, true_Y = X)
+}
+
+
+## SIMULATIONS ----------------------------------------------------------
+
+# Functions to generate seven types of datasets. One is null; three are
+# from the MASH model; three are from the FLASH model.
+
+sim_fns &lt;- function(n, p, s, mashvar, fvar, lvar, UVvar) {
+
+  # 1. Everything is null
+  sim_null &lt;- function(){ null_sim(n, p) }
+
+  Sigma &lt;- list()
+  Sigma[[1]] &lt;- diag(rep(mashvar, n))
+  # 2. Effects are independent across conditions
+  sim_ind &lt;- function(){ mash_sim(n, p, Sigma) }
+
+  Sigma[[2]] &lt;- matrix(mashvar, n, n)
+  # 3. Effects are either independent or shared
+  sim_indsh &lt;- function(){ mash_sim(n, p, Sigma) }
+
+  for (j in 1:n) {
+    Sigma[[2 + j]] &lt;- matrix(0, n, n)
+    Sigma[[2 + j]][j, j] &lt;- mashvar
+  }
+  pi &lt;- c(n, n, rep(1, n))
+  # 4. Effects are independent, shared, or unique to a single condition
+  sim_mash &lt;- function(){ mash_sim(n, p, Sigma) }
+
+  # 5. Rank one model
+  sim_rank1 &lt;- function(){ flash_sim(n, p, 1, s, fvar, 0.5, lvar) }
+
+  # 6. Rank 5 model
+  sim_rank5 &lt;- function(){ flash_sim(n, p, 5, s, fvar, 0.2, lvar) }
+
+  # 7. Rank 3 model with unwanted variation
+  sim_UV &lt;- function(){ flash_sim(n, p, 3, s, fvar, 0.3, lvar, UVvar) }
+
+  c(sim_null, sim_ind, sim_indsh, sim_mash, sim_rank1, sim_rank5, sim_UV)
+}
+
+sim_names &lt;- c(&quot;Null simulation&quot;, &quot;All independent effects&quot;,
+               &quot;Independent and shared&quot;, &quot;Independent, shared, and unique&quot;,
+               &quot;Rank 1 FLASH model&quot;, &quot;Rank 5 FLASH model&quot;,
+               &quot;Rank 3 FLASH with UV&quot;)</code></pre>
+<p>…for fitting MASH and FLASH objects…</p>
+<pre class="r"><code># Fit using FLASH -------------------------------------------------------
+fit_flash &lt;- function(Y, Kmax, add_onehots_first=T) {
+  n &lt;- nrow(Y)
+  data &lt;- flash_set_data(Y, S = 1)
+  timing &lt;- list()
+
+  t0 &lt;- Sys.time()
+  if (add_onehots_first) {
+    fl &lt;- flash_add_fixed_l(data, diag(rep(1, n)))
+    fl &lt;- flash_backfit(data, fl, nullcheck = F, var_type = &quot;zero&quot;)
+    t1 &lt;- Sys.time()
+    timing$backfit &lt;- t1 - t0
+    fl &lt;- flash_add_greedy(data, Kmax, fl, var_type = &quot;zero&quot;)
+    timing$greedy &lt;- Sys.time() - t1
+  } else {
+    fl &lt;- flash_add_greedy(data, Kmax, var_type = &quot;zero&quot;)
+    t1 &lt;- Sys.time()
+    timing$greedy &lt;- t1 - t0
+    fl &lt;- flash_add_fixed_l(data, diag(rep(1, n)), fl)
+    fl &lt;- flash_backfit(data, fl, nullcheck = F, var_type = &quot;zero&quot;)
+    timing$backfit &lt;- Sys.time() - t1
+  }
+
+  timing$total &lt;- Reduce(`+`, timing)
+
+  list(fl = fl, timing = timing)
+}
+
+
+# Fit using MASH -------------------------------------------------------
+fit_mash &lt;- function(Y, ed=T) {
+  data &lt;- mash_set_data(t(Y))
+  timing &lt;- list()
+
+  # time to create canonical matrices is negligible
+  U = cov_canonical(data)
+
+  if (ed) {
+    t0 &lt;- Sys.time()
+    m.1by1 &lt;- mash_1by1(data)
+    strong &lt;- get_significant_results(m.1by1, 0.05)
+    U.pca &lt;- cov_pca(data, 5, strong)
+    U.ed &lt;- cov_ed(data, U.pca, strong)
+    U &lt;- c(U, U.ed)
+    timing$ed &lt;- Sys.time() - t0
+  }
+
+  t0 &lt;- Sys.time()
+  m &lt;- mash(data, U)
+  timing$mash &lt;- Sys.time() - t0
+
+  timing$total &lt;- Reduce(`+`, timing)
+
+  list(m = m, timing = timing)
+}</code></pre>
+<p>…for evaluating performance…</p>
+<pre class="r"><code># Evaluate methods based on MSE, CI coverage, and TPR vs. FPR -----------
+
+flash_diagnostics &lt;- function(fl, Y, true_Y, nsamp) {
+  MSE &lt;- flash_mse(fl, true_Y)
+
+  # Sample from FLASH fit to estimate CI coverage and TPR vs. FPR
+  fl_sampler &lt;- flash_lf_sampler(Y, fl, ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
+  fl_samp &lt;- fl_sampler(nsamp)
+
+  CI &lt;- flash_ci(fl_samp, true_Y)
+  ROC &lt;- flash_roc(fl, fl_samp, true_Y)
+
+  list(MSE = MSE, CI = CI, TP = ROC$TP, FP = ROC$FP,
+       n_nulls = ROC$n_nulls, n_nonnulls = ROC$n_nonnulls)
+}
+
+mash_diagnostics &lt;- function(m, true_Y) {
+  MSE &lt;- mash_mse(m, true_Y)
+  CI &lt;- mash_ci(m, true_Y)
+  ROC &lt;- mash_roc(m, true_Y)
+
+  list(MSE = MSE, CI = CI, TP = ROC$TP, FP = ROC$FP,
+       n_nulls = ROC$n_nulls, n_nonnulls = ROC$n_nonnulls)
+}
+
+
+# MSE of posterior means (FLASH) ----------------------------------------
+flash_mse &lt;- function(fl, true_Y) {
+  mean((flash_get_lf(fl) - true_Y)^2)
+}
+
+# MSE for MASH ----------------------------------------------------------
+mash_mse &lt;- function(m, true_Y) {
+  mean((get_pm(m) - t(true_Y))^2)
+}
+
+
+# 95% CI coverage for FLASH ---------------------------------------------
+flash_ci &lt;- function(fl_samp, true_Y) {
+  n &lt;- nrow(true_Y)
+  p &lt;- ncol(true_Y)
+  nsamp &lt;- length(fl_samp)
+
+  flat_samp &lt;- matrix(0, nrow=n*p, ncol=nsamp)
+  for (i in 1:nsamp) {
+    flat_samp[, i] &lt;- as.vector(fl_samp[[i]])
+  }
+  CI &lt;- t(apply(flat_samp, 1, function(x) {quantile(x, c(0.025, 0.975))}))
+  mean((as.vector(true_Y) &gt;= CI[, 1]) &amp; (as.vector(true_Y) &lt;= CI[, 2]))
+}
+
+# 95% CI coverage for MASH ----------------------------------------------
+mash_ci &lt;- function(m, true_Y) {
+  Y &lt;- t(true_Y)
+  mean((Y &gt; get_pm(m) - 1.96 * get_psd(m))
+      &amp; (Y &lt; get_pm(m) + 1.96 * get_psd(m)))
+}
+
+
+# LFSR for FLASH --------------------------------------------------------
+flash_lfsr &lt;- function(fl_samp) {
+  nsamp &lt;- length(fl_samp)
+  n &lt;- nrow(fl_samp[[1]])
+  p &lt;- ncol(fl_samp[[1]])
+
+  pp &lt;- matrix(0, nrow=n, ncol=p)
+  pn &lt;- matrix(0, nrow=n, ncol=p)
+  for (i in 1:nsamp) {
+    pp &lt;- pp + (fl_samp[[i]] &gt; 0)
+    pn &lt;- pn + (fl_samp[[i]] &lt; 0)
+  }
+  1 - pmax(pp, pn) / nsamp
+}
+
+
+# Quantities for plotting ROC curves -----------------------------------
+flash_roc &lt;- function(fl, fl_samp, true_Y, step=0.01) {
+  roc_data(flash_get_lf(fl), true_Y, flash_lfsr(fl_samp), step)
+}
+
+mash_roc &lt;- function(m, true_Y, step=0.01) {
+  roc_data(get_pm(m), t(true_Y), get_lfsr(m), step)
+}
+
+roc_data &lt;- function(pm, true_Y, lfsr, step) {
+  correct_sign &lt;- pm * true_Y &gt; 0
+  is_null &lt;- true_Y == 0
+  n_nulls &lt;- sum(is_null)
+  n_nonnulls &lt;- length(true_Y) - n_nulls
+
+  ts &lt;- seq(0, 1, by=step)
+  tp &lt;- rep(0, length(ts))
+  fp &lt;- rep(0, length(ts))
+
+  for (t in 1:length(ts)) {
+    signif &lt;- lfsr &lt;= ts[t]
+    tp[t] &lt;- sum(signif &amp; correct_sign)
+    fp[t] &lt;- sum(signif &amp; is_null)
+  }
+
+  list(ts = ts, TP = tp, FP = fp, n_nulls = n_nulls, n_nonnulls = n_nonnulls)
+}
+
+
+# empirical false sign rate vs. local false sign rate
+# efsr_by_lfsr &lt;- function(pm, true_Y, lfsr, step) {
+#   pred_signs &lt;- sign(pm)
+#   pred_zeros &lt;- pred_signs == 0
+#   pred_signs[pred_zeros] &lt;- sample(c(0, 1), length(pred_zeros), replace=T)
+#
+#   gotitright &lt;- (pred_signs == sign(true_Y))
+#
+#   nsteps &lt;- floor(.5 / step)
+#   efsr_by_lfsr &lt;- rep(0, nsteps)
+#   for (k in 1:nsteps) {
+#     idx &lt;- (lfsr &gt;= (step * (k - 1)) &amp; lfsr &lt; (step * k))
+#     efsr_by_lfsr[k] &lt;- ifelse(sum(idx) == 0, NA,
+#                               1 - sum(gotitright[idx]) / sum(idx))
+#   }
+#   efsr_by_lfsr
+# }</code></pre>
+<p>…and some ugly functions that run everything and plot results.</p>
+<pre class="r"><code>run_sims &lt;- function(sim_fn, nsims, plot_title, fpath) {
+  #suppressMessages(
+    #suppressWarnings(
+      #capture.output(
+        if (nsims == 1) {
+          res = run_one_sim(sim_fn)
+        } else {
+          res = run_many_sims(sim_fn, nsims)
+        }
+      #)
+    #)
+  #)
+  saveRDS(output_res_mat(res, plot_title), paste0(fpath, &quot;res.rds&quot;))
+  if (!(plot_title == &quot;Null simulation&quot;)) {
+    png(paste0(fpath, &quot;ROC.png&quot;))
+    plot_ROC(res, plot_title)
+    dev.off()
+  }
+  png(paste0(fpath, &quot;time.png&quot;))
+  plot_timing(res)
+  dev.off()
+}
+
+run_many_sims &lt;- function(sim_fn, nsims) {
+  res &lt;- list()
+  combined_res &lt;- list()
+
+  for (i in 1:nsims) {
+    res[[i]] &lt;- run_one_sim(sim_fn)
+  }
+  list_elem &lt;- names(res[[1]])
+  for (elem in list_elem) {
+    combined_res[[elem]] &lt;- list()
+    sub_elems &lt;- names(res[[1]][[elem]])
+    for (sub_elem in sub_elems) {
+      tmp &lt;- lapply(res, function(x) {x[[elem]][[sub_elem]]})
+      combined_res[[elem]][[sub_elem]] &lt;- Reduce(`+`, tmp)
+      combined_res[[elem]][[sub_elem]] &lt;- combined_res[[elem]][[sub_elem]] / nsims
+    }
+  }
+  combined_res
+}
+
+run_one_sim &lt;- function(sim_fn, Kmax = 10, nsamp=200) {
+  data &lt;- do.call(sim_fn, list())
+
+  # If there are no strong signals, trying to run ED throws an error, so
+  #   we need to do some error handling to fit the MASH object
+  try(mfit &lt;- fit_mash(data$Y))
+  if (!exists(&quot;mfit&quot;)) {
+    mfit &lt;- fit_mash(data$Y, ed=F)
+    mfit$timing$ed = as.difftime(0, units=&quot;secs&quot;)
+  }
+
+  flfit1 &lt;- fit_flash(data$Y, Kmax, add_onehots_first = T)
+  flfit2 &lt;- fit_flash(data$Y, Kmax, add_onehots_first = F)
+
+  message(&quot;Running MASH diagnostics&quot;)
+  mres &lt;- mash_diagnostics(mfit$m, data$true_Y)
+  message(&quot;Running FLASH diagnostics&quot;)
+  flres1 &lt;- flash_diagnostics(flfit1$fl, data$Y, data$true_Y, nsamp)
+  flres2 &lt;- flash_diagnostics(flfit2$fl, data$Y, data$true_Y, nsamp)
+
+  list(mash_timing = mfit$timing, mash_res = mres,
+       flash_OHF_timing = flfit1$timing, flash_OHF_res = flres1,
+       flash_OHL_timing = flfit2$timing, flash_OHL_res = flres2)
+}
+
+output_res_mat &lt;- function(res, caption) {
+  data.frame(MASH = c(res$mash_res$MSE, res$mash_res$CI),
+             FLASH_OHL = c(res$flash_OHL_res$MSE, res$flash_OHL_res$CI),
+             FLASH_OHF = c(res$flash_OHF_res$MSE, res$flash_OHF_res$CI),
+             row.names = c(&quot;MSE&quot;, &quot;95% CI cov&quot;))
+}
+
+plot_timing &lt;- function(res) {
+  data &lt;- c(res$mash_timing$ed, res$mash_timing$mash,
+            res$flash_OHL_timing$greedy, res$flash_OHL_timing$backfit,
+            res$flash_OHF_timing$greedy, res$flash_OHF_timing$backfit)
+  time_units &lt;- units(data)
+  data &lt;- matrix(as.numeric(data), 2, 3)
+  barplot(data, axes=T,
+          main=paste(&quot;Average time to fit in&quot;, time_units),
+          names.arg = c(&quot;MASH&quot;, &quot;FLASH-OHL&quot;, &quot;FLASH-OHF&quot;),
+          legend.text = c(&quot;ED/Greedy&quot;, &quot;MASH/Backfit&quot;),
+          ylim = c(0, max(colSums(data))*2))
+  # (increasing ylim is easiest way to deal with legend getting in way)
+}
+
+plot_ROC &lt;- function(res, main=&quot;ROC curve&quot;) {
+  m_y &lt;- res$mash_res$TP / res$mash_res$n_nonnulls
+  m_x &lt;- res$mash_res$FP / res$mash_res$n_nulls
+  ohl_y &lt;- res$flash_OHL_res$TP / res$flash_OHL_res$n_nonnulls
+  ohl_x &lt;- res$flash_OHL_res$FP / res$flash_OHL_res$n_nulls
+  ohf_y &lt;- res$flash_OHF_res$TP / res$flash_OHF_res$n_nonnulls
+  ohf_x &lt;- res$flash_OHF_res$FP / res$flash_OHF_res$n_nulls
+  plot(m_x, m_y, xlim=c(0, 1), ylim=c(0, 1), type=&#39;l&#39;,
+       xlab=&#39;FPR&#39;, ylab=&#39;TPR&#39;, main=main)
+  lines(ohl_x, ohl_y, lty=2)
+  lines(ohf_x, ohf_y, lty=3)
+  legend(&quot;bottomright&quot;, c(&quot;MASH&quot;, &quot;FLASH-OHL&quot;, &quot;FLASH-OHF&quot;), lty=1:3)
+}</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.0.1   Rcpp_0.12.17      digest_0.6.15    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
+[10] highr_0.6         stringi_1.1.6     whisker_0.3-2    
+[13] R.oo_1.21.0       R.utils_2.6.0     rmarkdown_1.8    
+[16] tools_3.4.3       stringr_1.3.0     yaml_2.1.17      
+[19] compiler_3.4.3    htmltools_0.3.6   knitr_1.20       </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
