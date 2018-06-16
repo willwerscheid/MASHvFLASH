@@ -8,4 +8,6 @@ output:
 
 [MASH v FLASH simulation results.](MASHvFLASHsims.html) The goods.
 
+[MASH v FLASH on GTEx.](MASHvFLASHgtex.html)
+
 [A first attempt.](mashvflash.html) Stowed and forgotten.
