@@ -1,0 +1,102 @@
+---
+title: "MASH v FLASH analysis of GTEx data"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+library(mashr)
+```
+
+Here I analyze some GTEx data. The dataset can be found at https://stephenslab.github.io/gtexresults/.
+
+## Fitting methods
+
+I used the same methods to fit the data that I used in my [simulation study](MASHvFLASHsims.html). These methods assume that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset. 
+
+The simulation study suggested that the "one-hots last" method produces a much better fit than the "one-hots first" method, even though it can take quite a bit longer. Here I enter into some more detail.
+
+First I load the data and the fits.
+
+```{r load_fits}
+gtex <- readRDS("./data/MatrixEQTLSumStats.Portable.Z.rds")
+data <- gtex$test.z
+data <- t(data)
+fl_data <- flash_set_data(data, S = 1)
+
+gtex_mfit <- readRDS("./output/gtexmfit.rds")
+gtex_flfit <- readRDS("./output/gtexflfit.rds")
+gtex_flfit2 <- readRDS("./output/gtexflfit2.rds")
+gtex_flfit3 <- readRDS("./output/gtexflfit3.rds")
+```
+
+The OHL fit was produced by greedily adding a total of 31 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was `r format(flash_get_objective(fl_data, gtex_flfit$fl), scientific=F)`.
+
+The OHF fit added the 44 fixed one-hot factors, then backfit them, then added only 2 (!) more factors greedily. The resulting objective was much worse than that of the OHL fit, at `r format(flash_get_objective(fl_data, gtex_flfit2$fl), scientific=F)`.
+
+Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method "FLASH-OHF+" in the plot below). The final objective was `r format(flash_get_objective(fl_data, gtex_flfit3$fl), scientific=F)`: better, but still not as good as the OHL fit.
+
+It seems clear that the OHL method is the way to go. However, it does take a long time (over twice as long as MASH):
+
+```{r plot_timing}
+data <- c(gtex_mfit$timing$ed, gtex_mfit$timing$mash,
+          gtex_flfit$timing$greedy, gtex_flfit$timing$backfit,
+          gtex_flfit2$timing$greedy, gtex_flfit2$timing$backfit,
+          gtex_flfit3$timing$greedy, gtex_flfit3$timing$backfit)
+time_units <- units(data)
+data <- matrix(as.numeric(data), 2, 4)
+barplot(data, axes=T,
+        main=paste("Average time to fit in", time_units),
+        names.arg = c("MASH", "FL-OHL", "FL-OHF", "FL-OHF+"),
+        legend.text = c("ED/Greedy", "MASH/Backfit"),
+        ylim = c(0, max(colSums(data))*1.5))
+```
+
+## MASH v FLASH posterior means
+
+The posterior means are quite similar (correlation coefficient = 0.98):
+
+![](images/gtexcompare.png)
+
+## MASH v FLASH LFSR 
+
+Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. For each threshold, MASH and FLASH agree in approximately 85-87% of cases. (But is it really true that )
+
+```{r lfsr}
+m_lfsr <- t(get_lfsr(gtex_mfit$m))
+fl_lfsr <- readRDS("./output/gtexfllfsr.rds")
+
+confusion_matrix <- function(t) {
+  mash_signif <- m_lfsr <= t
+  flash_signif <- fl_lfsr <= t
+  round(table(mash_signif, flash_signif)
+        / length(mash_signif), digits=3)
+}
+```
+
+At 5%:
+```{r cm05}
+confusion_matrix(.05)
+```
+
+At 1%:
+```{r cm01}
+confusion_matrix(.01)
+```
+
+At 0.1%:
+```{r cm001}
+confusion_matrix(.001)
+```
+
+## Code
+
+Click the button to view the code used to obtain the above results.
+```{r gtexcode, echo=F, include=F}
+knitr::read_chunk("./code/gtex.R")
+```
+```{r gtex, eval=F}
+```
