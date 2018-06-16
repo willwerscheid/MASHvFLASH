@@ -1,3 +1,5 @@
+## @knitr gtex
+
 devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
 library(mashr)
 
@@ -62,6 +64,7 @@ m_lfsr <- t(get_lfsr(gtex_mfit$m))
 
 fl_sampler <- flash_lf_sampler(data, gtex_flfit$fl, ebnm_fn=ebnm_pn, fixed="loadings")
 fl_lfsr <- flash_lfsr(fl_sampler(200))
+saveRDS(fl_lfsr, "./output/gtexfllfsr.rds")
 
 confusion_matrix <- function(t) {
   mash_signif <- m_lfsr <= t
