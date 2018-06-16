@@ -6,4 +6,6 @@ output:
     toc: false
 ---
 
-Results are [here](mashvflash.html).
+[MASH v FLASH simulation results.](MASHvFLASHsims.html) The goods.
+
+[A first attempt.](mashvflash.html) Stowed and forgotten.
