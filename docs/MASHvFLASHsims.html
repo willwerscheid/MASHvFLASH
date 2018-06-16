@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/3554f17e60c34ba45c678226295c81b8804294e5" target="_blank">3554f17</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/d3f8191a4d8323b10f600574ea8fefbb74b071ac" target="_blank">d3f8191</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -363,9 +363,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    docs/.DS_Store
-
-Untracked files:
-    Untracked:  docs/images/
+    Ignored:    docs/images/.DS_Store
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -394,6 +392,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/d3f8191a4d8323b10f600574ea8fefbb74b071ac/analysis/MASHvFLASHsims.Rmd" target="_blank">d3f8191</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-15
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/c2699a6b3a91bf348a7780f395328f175ec3c759/docs/MASHvFLASHsims.html" target="_blank">c2699a6</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -520,8 +552,8 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 </table>
 <p><img src="images/sim2ROC.png" /> <img src="images/sim2time.png" /></p>
 </div>
-<div id="model-with-independent-or-shared-effects" class="section level2">
-<h2>Model with independent or shared effects</h2>
+<div id="model-with-independent-and-shared-effects" class="section level2">
+<h2>Model with independent and shared effects</h2>
 <p>Again 80% of the columns of <span class="math inline">\(X\)</span> are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. <span class="math inline">\(N(0, 1)\)</span>. The other half have entries that are identical across rows, with a value that is drawn from the <span class="math inline">\(N(0, 1)\)</span> distribution. (In other words, the covariance matrix for these columns is a matrix of all ones.)</p>
 <table>
 <thead>
@@ -549,8 +581,8 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 </table>
 <p><img src="images/sim3ROC.png" /> <img src="images/sim3time.png" /></p>
 </div>
-<div id="model-with-independent-shared-or-unique-effects" class="section level2">
-<h2>Model with independent, shared, or unique effects</h2>
+<div id="model-with-independent-shared-and-unique-effects" class="section level2">
+<h2>Model with independent, shared, and unique effects</h2>
 <p>This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows.</p>
 <table>
 <thead>
