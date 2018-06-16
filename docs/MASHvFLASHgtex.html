@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/d8b63311e6d1ebbc4ad381509a80e7185eb8b564" target="_blank">d8b6331</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/eac4059fca5ec35717dfa5999b725b3a54a888ac" target="_blank">eac4059</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -364,14 +364,6 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
-
-Untracked files:
-    Untracked:  output/gtexfllfsr.rds
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
-    Modified:   code/gtex.R
-    Modified:   output/gtexmfit.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -400,6 +392,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/eac4059fca5ec35717dfa5999b725b3a54a888ac/analysis/MASHvFLASHgtex.Rmd" target="_blank">eac4059</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-16
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHgtex.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/0aa5cc6cae8fe4ab3a0b500de260d2696d8f800e/docs/MASHvFLASHgtex.html" target="_blank">0aa5cc6</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-16
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -453,6 +479,36 @@ barplot(data, axes=T,
         legend.text = c(&quot;ED/Greedy&quot;, &quot;MASH/Backfit&quot;),
         ylim = c(0, max(colSums(data))*1.5))</code></pre>
 <p><img src="figure/MASHvFLASHgtex.Rmd/plot_timing-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of plot_timing-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/0aa5cc6cae8fe4ab3a0b500de260d2696d8f800e/docs/figure/MASHvFLASHgtex.Rmd/plot_timing-1.png" target="_blank">0aa5cc6</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-16
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="mash-v-flash-posterior-means" class="section level2">
 <h2>MASH v FLASH posterior means</h2>
@@ -464,7 +520,7 @@ barplot(data, axes=T,
 </div>
 <div id="mash-v-flash-lfsr" class="section level2">
 <h2>MASH v FLASH LFSR</h2>
-<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. For each threshold, MASH and FLASH agree in approximately 85-87% of cases. (But is it really true that )</p>
+<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. For each threshold, MASH and FLASH agree in approximately 85-87% of cases.</p>
 <pre class="r"><code>m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
 fl_lfsr &lt;- readRDS(&quot;./output/gtexfllfsr.rds&quot;)
 
