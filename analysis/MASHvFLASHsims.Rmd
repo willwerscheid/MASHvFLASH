@@ -1,5 +1,5 @@
 ---
-title: "MASH v FLASH"
+title: "MASH v FLASH results"
 output: 
   workflowr::wflow_html:
     code_folding: hide
@@ -9,17 +9,99 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-All simulated datasets $Y$ were of dimension 25 x 1000.
+## Fitting methods
+
+The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).
+
+Two FLASH fits are produced. FLASH-OHL (for "one-hots last") adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. FLASH-OHF (for "one-hots first") adds the one-hot vectors first (as you've probably already guessed), then backfits, then greedily adds up to ten factors. In the latter case, the greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL.
+
+## Simulations
+
+All simulated datasets $Y$ are of dimension 25 x 1000. In each case, $Y = X + E$, where $X$ is the matrix of "true" effects and $E$ is a matrix of $N(0, 1)$ noise.
 
 ## Null model
 
-Here the entries of $Y$ are just independent $N(0, 1)$ draws.
+Here the entries of $X$ are all zero.
 
 ```{r sim1, echo=F}
 tmp <- readRDS("./output/sim1res.rds")
-knitr::kable(tmp)
-knitr::include_graphics("./output/sim1time.png")
+knitr::kable(tmp, digits=3)
 ```
+
+![](images/sim1time.png)
+
+## Model with independent effects
+
+Now the columns $X_{:, j}$ are either identically zero (with probability 0.8) or identically nonzero. In the latter case, the entries of the $j$th column of $X$ are i.i.d. $N(0, 1)$.
+
+```{r sim2, echo=F}
+tmp <- readRDS("./output/sim2res.rds")
+knitr::kable(tmp, digits=3)
+```
+
+![](images/sim2ROC.png)
+![](images/sim2time.png)
+
+## Model with independent or shared effects
+
+Again 80% of the columns of $X$ are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. $N(0, 1)$. The other half have entries that are identical across rows, with a value that is drawn from the $N(0, 1)$ distribution. (In other words, the covariance matrix for these columns is a matrix of all ones.)
+
+```{r sim3, echo=F}
+tmp <- readRDS("./output/sim3res.rds")
+knitr::kable(tmp, digits=3)
+```
+
+![](images/sim3ROC.png)
+![](images/sim3time.png)
+
+## Model with independent, shared, or unique effects
+
+This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows.
+
+```{r sim4, echo=F}
+tmp <- readRDS("./output/sim4res.rds")
+knitr::kable(tmp, digits=3)
+```
+
+![](images/sim4ROC.png)
+![](images/sim4time.png)
+
+## Rank 1 FLASH model
+
+This is the FLASH model $X = LF$, where $L$ is an $n$ by $k$ matrix and $F$ is a $k$ by $p$ matrix. In this first simulation, $k = 1$. 80% of the entries in $F$ and 50% of the entries in $L$ are equal to zero. The other entries are i.i.d. $N(0, 1)$.
+
+```{r sim5, echo=F}
+tmp <- readRDS("./output/sim5res.rds")
+knitr::kable(tmp, digits=3)
+```
+
+![](images/sim5ROC.png)
+![](images/sim5time.png)
+
+## Rank 5 FLASH model 
+
+This is the same as above with $k = 5$ and with only 20% of the entries in $L$ equal to zero.
+
+```{r sim6, echo=F}
+tmp <- readRDS("./output/sim6res.rds")
+knitr::kable(tmp, digits=3)
+```
+
+![](images/sim6ROC.png)
+![](images/sim6time.png)
+
+## Rank 3 FLASH model with UV
+
+This is similar to the above with $k = 3$ and with 30% of the rows in $L$ equal to zero. In addition, a dense rank-one matrix $W$ is added to $X$ to mimic the effects of unwanted variation. Here, $W = UV$, with $U$ an $n$ by 1 vector and $V$ a 1 by $p$ vector, both of which have entries distributed $N(0, 0.25)$.
+
+```{r sim7, echo=F}
+tmp <- readRDS("./output/sim7res.rds")
+knitr::kable(tmp, digits=3)
+```
+
+![](images/sim7ROC.png)
+![](images/sim7time.png)
+
 
 ## Code
 
