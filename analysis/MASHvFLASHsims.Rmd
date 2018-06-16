@@ -42,7 +42,7 @@ knitr::kable(tmp, digits=3)
 ![](images/sim2ROC.png)
 ![](images/sim2time.png)
 
-## Model with independent or shared effects
+## Model with independent and shared effects
 
 Again 80% of the columns of $X$ are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. $N(0, 1)$. The other half have entries that are identical across rows, with a value that is drawn from the $N(0, 1)$ distribution. (In other words, the covariance matrix for these columns is a matrix of all ones.)
 
@@ -54,7 +54,7 @@ knitr::kable(tmp, digits=3)
 ![](images/sim3ROC.png)
 ![](images/sim3time.png)
 
-## Model with independent, shared, or unique effects
+## Model with independent, shared, and unique effects
 
 This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows.
 
