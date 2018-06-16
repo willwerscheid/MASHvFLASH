@@ -11,7 +11,7 @@
 
 
 
-<title>MASH v FLASH</title>
+<title>MASH v FLASH results</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -326,7 +326,7 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">MASH v FLASH</h1>
+<h1 class="title toc-ignore">MASH v FLASH results</h1>
 
 </div>
 
@@ -355,13 +355,17 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/0c0d6b22487b32387084dd31b4353c782cc56c3b" target="_blank">0c0d6b2</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/3554f17e60c34ba45c678226295c81b8804294e5" target="_blank">3554f17</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    docs/.DS_Store
+
+Untracked files:
+    Untracked:  docs/images/
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -395,6 +399,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/3554f17e60c34ba45c678226295c81b8804294e5/analysis/MASHvFLASHsims.Rmd" target="_blank">3554f17</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-15
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/03dc24a7944aca134747c0bdfdb5bfd6875ea2dd/docs/MASHvFLASHsims.html" target="_blank">03dc24a</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0c0d6b22487b32387084dd31b4353c782cc56c3b/analysis/MASHvFLASHsims.Rmd" target="_blank">0c0d6b2</a>
 </td>
 <td style="text-align:left;">
@@ -412,10 +450,18 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 </ul>
 <p></details></p>
 <hr />
-<p>All simulated datasets <span class="math inline">\(Y\)</span> were of dimension 25 x 1000.</p>
+<div id="fitting-methods" class="section level2">
+<h2>Fitting methods</h2>
+<p>The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).</p>
+<p>Two FLASH fits are produced. FLASH-OHL (for “one-hots last”) adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. FLASH-OHF (for “one-hots first”) adds the one-hot vectors first (as you’ve probably already guessed), then backfits, then greedily adds up to ten factors. In the latter case, the greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL.</p>
+</div>
+<div id="simulations" class="section level2">
+<h2>Simulations</h2>
+<p>All simulated datasets <span class="math inline">\(Y\)</span> are of dimension 25 x 1000. In each case, <span class="math inline">\(Y = X + E\)</span>, where <span class="math inline">\(X\)</span> is the matrix of “true” effects and <span class="math inline">\(E\)</span> is a matrix of <span class="math inline">\(N(0, 1)\)</span> noise.</p>
+</div>
 <div id="null-model" class="section level2">
 <h2>Null model</h2>
-<p>Here the entries of <span class="math inline">\(Y\)</span> are just independent <span class="math inline">\(N(0, 1)\)</span> draws.</p>
+<p>Here the entries of <span class="math inline">\(X\)</span> are all zero.</p>
 <table>
 <thead>
 <tr class="header">
@@ -428,19 +474,196 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.002209</td>
-<td align="right">0.0025228</td>
-<td align="right">0.0025228</td>
+<td align="right">0.002</td>
+<td align="right">0.003</td>
+<td align="right">0.003</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.663880</td>
-<td align="right">0.9999920</td>
-<td align="right">0.9999880</td>
+<td align="right">0.664</td>
+<td align="right">1.000</td>
+<td align="right">1.000</td>
 </tr>
 </tbody>
 </table>
-<p><img src="./output/sim1time.png" style="display: block; margin: auto;" /></p>
+<div class="figure">
+<img src="images/sim1time.png" />
+
+</div>
+</div>
+<div id="model-with-independent-effects" class="section level2">
+<h2>Model with independent effects</h2>
+<p>Now the columns <span class="math inline">\(X_{:, j}\)</span> are either identically zero (with probability 0.8) or identically nonzero. In the latter case, the entries of the <span class="math inline">\(j\)</span>th column of <span class="math inline">\(X\)</span> are i.i.d. <span class="math inline">\(N(0, 1)\)</span>.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">MASH</th>
+<th align="right">FLASH_OHL</th>
+<th align="right">FLASH_OHF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MSE</td>
+<td align="right">0.015</td>
+<td align="right">0.018</td>
+<td align="right">0.019</td>
+</tr>
+<tr class="even">
+<td>95% CI cov</td>
+<td align="right">0.989</td>
+<td align="right">0.984</td>
+<td align="right">0.984</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/sim2ROC.png" /> <img src="images/sim2time.png" /></p>
+</div>
+<div id="model-with-independent-or-shared-effects" class="section level2">
+<h2>Model with independent or shared effects</h2>
+<p>Again 80% of the columns of <span class="math inline">\(X\)</span> are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. <span class="math inline">\(N(0, 1)\)</span>. The other half have entries that are identical across rows, with a value that is drawn from the <span class="math inline">\(N(0, 1)\)</span> distribution. (In other words, the covariance matrix for these columns is a matrix of all ones.)</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">MASH</th>
+<th align="right">FLASH_OHL</th>
+<th align="right">FLASH_OHF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MSE</td>
+<td align="right">0.016</td>
+<td align="right">0.019</td>
+<td align="right">0.020</td>
+</tr>
+<tr class="even">
+<td>95% CI cov</td>
+<td align="right">0.990</td>
+<td align="right">0.985</td>
+<td align="right">0.985</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/sim3ROC.png" /> <img src="images/sim3time.png" /></p>
+</div>
+<div id="model-with-independent-shared-or-unique-effects" class="section level2">
+<h2>Model with independent, shared, or unique effects</h2>
+<p>This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">MASH</th>
+<th align="right">FLASH_OHL</th>
+<th align="right">FLASH_OHF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MSE</td>
+<td align="right">0.016</td>
+<td align="right">0.020</td>
+<td align="right">0.020</td>
+</tr>
+<tr class="even">
+<td>95% CI cov</td>
+<td align="right">0.989</td>
+<td align="right">0.983</td>
+<td align="right">0.983</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/sim4ROC.png" /> <img src="images/sim4time.png" /></p>
+</div>
+<div id="rank-1-flash-model" class="section level2">
+<h2>Rank 1 FLASH model</h2>
+<p>This is the FLASH model <span class="math inline">\(X = LF\)</span>, where <span class="math inline">\(L\)</span> is an <span class="math inline">\(n\)</span> by <span class="math inline">\(k\)</span> matrix and <span class="math inline">\(F\)</span> is a <span class="math inline">\(k\)</span> by <span class="math inline">\(p\)</span> matrix. In this first simulation, <span class="math inline">\(k = 1\)</span>. 80% of the entries in <span class="math inline">\(F\)</span> and 50% of the entries in <span class="math inline">\(L\)</span> are equal to zero. The other entries are i.i.d. <span class="math inline">\(N(0, 1)\)</span>.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">MASH</th>
+<th align="right">FLASH_OHL</th>
+<th align="right">FLASH_OHF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MSE</td>
+<td align="right">0.023</td>
+<td align="right">0.017</td>
+<td align="right">0.037</td>
+</tr>
+<tr class="even">
+<td>95% CI cov</td>
+<td align="right">0.972</td>
+<td align="right">0.949</td>
+<td align="right">0.962</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/sim5ROC.png" /> <img src="images/sim5time.png" /></p>
+</div>
+<div id="rank-5-flash-model" class="section level2">
+<h2>Rank 5 FLASH model</h2>
+<p>This is the same as above with <span class="math inline">\(k = 5\)</span> and with only 20% of the entries in <span class="math inline">\(L\)</span> equal to zero.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">MASH</th>
+<th align="right">FLASH_OHL</th>
+<th align="right">FLASH_OHF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MSE</td>
+<td align="right">0.116</td>
+<td align="right">0.079</td>
+<td align="right">0.287</td>
+</tr>
+<tr class="even">
+<td>95% CI cov</td>
+<td align="right">0.924</td>
+<td align="right">0.906</td>
+<td align="right">0.909</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/sim6ROC.png" /> <img src="images/sim6time.png" /></p>
+</div>
+<div id="rank-3-flash-model-with-uv" class="section level2">
+<h2>Rank 3 FLASH model with UV</h2>
+<p>This is similar to the above with <span class="math inline">\(k = 3\)</span> and with 30% of the rows in <span class="math inline">\(L\)</span> equal to zero. In addition, a dense rank-one matrix <span class="math inline">\(W\)</span> is added to <span class="math inline">\(X\)</span> to mimic the effects of unwanted variation. Here, <span class="math inline">\(W = UV\)</span>, with <span class="math inline">\(U\)</span> an <span class="math inline">\(n\)</span> by 1 vector and <span class="math inline">\(V\)</span> a 1 by <span class="math inline">\(p\)</span> vector, both of which have entries distributed <span class="math inline">\(N(0, 0.25)\)</span>.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">MASH</th>
+<th align="right">FLASH_OHL</th>
+<th align="right">FLASH_OHF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MSE</td>
+<td align="right">0.092</td>
+<td align="right">0.083</td>
+<td align="right">0.196</td>
+</tr>
+<tr class="even">
+<td>95% CI cov</td>
+<td align="right">0.945</td>
+<td align="right">0.900</td>
+<td align="right">0.935</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/sim7ROC.png" /> <img src="images/sim7time.png" /></p>
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
