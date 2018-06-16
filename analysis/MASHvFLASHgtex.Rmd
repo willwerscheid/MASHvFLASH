@@ -63,7 +63,7 @@ The posterior means are quite similar (correlation coefficient = 0.98):
 
 ## MASH v FLASH LFSR 
 
-Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. For each threshold, MASH and FLASH agree in approximately 85-87% of cases. (But is it really true that )
+Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. For each threshold, MASH and FLASH agree in approximately 85-87% of cases.
 
 ```{r lfsr}
 m_lfsr <- t(get_lfsr(gtex_mfit$m))
