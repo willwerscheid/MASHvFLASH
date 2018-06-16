@@ -1,0 +1,40 @@
+---
+title: "MASH v FLASH"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+All simulated datasets $Y$ were of dimension 25 x 1000.
+
+## Null model
+
+Here the entries of $Y$ are just independent $N(0, 1)$ draws.
+
+```{r sim1, echo=F}
+tmp <- readRDS("./output/sim1res.rds")
+knitr::kable(tmp)
+knitr::include_graphics("./output/sim1time.png")
+```
+
+## Code
+
+for simulating datasets...
+```{r sims, code=readLines("../code/sims.R")}
+```
+
+...for fitting MASH and FLASH objects...
+```{r fits, code=readLines("../code/fits.R")}
+```
+
+...for evaluating performance...
+```{r utils, code=readLines("../code/utils.R")}
+```
+
+...and some ugly functions that run everything and plot results.
+```{r main, code=readLines("../code/mashvflash.R")}
+```
