@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>MASH v FLASH analysis of GTEx data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MASHvFLASH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/workflowr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">MASH v FLASH analysis of GTEx data</h1>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-06-16</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180609)</code> </summary></p>
+<p>The command <code>set.seed(20180609)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/d8b63311e6d1ebbc4ad381509a80e7185eb8b564" target="_blank">d8b6331</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    docs/.DS_Store
+    Ignored:    docs/images/.DS_Store
+
+Untracked files:
+    Untracked:  output/gtexfllfsr.rds
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+    Modified:   code/gtex.R
+    Modified:   output/gtexmfit.rds
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/d8b63311e6d1ebbc4ad381509a80e7185eb8b564/analysis/MASHvFLASHgtex.Rmd" target="_blank">d8b6331</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-16
+</td>
+<td style="text-align:left;">
+analysis/index.Rmd
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<p>Here I analyze some GTEx data. The dataset can be found at <a href="https://stephenslab.github.io/gtexresults/" class="uri">https://stephenslab.github.io/gtexresults/</a>.</p>
+<div id="fitting-methods" class="section level2">
+<h2>Fitting methods</h2>
+<p>I used the same methods to fit the data that I used in my <a href="MASHvFLASHsims.html">simulation study</a>. These methods assume that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset.</p>
+<p>The simulation study suggested that the “one-hots last” method produces a much better fit than the “one-hots first” method, even though it can take quite a bit longer. Here I enter into some more detail.</p>
+<p>First I load the data and the fits.</p>
+<pre class="r"><code>gtex &lt;- readRDS(&quot;./data/MatrixEQTLSumStats.Portable.Z.rds&quot;)
+data &lt;- gtex$test.z
+data &lt;- t(data)
+fl_data &lt;- flash_set_data(data, S = 1)
+
+gtex_mfit &lt;- readRDS(&quot;./output/gtexmfit.rds&quot;)
+gtex_flfit &lt;- readRDS(&quot;./output/gtexflfit.rds&quot;)
+gtex_flfit2 &lt;- readRDS(&quot;./output/gtexflfit2.rds&quot;)
+gtex_flfit3 &lt;- readRDS(&quot;./output/gtexflfit3.rds&quot;)</code></pre>
+<p>The OHL fit was produced by greedily adding a total of 31 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was -1259284.</p>
+<p>The OHF fit added the 44 fixed one-hot factors, then backfit them, then added only 2 (!) more factors greedily. The resulting objective was much worse than that of the OHL fit, at -1635669.</p>
+<p>Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method “FLASH-OHF+” in the plot below). The final objective was -1306242: better, but still not as good as the OHL fit.</p>
+<p>It seems clear that the OHL method is the way to go. However, it does take a long time (over twice as long as MASH):</p>
+<pre class="r"><code>data &lt;- c(gtex_mfit$timing$ed, gtex_mfit$timing$mash,
+          gtex_flfit$timing$greedy, gtex_flfit$timing$backfit,
+          gtex_flfit2$timing$greedy, gtex_flfit2$timing$backfit,
+          gtex_flfit3$timing$greedy, gtex_flfit3$timing$backfit)
+time_units &lt;- units(data)
+data &lt;- matrix(as.numeric(data), 2, 4)
+barplot(data, axes=T,
+        main=paste(&quot;Average time to fit in&quot;, time_units),
+        names.arg = c(&quot;MASH&quot;, &quot;FL-OHL&quot;, &quot;FL-OHF&quot;, &quot;FL-OHF+&quot;),
+        legend.text = c(&quot;ED/Greedy&quot;, &quot;MASH/Backfit&quot;),
+        ylim = c(0, max(colSums(data))*1.5))</code></pre>
+<p><img src="figure/MASHvFLASHgtex.Rmd/plot_timing-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="mash-v-flash-posterior-means" class="section level2">
+<h2>MASH v FLASH posterior means</h2>
+<p>The posterior means are quite similar (correlation coefficient = 0.98):</p>
+<div class="figure">
+<img src="images/gtexcompare.png" />
+
+</div>
+</div>
+<div id="mash-v-flash-lfsr" class="section level2">
+<h2>MASH v FLASH LFSR</h2>
+<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. For each threshold, MASH and FLASH agree in approximately 85-87% of cases. (But is it really true that )</p>
+<pre class="r"><code>m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
+fl_lfsr &lt;- readRDS(&quot;./output/gtexfllfsr.rds&quot;)
+
+confusion_matrix &lt;- function(t) {
+  mash_signif &lt;- m_lfsr &lt;= t
+  flash_signif &lt;- fl_lfsr &lt;= t
+  round(table(mash_signif, flash_signif)
+        / length(mash_signif), digits=3)
+}</code></pre>
+<p>At 5%:</p>
+<pre class="r"><code>confusion_matrix(.05)</code></pre>
+<pre><code>           flash_signif
+mash_signif FALSE  TRUE
+      FALSE 0.407 0.116
+      TRUE  0.036 0.441</code></pre>
+<p>At 1%:</p>
+<pre class="r"><code>confusion_matrix(.01)</code></pre>
+<pre><code>           flash_signif
+mash_signif FALSE  TRUE
+      FALSE 0.523 0.076
+      TRUE  0.056 0.346</code></pre>
+<p>At 0.1%:</p>
+<pre class="r"><code>confusion_matrix(.001)</code></pre>
+<pre><code>           flash_signif
+mash_signif FALSE  TRUE
+      FALSE 0.585 0.088
+      TRUE  0.048 0.279</code></pre>
+</div>
+<div id="code" class="section level2">
+<h2>Code</h2>
+<p>Click the button to view the code used to obtain the above results.</p>
+<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
+library(mashr)
+
+gtex &lt;- readRDS(&quot;./data/MatrixEQTLSumStats.Portable.Z.rds&quot;)
+data &lt;- gtex$test.z
+data &lt;- t(data)
+fl_data &lt;- flash_set_data(data, S = 1)
+
+source(&quot;./code/fits.R&quot;)
+source(&quot;./code/sims.R&quot;)
+
+gtex_mfit &lt;- fit_mash(data)
+saveRDS(gtex_mfit, &quot;./output/gtexmfit.rds&quot;)
+
+gtex_flfit &lt;- fit_flash(data, Kmax = 40, add_onehots_first = FALSE)
+saveRDS(gtex_flfit, &quot;./output/gtexflfit.rds&quot;)
+
+obj1 &lt;- flash_get_objective(fl_data, gtex_flfit$fl) # -1259284
+
+
+# Try OHF method of fitting FLASH object and compare likelihoods
+gtex_flfit2 &lt;- fit_flash(data, Kmax = 40, add_onehots_first = TRUE)
+saveRDS(gtex_flfit2, &quot;./output/gtexflfit2.rds&quot;)
+
+obj2 &lt;- flash_get_objective(fl_data, gtex_flfit2$fl) # -1635669
+
+# Now do an additional backfit on the OHF fit
+gtex_flfit3 &lt;- list()
+t0 &lt;- Sys.time()
+gtex_flfit3$fl &lt;- flash_backfit(fl_data, gtex_flfit2$fl, var_type = &quot;zero&quot;,
+                             nullcheck = F, verbose = T)
+t &lt;- Sys.time() - t0
+gtex_flfit3$timing &lt;- gtex_flfit2$timing
+gtex_flfit3$timing$backfit &lt;- gtex_flfit3$timing$backfit + t
+gtex_flfit3$timing$total &lt;- gtex_flfit3$timing$total + t
+saveRDS(gtex_flfit3, &quot;./output/gtexflfit3.rds&quot;)
+
+obj3 &lt;- flash_get_objective(fl_data, gtex_flfit3$fl) # -1306242
+
+
+# Use PM from each method as &quot;true Y&quot; and do diagnostics
+# fl_pm &lt;- flash_get_lf(gtex_flfit$fl)
+# gtex_mres &lt;- mash_diagnostics(gtex_mfit$m, fl_pm)
+# saveRDS(gtex_mres, &quot;./output/gtexmres.rds&quot;)
+#
+# m_pm &lt;- t(get_pm(gtex_mfit$m))
+# gtex_flres &lt;- flash_diagnostics(gtex_flfit$fl, data, m_pm, nsamp = 200)
+# saveRDS(gtex_flres, &quot;./output/gtexflres.rds&quot;)
+
+
+# Plot FLASH PM vs. MASH PM
+fl_pm &lt;- flash_get_lf(gtex_flfit$fl)
+m_pm &lt;- t(get_pm(gtex_mfit$m))
+png(&quot;./output/gtexcompare.png&quot;)
+plot(as.vector(fl_pm), as.vector(m_pm), xlab=&quot;FLASH PM&quot;, ylab=&quot;MASH PM&quot;,
+     main=&quot;Posterior means on GTEx data&quot;, pch=&#39;.&#39;)
+dev.off()
+corr &lt;- cor(as.vector(fl_pm), as.vector(m_pm))
+
+# Use LFSR to get &quot;significant&quot; effects and get confusion matrices
+m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
+
+fl_sampler &lt;- flash_lf_sampler(data, gtex_flfit$fl, ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
+fl_lfsr &lt;- flash_lfsr(fl_sampler(200))
+saveRDS(fl_lfsr, &quot;./output/gtexfllfsr.rds&quot;)
+
+confusion_matrix &lt;- function(t) {
+  mash_signif &lt;- m_lfsr &lt;= t
+  flash_signif &lt;- fl_lfsr &lt;= t
+  round(table(mash_signif, flash_signif)
+        / length(mash_signif), digits=3)
+}
+confusion_matrix(.05)
+confusion_matrix(.01)
+confusion_matrix(.001)</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] mashr_0.2-7  ashr_2.2-7   flashr_0.5-8
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.17        pillar_1.2.1        plyr_1.8.4         
+ [4] compiler_3.4.3      git2r_0.21.0        workflowr_1.0.1    
+ [7] R.methodsS3_1.7.1   R.utils_2.6.0       iterators_1.0.9    
+[10] tools_3.4.3         testthat_2.0.0      digest_0.6.15      
+[13] tibble_1.4.2        evaluate_0.10.1     memoise_1.1.0      
+[16] gtable_0.2.0        lattice_0.20-35     rlang_0.2.0        
+[19] Matrix_1.2-12       foreach_1.4.4       commonmark_1.4     
+[22] yaml_2.1.17         parallel_3.4.3      mvtnorm_1.0-7      
+[25] ebnm_0.1-11         withr_2.1.1.9000    stringr_1.3.0      
+[28] roxygen2_6.0.1.9000 xml2_1.2.0          knitr_1.20         
+[31] devtools_1.13.4     rprojroot_1.3-2     grid_3.4.3         
+[34] R6_2.2.2            rmarkdown_1.8       rmeta_3.0          
+[37] ggplot2_2.2.1       magrittr_1.5        whisker_0.3-2      
+[40] backports_1.1.2     scales_0.5.0        codetools_0.2-15   
+[43] htmltools_0.3.6     MASS_7.3-48         assertthat_0.2.0   
+[46] softImpute_1.4      colorspace_1.3-2    stringi_1.1.6      
+[49] lazyeval_0.2.1      munsell_0.4.3       doParallel_1.0.11  
+[52] pscl_1.5.2          truncnorm_1.0-8     SQUAREM_2017.10-1  
+[55] R.oo_1.21.0        </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
