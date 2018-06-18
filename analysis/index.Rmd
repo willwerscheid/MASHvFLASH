@@ -6,10 +6,10 @@ output:
     toc: false
 ---
 
-I. [Introduction.](intro.html) A vignette.
+[Introduction.](intro.html) A vignette.
 
-II. [MASH v FLASH simulation results.](MASHvFLASHsims.html) Goods.
+[MASH v FLASH simulation results.](MASHvFLASHsims.html) Goods.
 
-III. [MASH v FLASH on GTEx.](MASHvFLASHgtex.html) More goods.
+[MASH v FLASH on GTEx.](MASHvFLASHgtex.html) More goods.
 
 [A first attempt.](mashvflash.html) Stowed and forgotten.
