@@ -1,0 +1,171 @@
+---
+title: "MASH v FLASH introduction"
+output:
+  workflowr::wflow_html:
+    code_folding: show
+---
+
+## Introduction
+
+This vignette shows how `flashr` can be used to learn something about the covariance structure of a dataset.
+
+
+## Motivation, part I: flash and covariance
+
+Recall that `flashr` fits the model 
+$$\begin{aligned} 
+Y &= X + E \\
+X &= LF'
+\end{aligned}$$
+where $Y$ (the "observed" data) and $X$ (the "true" effects) are $n \times p$ matrices, $L$ is an $n \times k$ matrix of loadings, $F$ is a $p \times k$ matrix of factors, and $E$ is an $n \times p$ matrix of residuals. Denote the columns of $L$ as $\ell_1, \dots, \ell_k$ and the columns of $F$ as $f_1, \ldots, f_k$.
+
+Notice that the fitted model does not only tell us about how the elements of $L$ and $F$ are distributed; it also tells us something about how the elements of $X$ covary. 
+
+In particular, if $L$ is regarded as fixed (by, for example, fixing each $L_{ij}$ at its posterior mean), then one may write
+$$ X_{:, j} = F_{j 1} \ell_1 + \ldots + F_{j k} \ell_k $$
+so that, if the loadings $\ell_1, \ldots, \ell_k$ are orthogonal (in general, they are not),
+$$ \begin{aligned}
+\text{Cov} (X_{:, j}) 
+&= (\mathbb{E} F_{j1}^2) \ell_1 \ell_1' + \ldots + (\mathbb{E} F_{jk}^2) \ell_k \ell_k'
+\end{aligned}$$
+
+In other words, the covariance of the columns of $X$ will be a linear combination (or, more precisely, a conical combination) of the rank-one covariance matrices $\ell_i \ell_i'$. 
+
+
+## Motivation, part II: covariance mixtures 
+
+One can take this idea a bit further by recalling that the priors on factors $f_1, \ldots, f_k$ are mixture distributions. For simplicity, assume that the priors are point-normal distributions
+$$f_m \sim (1 - \pi_m) \delta_0 + \pi_m N(0, \tau_m^2)$$
+with $0 \le \pi_m \le 1$.
+
+By augmenting the data with hidden variables $I_{jm}$ that indicate the mixture components from which the elements $F_{jm}$ are drawn, one may equivalently write
+$$\begin{aligned}
+F_{jm} \mid I_{jm} = 0 &\sim \delta_0 \\
+F_{jm} \mid I_{jm} = 1 &\sim N(0, \tau_m^2) \\
+I_{jm} &\sim \text{Bernoulli}(\pi_m)
+\end{aligned}$$
+so that $I_{jm} = 1$ if gene $j$ is "active" for factor $m$ and $I_{jm} = 0$ otherwise.
+
+Now, if one regards the variables $I_{jm}$ (as well as $L$) as fixed, then one obtains
+$$ \begin{aligned}
+\text{Cov} (X_{:, j}) 
+&= I_{j 1} \tau_1^2 \ell_1 \ell_1' + \ldots + I_{j_m} \tau_k^2 \ell_k \ell_k'
+\end{aligned}$$
+
+In other words, depending on the values of $I_{j1}, \ldots, I_{jm}$, the elements of column $X_{:, j}$ will covary in one of $2^m$ possible ways.  
+
+## Relation to mash
+
+In fact, if the priors on factors $f_1, \ldots, f_k$ are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then taking $L$ and the variables $I_{jm}$ as fixed results in the columns of $X$ being distributed as a mixture of multivariate normals. In the point-normal case, 
+$$ X_{:, j} \sim \sum_{r = 1}^{2^m} N_n(0, \Sigma_r), $$
+where each $\Sigma_r$ is a conical combination of the rank-one covariance matrices $\ell_1 \ell_1', \ldots, \ell_m \ell_m'$.
+
+`mashr` (see [here](https://stephenslab.github.io/mashr/index.html)) similarly models $X$ as a mixture of multivariate normals, so it makes sense to attempt to use `flashr` (which is, on its face, much simpler than `mashr`) to attain similar ends.
+
+
+## Canonical covariance structures
+
+In addition to a set of covariance matrices that are fit to the data, `mashr` includes a set of "canonical" covariance matrices. For example, it is reasonable to expect that some effects will be unique to a single condition $i$. For the corresponding columns of $X$, the covariance matrix will have a single non-zero entry (namely, the $i$th diagonal entry, $\Sigma_{ii}$).
+
+One can accommodate such effects in `flashr` by adding $n$ fixed one-hot vectors as loadings (one for each condition). In other words, we can add "canonical" covariance structures corresponding to effects that are unique in a single condition by fitting the model
+$$ Y = \begin{pmatrix} L & I_n \end{pmatrix} F'. $$
+
+## Fitting the flash object
+
+The recommended procedure is as follows:
+
+1. Create a flash data object, using parameter `S` to specify standard errors.
+
+2. Add the "data-driven" loadings to the flash fit object greedily, using parameter option `var_type = "zero"` to indicate that the standard errors should be considered fixed.
+
+3. Add $n$ fixed one-hot loadings vectors to the flash fit object.
+
+4. Refine the flash fit object via backfitting, again using parameter option `var_type = "zero"`. The parameter option `nullcheck = FALSE` should also be used so that the canonical covariance structures are retained.
+
+
+## Example with simulated data
+
+The first code chunk simulates a $10 \times 400$ data matrix where a quarter of columns $X_{:, j}$ are null across all conditions, a quarter are nonnull in the first condition only, a quarter are nonnull in all conditions with effect sizes that are independent across conditions, and a quarter are nonnull in all conditions with an effect size that is identical across conditions. 
+
+```{r simulate_data}
+set.seed(1)
+n <- 5
+p <- 400
+
+ncond <- n # n
+nsamp <- as.integer(p / 4)
+
+# Null effects:
+X.zero = matrix(0, nrow=ncond, ncol=nsamp)
+# Effects that occur only in condition 1:
+X.one = X.zero
+b2 = 5 * rnorm(nsamp)
+X.one[1,] = b2
+# Independent effects:
+X.ind = matrix(5 * rnorm(ncond*nsamp), nrow=ncond, ncol=nsamp) 
+b = 5 * rnorm(nsamp)
+# Effects that are identical across conditions:
+X.ident = matrix(rep(b, ncond), nrow=ncond, ncol=nsamp, byrow=T)
+
+X = cbind(X.zero, X.one, X.ind, X.ident)
+
+E = matrix(rnorm(4*ncond*nsamp), nrow=ncond, ncol=4*nsamp)
+Y = X + E
+```
+
+The next code chunk fits a flash object using the procedure described in the previous section:
+
+```{r flash_fit, message=F}
+#library(flashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+data <- flash_set_data(Y, S = 1)
+fl_greedy <- flash_add_greedy(data, Kmax = 10, var_type = "zero")
+I_n <- diag(rep(1, n))
+fl_fixedl <- flash_add_fixed_l(data, I_n, fl_greedy)
+fl_backfit <- flash_backfit(data, fl_fixedl, var_type = "zero", nullcheck = F)
+```
+
+Finally, the following code chunk calculates the mean squared error obtained using the flash fit object posterior means, relative to the mean squared error that would be obtained by simply estimating $X$ using the data matrix $Y$.
+
+```{r flash_mse}
+baseline_mse <- sum((Y - X)^2)/(n * p)
+
+fl_preds <- flash_get_lf(fl_backfit)
+flash_mse <- sum((fl_preds - X)^2)/(n * p)
+flash_mse / baseline_mse
+```
+
+To verify that `flashr` has in fact learned something about how the data covaries, one can collapse the data into a vector and use `ashr` to fit a prior that is a univariate mixture of normals.
+
+```{r ash_mse}
+ash_fit <- ashr::ash(betahat = as.vector(Y), sebetahat = 1)
+ash_pm <- ashr::get_pm(ash_fit)
+ash_preds <- matrix(ash_pm, nrow=n, ncol=p)
+ash_mse <- sum((ash_preds - X)^2)/(n * p)
+ash_mse / baseline_mse
+```
+
+So, the `flashr` estimates are much better, even though `flashr` uses point-normal priors instead of the more flexible class of unimodal priors used by `ashr`.
+
+
+## FLASH v MASH
+
+For this particular example, `mashr` outperforms `flashr` in terms of MSE: 
+
+```{r mashr, message=F, warning=F, results='hide'}
+library(mashr)
+data <- mash_set_data(t(Y))
+U.c = cov_canonical(data)
+m.1by1 <- mash_1by1(data)
+strong <- get_significant_results(m.1by1, 0.05)
+U.pca <- cov_pca(data, 5, strong)
+U.ed <- cov_ed(data, U.pca, strong)
+U <- c(U.c, U.ed)
+m <- mash(data, U)
+```
+```{r mash_mse}
+mash_mse <- sum((t(get_pm(m)) - X)^2)/(n * p)
+mash_mse / baseline_mse
+```
+
+However, this is not always the case, and the two methods often perform similarly. See the simulation study [here](MASHvFLASHsims.html) and a comparison using GTEx data [here](MASHvFLASHgtex.html). 
