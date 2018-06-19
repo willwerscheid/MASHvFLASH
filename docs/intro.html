@@ -331,7 +331,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-18</p>
+<p><strong>Last updated:</strong> 2018-06-19</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/8d6ce20d2e3f99805ed55f22295714634f3bb0e1" target="_blank">8d6ce20</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/a5fd6f414a45c23583a20455ed1930ff325f8d00" target="_blank">a5fd6f4</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -365,9 +365,6 @@ Ignored files:
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -401,6 +398,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/a5fd6f414a45c23583a20455ed1930ff325f8d00/analysis/intro.Rmd" target="_blank">a5fd6f4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-19
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/intro.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/e092b8715080145e9c36a27970c56b735fe57c0d/docs/intro.html" target="_blank">e092b87</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-18
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/8d6ce20d2e3f99805ed55f22295714634f3bb0e1/analysis/intro.Rmd" target="_blank">8d6ce20</a>
 </td>
 <td style="text-align:left;">
@@ -427,7 +458,7 @@ wflow_publish(“analysis/intro.Rmd”)
 <p>Recall that <code>flashr</code> fits the model <span class="math display">\[\begin{aligned} 
 Y &amp;= X + E \\
 X &amp;= LF&#39;
-\end{aligned}\]</span> where <span class="math inline">\(Y\)</span> (the “observed” data) and <span class="math inline">\(X\)</span> (the “true” effects) are <span class="math inline">\(n \times p\)</span> matrices, <span class="math inline">\(L\)</span> is an <span class="math inline">\(n \times k\)</span> matrix of loadings, <span class="math inline">\(F\)</span> is a <span class="math inline">\(p \times k\)</span> matrix of factors, and <span class="math inline">\(E\)</span> is an <span class="math inline">\(n \times p\)</span> matrix of residuals. Denote the columns of <span class="math inline">\(L\)</span> as <span class="math inline">\(\ell_1, \dots, \ell_k\)</span> and the columns of <span class="math inline">\(F\)</span> as <span class="math inline">\(f_1, \ldots, f_k\)</span>.</p>
+\end{aligned}\]</span> where <span class="math inline">\(Y\)</span> (the “observed” data) and <span class="math inline">\(X\)</span> (the “true” effects) are <span class="math inline">\(n \times p\)</span> matrices. <span class="math inline">\(L\)</span> is an <span class="math inline">\(n \times k\)</span> matrix of loadings, <span class="math inline">\(F\)</span> is a <span class="math inline">\(p \times k\)</span> matrix of factors, and <span class="math inline">\(E\)</span> is an <span class="math inline">\(n \times p\)</span> matrix of residuals. Denote the columns of <span class="math inline">\(L\)</span> as <span class="math inline">\(\ell_1, \dots, \ell_k\)</span> and the columns of <span class="math inline">\(F\)</span> as <span class="math inline">\(f_1, \ldots, f_k\)</span>.</p>
 <p>Notice that the fitted model does not only tell us about how the elements of <span class="math inline">\(L\)</span> and <span class="math inline">\(F\)</span> are distributed; it also tells us something about how the elements of <span class="math inline">\(X\)</span> covary.</p>
 <p>In particular, if <span class="math inline">\(L\)</span> is regarded as fixed (by, for example, fixing each <span class="math inline">\(L_{ij}\)</span> at its posterior mean), then one may write <span class="math display">\[ X_{:, j} = F_{j 1} \ell_1 + \ldots + F_{j k} \ell_k \]</span> so that, if the loadings <span class="math inline">\(\ell_1, \ldots, \ell_k\)</span> are orthogonal (in general, they are not), <span class="math display">\[ \begin{aligned}
 \text{Cov} (X_{:, j}) 
@@ -451,8 +482,8 @@ I_{jm} &amp;\sim \text{Bernoulli}(\pi_m)
 </div>
 <div id="relation-to-mash" class="section level2">
 <h2>Relation to mash</h2>
-<p>In fact, if the priors on factors <span class="math inline">\(f_1, \ldots, f_k\)</span> are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then taking <span class="math inline">\(L\)</span> and the variables <span class="math inline">\(I_{jm}\)</span> as fixed results in the columns of <span class="math inline">\(X\)</span> being distributed as a mixture of multivariate normals. In the point-normal case, <span class="math display">\[ X_{:, j} \sim \sum_{r = 1}^{2^m} N_n(0, \Sigma_r), \]</span> where each <span class="math inline">\(\Sigma_r\)</span> is a conical combination of the rank-one covariance matrices <span class="math inline">\(\ell_1 \ell_1&#39;, \ldots, \ell_m \ell_m&#39;\)</span>.</p>
-<p><code>mashr</code> (see <a href="https://stephenslab.github.io/mashr/index.html">here</a>) similarly models <span class="math inline">\(X\)</span> as a mixture of multivariate normals, so it makes sense to attempt to use <code>flashr</code> (which is, on its face, much simpler than <code>mashr</code>) to attain similar ends.</p>
+<p>In fact, if the priors on factors <span class="math inline">\(f_1, \ldots, f_k\)</span> are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then fixing <span class="math inline">\(L\)</span> results in the columns of <span class="math inline">\(X\)</span> being distributed (exchangeably) as a mixture of multivariate normals. In the point-normal case, <span class="math display">\[ X_{:, j} \sim \sum_{r = 1}^{2^m} N_n(0, \Sigma_r), \]</span> where each <span class="math inline">\(\Sigma_r\)</span> is a conical combination of the rank-one covariance matrices <span class="math inline">\(\ell_1 \ell_1&#39;, \ldots, \ell_m \ell_m&#39;\)</span>.</p>
+<p><code>mashr</code> (see <a href="https://stephenslab.github.io/mashr/index.html">here</a>) similarly models <span class="math inline">\(X\)</span> as a mixture of multivariate normals, so it makes sense to attempt to use <code>flashr</code> (which is, on its face, much simpler than <code>mashr</code>) to similar ends.</p>
 </div>
 <div id="canonical-covariance-structures" class="section level2">
 <h2>Canonical covariance structures</h2>
@@ -495,7 +526,7 @@ X = cbind(X.zero, X.one, X.ind, X.ident)
 
 E = matrix(rnorm(4*ncond*nsamp), nrow=ncond, ncol=4*nsamp)
 Y = X + E</code></pre>
-<p>The next code chunk fits a flash object using the procedure described in the previous section:</p>
+<p>The next code chunk fits a flash object using the procedure described in the previous section.</p>
 <pre class="r"><code>#library(flashr)
 devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
 data &lt;- flash_set_data(Y, S = 1)
@@ -517,11 +548,11 @@ ash_preds &lt;- matrix(ash_pm, nrow=n, ncol=p)
 ash_mse &lt;- sum((ash_preds - X)^2)/(n * p)
 ash_mse / baseline_mse</code></pre>
 <pre><code>[1] 0.7572497</code></pre>
-<p>So, the <code>flashr</code> estimates are much better, even though <code>flashr</code> uses point-normal priors instead of the more flexible class of unimodal priors used by <code>ashr</code>.</p>
+<p>So, the <code>flashr</code> estimates are much better, even though <code>flashr</code> uses point-normal priors rather than the more flexible class of normal mixtures used by <code>ashr</code>.</p>
 </div>
 <div id="flash-v-mash" class="section level2">
 <h2>FLASH v MASH</h2>
-<p>For this particular example, <code>mashr</code> outperforms <code>flashr</code> in terms of MSE:</p>
+<p>For this particular simulation, <code>mashr</code> outperforms <code>flashr</code> in terms of MSE:</p>
 <pre class="r"><code>library(mashr)
 data &lt;- mash_set_data(t(Y))
 U.c = cov_canonical(data)
@@ -534,7 +565,7 @@ m &lt;- mash(data, U)</code></pre>
 <pre class="r"><code>mash_mse &lt;- sum((t(get_pm(m)) - X)^2)/(n * p)
 mash_mse / baseline_mse</code></pre>
 <pre><code>[1] 0.4161114</code></pre>
-<p>However, this is not always the case, and the two methods often perform similarly. See the simulation study <a href="MASHvFLASHsims.html">here</a> and a comparison using GTEx data <a href="MASHvFLASHgtex.html">here</a>.</p>
+<p>This is as expected, since the data were after all generated from the mash model. More generally, however, the two methods often perform quite similarly. See the simulation study <a href="MASHvFLASHsims.html">here</a> and a comparison using GTEx data <a href="MASHvFLASHgtex.html">here</a>.</p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
