@@ -17,7 +17,7 @@ $$\begin{aligned}
 Y &= X + E \\
 X &= LF'
 \end{aligned}$$
-where $Y$ (the "observed" data) and $X$ (the "true" effects) are $n \times p$ matrices, $L$ is an $n \times k$ matrix of loadings, $F$ is a $p \times k$ matrix of factors, and $E$ is an $n \times p$ matrix of residuals. Denote the columns of $L$ as $\ell_1, \dots, \ell_k$ and the columns of $F$ as $f_1, \ldots, f_k$.
+where $Y$ (the "observed" data) and $X$ (the "true" effects) are $n \times p$ matrices. $L$ is an $n \times k$ matrix of loadings, $F$ is a $p \times k$ matrix of factors, and $E$ is an $n \times p$ matrix of residuals. Denote the columns of $L$ as $\ell_1, \dots, \ell_k$ and the columns of $F$ as $f_1, \ldots, f_k$.
 
 Notice that the fitted model does not only tell us about how the elements of $L$ and $F$ are distributed; it also tells us something about how the elements of $X$ covary. 
 
@@ -56,11 +56,11 @@ In other words, depending on the values of $I_{j1}, \ldots, I_{jm}$, the element
 
 ## Relation to mash
 
-In fact, if the priors on factors $f_1, \ldots, f_k$ are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then taking $L$ and the variables $I_{jm}$ as fixed results in the columns of $X$ being distributed as a mixture of multivariate normals. In the point-normal case, 
+In fact, if the priors on factors $f_1, \ldots, f_k$ are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then fixing $L$ results in the columns of $X$ being distributed (exchangeably) as a mixture of multivariate normals. In the point-normal case, 
 $$ X_{:, j} \sim \sum_{r = 1}^{2^m} N_n(0, \Sigma_r), $$
 where each $\Sigma_r$ is a conical combination of the rank-one covariance matrices $\ell_1 \ell_1', \ldots, \ell_m \ell_m'$.
 
-`mashr` (see [here](https://stephenslab.github.io/mashr/index.html)) similarly models $X$ as a mixture of multivariate normals, so it makes sense to attempt to use `flashr` (which is, on its face, much simpler than `mashr`) to attain similar ends.
+`mashr` (see [here](https://stephenslab.github.io/mashr/index.html)) similarly models $X$ as a mixture of multivariate normals, so it makes sense to attempt to use `flashr` (which is, on its face, much simpler than `mashr`) to similar ends.
 
 
 ## Canonical covariance structures
@@ -113,7 +113,7 @@ E = matrix(rnorm(4*ncond*nsamp), nrow=ncond, ncol=4*nsamp)
 Y = X + E
 ```
 
-The next code chunk fits a flash object using the procedure described in the previous section:
+The next code chunk fits a flash object using the procedure described in the previous section.
 
 ```{r flash_fit, message=F}
 #library(flashr)
@@ -145,12 +145,12 @@ ash_mse <- sum((ash_preds - X)^2)/(n * p)
 ash_mse / baseline_mse
 ```
 
-So, the `flashr` estimates are much better, even though `flashr` uses point-normal priors instead of the more flexible class of unimodal priors used by `ashr`.
+So, the `flashr` estimates are much better, even though `flashr` uses point-normal priors rather than the more flexible class of normal mixtures used by `ashr`.
 
 
 ## FLASH v MASH
 
-For this particular example, `mashr` outperforms `flashr` in terms of MSE: 
+For this particular simulation, `mashr` outperforms `flashr` in terms of MSE: 
 
 ```{r mashr, message=F, warning=F, results='hide'}
 library(mashr)
@@ -168,4 +168,4 @@ mash_mse <- sum((t(get_pm(m)) - X)^2)/(n * p)
 mash_mse / baseline_mse
 ```
 
-However, this is not always the case, and the two methods often perform similarly. See the simulation study [here](MASHvFLASHsims.html) and a comparison using GTEx data [here](MASHvFLASHgtex.html). 
+This is as expected, since the data were after all generated from the mash model. More generally, however, the two methods often perform quite similarly. See the simulation study [here](MASHvFLASHsims.html) and a comparison using GTEx data [here](MASHvFLASHgtex.html). 
