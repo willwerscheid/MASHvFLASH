@@ -1,22 +1,29 @@
 # Fit using FLASH -------------------------------------------------------
-fit_flash <- function(Y, Kmax, add_onehots_first=T) {
+fit_flash <- function(Y, Kmax, method) {
   n <- nrow(Y)
   data <- flash_set_data(Y, S = 1)
   timing <- list()
 
   t0 <- Sys.time()
-  if (add_onehots_first) {
+  if (method %in% c("OHF", "OHFplus")) {
     fl <- flash_add_fixed_l(data, diag(rep(1, n)))
     fl <- flash_backfit(data, fl, nullcheck = F, var_type = "zero")
     t1 <- Sys.time()
     timing$backfit <- t1 - t0
     fl <- flash_add_greedy(data, Kmax, fl, var_type = "zero")
     timing$greedy <- Sys.time() - t1
+    if (method == "OHFplus") {
+      t2 <- Sys.time()
+      fl <- flash_backfit(data, fl, nullcheck = F, var_type = "zero")
+      timing$backfit <- timing$backfit + (Sys.time() - t2)
+    }
   } else {
     fl <- flash_add_greedy(data, Kmax, var_type = "zero")
     t1 <- Sys.time()
     timing$greedy <- t1 - t0
-    fl <- flash_add_fixed_l(data, diag(rep(1, n)), fl)
+    if (method == "OHL") {
+      fl <- flash_add_fixed_l(data, diag(rep(1, n)), fl)
+    }
     fl <- flash_backfit(data, fl, nullcheck = F, var_type = "zero")
     timing$backfit <- Sys.time() - t1
   }
