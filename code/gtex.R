@@ -3,7 +3,8 @@
 devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
 library(mashr)
 
-gtex <- readRDS("./data/MatrixEQTLSumStats.Portable.Z.rds")
+gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
+
 data <- gtex$test.z
 data <- t(data)
 fl_data <- flash_set_data(data, S = 1)
