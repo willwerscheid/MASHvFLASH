@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).
 
-Two FLASH fits are produced. FLASH-OHL (for "one-hots last") adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. FLASH-OHF (for "one-hots first") adds the one-hot vectors first (as you've probably already guessed), then backfits, then greedily adds up to ten factors. In the latter case, the greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL.
+Four FLASH fits are produced. The vanilla FLASH fit does not add any one-hot vectors; it just adds up to ten factors greedily and then backfits. FLASH-OHL (for "one-hots last") adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. FLASH-OHF (for "one-hots first") adds the one-hot vectors first, then backfits, then greedily adds up to ten factors. These greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL. FLASH-OHF+ begins with the FLASH-OHF fit and then performs a second backfitting.
 
 ## Simulations
 
