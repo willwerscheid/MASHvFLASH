@@ -68,11 +68,30 @@ where each $\Sigma_r$ is a conical combination of the rank-one covariance matric
 In addition to a set of covariance matrices that are fit to the data, `mashr` includes a set of "canonical" covariance matrices. For example, it is reasonable to expect that some effects will be unique to a single condition $i$. For the corresponding columns of $X$, the covariance matrix will have a single non-zero entry (namely, the $i$th diagonal entry, $\Sigma_{ii}$).
 
 One can accommodate such effects in `flashr` by adding $n$ fixed one-hot vectors as loadings (one for each condition). In other words, we can add "canonical" covariance structures corresponding to effects that are unique in a single condition by fitting the model
-$$ Y = \begin{pmatrix} L & I_n \end{pmatrix} F'. $$
+$$ X = \begin{pmatrix} L & I_n \end{pmatrix} F'. $$
+
+By the same logic as above, this model should be able to accommodate conical combinations of the matrices $e_1 e_1', \ldots, e_n e_n'$ (where $e_i$ is the $i$th canonical basis vector). In particular, it should be able to model effects that are independent across conditions, or unique to a few conditions, as well as effects that are unique to a single condition.
+
+
+## Fixing standard errors
+
+Now the full model is
+$$\begin{aligned} 
+Y &= \begin{pmatrix} L & I_n \end{pmatrix} F' + E \\
+\end{aligned}$$
+
+Notice that this approach only makes sense if the standard errors for $E$ are considered fixed. Writing
+$$ F = \begin{pmatrix} F_1' \\ F_2' \end{pmatrix}$$
+gives
+$$ Y = LF_1' + F_2' + E, $$
+so that, for example, putting independent $N(0, 1)$ priors on the elements of $F_2$ and $E$ is equivalent to putting a $\delta_0$ prior on the elements of $F_2$ and independent $N(0, 2)$ priors on the residuals.
+
+To fix standard errors in `flashr`, it is necessary to pass the data into `flash_set_data` using parameter `S` to specify standard errors. Further, calls to `flash` (and `flash_add_greedy` and `flash_backfit`) must specify parameter option `var_type = "zero"`, which indicates that standard errors should not be estimated, but should be considered fixed.
+
 
 ## Fitting the flash object
 
-The recommended procedure is as follows:
+Finally, the recommended procedure is as follows:
 
 1. Create a flash data object, using parameter `S` to specify standard errors.
 
