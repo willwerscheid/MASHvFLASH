@@ -24,7 +24,7 @@ FLASH-OHF (for "one-hots first") adds the one-hot vectors first, then backfits, 
 
 All simulated datasets $Y$ are of dimension 25 x 1000. In each case, $Y = X + E$, where $X$ is the matrix of "true" effects and $E$ is a matrix of $N(0, 1)$ noise. One simulation is from the null model, three are generated according to a MASH model, and three are generated from a FLASH model. See the individual sections below for details. 
 
-The MASH fits are evaluated using built-in functions `get_pm()` (to calculate MSE), `get_psd()` (to calculate confidence intervals), and `get_lfsr()` (to calculate true and false positive rates). 
+The MASH fits are evaluated using built-in functions `get_pm()` to calculate MSE, `get_psd()` to calculate confidence intervals, and `get_lfsr()` to calculate true and false positive rates. 
 
 For the FLASH fits, only MSE is calculated using a built-in function (`flash_get_lf()`). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function `flash_lf_sampler()`. For details, see the code below.
 

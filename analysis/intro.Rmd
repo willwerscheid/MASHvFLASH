@@ -23,7 +23,7 @@ Notice that the fitted model does not only tell us about how the elements of $L$
 
 In particular, if $L$ is regarded as fixed (by, for example, fixing each $L_{ij}$ at its posterior mean), then one may write
 $$ X_{:, j} = F_{j 1} \ell_1 + \ldots + F_{j k} \ell_k $$
-so that, if the loadings $\ell_1, \ldots, \ell_k$ are orthogonal (in general, they are not),
+so that, if the loadings $\ell_1, \ldots, \ell_k$ are mutually orthogonal (in general, they are not),
 $$ \begin{aligned}
 \text{Cov} (X_{:, j}) 
 &= (\mathbb{E} F_{j1}^2) \ell_1 \ell_1' + \ldots + (\mathbb{E} F_{jk}^2) \ell_k \ell_k'
@@ -56,7 +56,7 @@ In other words, depending on the values of $I_{j1}, \ldots, I_{jm}$, the element
 
 ## Relation to mash
 
-In fact, if the priors on factors $f_1, \ldots, f_k$ are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then fixing $L$ results in the columns of $X$ being distributed (exchangeably) as a mixture of multivariate normals. In the point-normal case, 
+In fact, if the priors on factors $f_1, \ldots, f_k$ are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then fixing $L$ (and again assuming that the columns of $L$ are mutually orthogonal) results in the columns of $X$ being distributed (exchangeably) as a mixture of multivariate normals. In the point-normal case, 
 $$ X_{:, j} \sim \sum_{r = 1}^{2^m} N_n(0, \Sigma_r), $$
 where each $\Sigma_r$ is a conical combination of the rank-one covariance matrices $\ell_1 \ell_1', \ldots, \ell_m \ell_m'$.
 
