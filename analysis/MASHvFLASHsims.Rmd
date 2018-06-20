@@ -13,11 +13,30 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).
 
-Four FLASH fits are produced. The vanilla FLASH fit does not add any one-hot vectors; it just adds up to ten factors greedily and then backfits. FLASH-OHL (for "one-hots last") adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. FLASH-OHF (for "one-hots first") adds the one-hot vectors first, then backfits, then greedily adds up to ten factors. These greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL. FLASH-OHF+ begins with the FLASH-OHF fit and then performs a second backfitting.
+Five FLASH fits are produced. The first two serve as baselines. The "Vanilla" FLASH fit uses the default method to fit a flash object, adding up to ten factors greedily and then backfitting. The "Zero" fit does the same, but sets `var_type = zero` rather than using the default parameter option `var_type = by_column`. That is, the "Vanilla" fit estimates the residual variances, with the constraint that the variances are identical across any given column, while the "Zero" fit fixes the standard errors at their known values (here, `S = 1`).
+
+The remaining three fits also use parameter option `var_type = zero`. FLASH-OHL (for "one-hots last") adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. As described in the [vignette](intro.html), the purpose of the one-hot vectors is to account for certain "canonical" covariance structures.
+
+FLASH-OHF (for "one-hots first") adds the one-hot vectors first, then backfits, then greedily adds up to ten factors. These greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL. FLASH-OHF+ begins with the FLASH-OHF fit and then performs a second backfitting.
+
 
 ## Simulations
 
-All simulated datasets $Y$ are of dimension 25 x 1000. In each case, $Y = X + E$, where $X$ is the matrix of "true" effects and $E$ is a matrix of $N(0, 1)$ noise.
+All simulated datasets $Y$ are of dimension 25 x 1000. In each case, $Y = X + E$, where $X$ is the matrix of "true" effects and $E$ is a matrix of $N(0, 1)$ noise. One simulation is from the null model, three are generated according to a MASH model, and three are generated from a FLASH model. See the individual sections below for details. 
+
+The MASH fits are evaluated using built-in functions `get_pm()` (to calculate MSE), `get_psd()` (to calculate confidence intervals), and `get_lfsr()` (to calculate true and false positive rates). 
+
+For the FLASH fits, only MSE is calculated using a built-in function (`flash_get_lf()`). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function `flash_lf_sampler()`. For details, see the code below.
+
+
+## Results overview
+
+Without the one-hot vectors, the Vanilla and Zero FLASH fits perform poorly on the MASH simulations (see the ROC curves below). The other FLASH fits all perform similarly to one another. They are outperformed by MASH, especially at low FPR thresholds, but this is expected since the data are, after all, generated from the MASH model. Of these three FLASH methods, OHF is (as expected) the fastest, and is about twice as fast as the slowest method, OHF+.
+
+The Vanilla and Zero fits do much better on the FLASH simulations (again, as expected, since the data are now generated from the FLASH model). More surprisingly, the MASH fit does nearly as well (and, in some cases, better) than the FLASH fits. OHF is again the fastest of the three FLASH fits that include one-hot vectors, but it performs much more poorly than the other two methods. On the rank-5 model, OHF+ also performs poorly relative to OHL.
+
+Overall, the OHL method consistently performs best among the three FLASH methods that include one-hot vectors. It is slower than OHF, and sometimes even slower than OHF+, but the performance gains on the FLASH data are substantial.
+
 
 ## Null model
 
