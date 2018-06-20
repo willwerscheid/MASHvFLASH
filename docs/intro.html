@@ -331,7 +331,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-19</p>
+<p><strong>Last updated:</strong> 2018-06-20</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/a5fd6f414a45c23583a20455ed1930ff325f8d00" target="_blank">a5fd6f4</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/9a419c23df646e2497cbe151089706d461929d15" target="_blank">9a419c2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -393,6 +393,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/9a419c23df646e2497cbe151089706d461929d15/analysis/intro.Rmd" target="_blank">9a419c2</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-20
+</td>
+<td style="text-align:left;">
+workflowr::wflow_publish(“analysis/intro.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/bdf2579326ce383f77f1d9ae89a21ab689bdd48c/docs/intro.html" target="_blank">bdf2579</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-19
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -488,11 +522,20 @@ I_{jm} &amp;\sim \text{Bernoulli}(\pi_m)
 <div id="canonical-covariance-structures" class="section level2">
 <h2>Canonical covariance structures</h2>
 <p>In addition to a set of covariance matrices that are fit to the data, <code>mashr</code> includes a set of “canonical” covariance matrices. For example, it is reasonable to expect that some effects will be unique to a single condition <span class="math inline">\(i\)</span>. For the corresponding columns of <span class="math inline">\(X\)</span>, the covariance matrix will have a single non-zero entry (namely, the <span class="math inline">\(i\)</span>th diagonal entry, <span class="math inline">\(\Sigma_{ii}\)</span>).</p>
-<p>One can accommodate such effects in <code>flashr</code> by adding <span class="math inline">\(n\)</span> fixed one-hot vectors as loadings (one for each condition). In other words, we can add “canonical” covariance structures corresponding to effects that are unique in a single condition by fitting the model <span class="math display">\[ Y = \begin{pmatrix} L &amp; I_n \end{pmatrix} F&#39;. \]</span></p>
+<p>One can accommodate such effects in <code>flashr</code> by adding <span class="math inline">\(n\)</span> fixed one-hot vectors as loadings (one for each condition). In other words, we can add “canonical” covariance structures corresponding to effects that are unique in a single condition by fitting the model <span class="math display">\[ X = \begin{pmatrix} L &amp; I_n \end{pmatrix} F&#39;. \]</span></p>
+<p>By the same logic as above, this model should be able to accommodate conical combinations of the matrices <span class="math inline">\(e_1 e_1&#39;, \ldots, e_n e_n&#39;\)</span> (where <span class="math inline">\(e_i\)</span> is the <span class="math inline">\(i\)</span>th canonical basis vector). In particular, it should be able to model effects that are independent across conditions, or unique to a few conditions, as well as effects that are unique to a single condition.</p>
+</div>
+<div id="fixing-standard-errors" class="section level2">
+<h2>Fixing standard errors</h2>
+<p>Now the full model is <span class="math display">\[\begin{aligned} 
+Y &amp;= \begin{pmatrix} L &amp; I_n \end{pmatrix} F&#39; + E \\
+\end{aligned}\]</span></p>
+<p>Notice that this approach only makes sense if the standard errors for <span class="math inline">\(E\)</span> are considered fixed. Writing <span class="math display">\[ F = \begin{pmatrix} F_1&#39; \\ F_2&#39; \end{pmatrix}\]</span> gives <span class="math display">\[ Y = LF_1&#39; + F_2&#39; + E, \]</span> so that, for example, putting independent <span class="math inline">\(N(0, 1)\)</span> priors on the elements of <span class="math inline">\(F_2\)</span> and <span class="math inline">\(E\)</span> is equivalent to putting a <span class="math inline">\(\delta_0\)</span> prior on the elements of <span class="math inline">\(F_2\)</span> and independent <span class="math inline">\(N(0, 2)\)</span> priors on the residuals.</p>
+<p>To fix standard errors in <code>flashr</code>, it is necessary to pass the data into <code>flash_set_data</code> using parameter <code>S</code> to specify standard errors. Further, calls to <code>flash</code> (and <code>flash_add_greedy</code> and <code>flash_backfit</code>) must specify parameter option <code>var_type = &quot;zero&quot;</code>, which indicates that standard errors should not be estimated, but should be considered fixed.</p>
 </div>
 <div id="fitting-the-flash-object" class="section level2">
 <h2>Fitting the flash object</h2>
-<p>The recommended procedure is as follows:</p>
+<p>Finally, the recommended procedure is as follows:</p>
 <ol style="list-style-type: decimal">
 <li><p>Create a flash data object, using parameter <code>S</code> to specify standard errors.</p></li>
 <li><p>Add the “data-driven” loadings to the flash fit object greedily, using parameter option <code>var_type = &quot;zero&quot;</code> to indicate that the standard errors should be considered fixed.</p></li>
