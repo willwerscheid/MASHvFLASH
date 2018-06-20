@@ -10,7 +10,7 @@ run_sims <- function(sim_fn, nsims, plot_title, fpath) {
       #)
     #)
   #)
-  saveRDS(output_res_mat(res, plot_title), paste0(fpath, "res.rds"))
+  saveRDS(output_res_mat(res), paste0(fpath, "res.rds"))
   if (!(plot_title == "Null simulation")) {
     png(paste0(fpath, "ROC.png"))
     plot_ROC(res, plot_title)
@@ -28,14 +28,17 @@ run_many_sims <- function(sim_fn, nsims) {
   for (i in 1:nsims) {
     res[[i]] <- run_one_sim(sim_fn)
   }
-  list_elem <- names(res[[1]])
-  for (elem in list_elem) {
+  elems <- names(res[[1]])
+  for (elem in elems) {
     combined_res[[elem]] <- list()
-    sub_elems <- names(res[[1]][[elem]])
-    for (sub_elem in sub_elems) {
-      tmp <- lapply(res, function(x) {x[[elem]][[sub_elem]]})
-      combined_res[[elem]][[sub_elem]] <- Reduce(`+`, tmp)
-      combined_res[[elem]][[sub_elem]] <- combined_res[[elem]][[sub_elem]] / nsims
+    subelems <- names(res[[1]][[elem]])
+    for (subelem in subelems) {
+      combined_res[[elem]][[subelem]] <- list()
+      subsubelems <- names(res[[1]][[elem]][[subelem]])
+      for (subsubelem in subsubelems) {
+        tmp <- lapply(res, function(x) {x[[elem]][[subelem]][[subsubelem]]})
+        combined_res[[elem]][[subelem]][[subsubelem]] <- Reduce(`+`, tmp) / nsims
+      }
     }
   }
   combined_res
@@ -52,71 +55,79 @@ run_one_sim <- function(sim_fn, Kmax = 10, nsamp=200) {
     mfit$timing$ed = as.difftime(0, units="secs")
   }
 
-  flfit <- fit_flash(data$Y, Kmax, method = "FLASH")
-  flfit1 <- fit_flash(data$Y, Kmax, method = "OHL")
-  flfit2 <- fit_flash(data$Y, Kmax, method = "OHF")
-  flfit3 <- fit_flash(data$Y, Kmax, method = "OHFplus")
+  flfits <- fit_flash(data$Y, Kmax)
 
   message("Running MASH diagnostics")
   mres <- mash_diagnostics(mfit$m, data$true_Y)
+
   message("Running FLASH diagnostics")
-  flres <- flash_diagnostics(flfit$fl, data$Y, data$true_Y, nsamp)
-  flres1 <- flash_diagnostics(flfit1$fl, data$Y, data$true_Y, nsamp)
-  flres2 <- flash_diagnostics(flfit2$fl, data$Y, data$true_Y, nsamp)
-  flres3 <- flash_diagnostics(flfit3$fl, data$Y, data$true_Y, nsamp)
+  flres <- list()
+  methods <- names(flfits$fits)
+  for (method in methods) {
+    flres[[method]] <- flash_diagnostics(flfits$fits[[method]], data$Y,
+                                         data$true_Y, nsamp)
+  }
 
-  list(mash_timing = mfit$timing, mash_res = mres,
-       flash_timing = flfit$timing, flash_res = flres,
-       flash_OHL_timing = flfit1$timing, flash_OHL_res = flres1,
-       flash_OHF_timing = flfit2$timing, flash_OHF_res = flres2,
-       flash_OHFplus_timing = flfit3$timing, flash_OHFplus_res = flres3)
+  # Give mash and flash the same structure so we can combine multiple sims
+  mash_timing = list()
+  mash_timing$mash <- mfit$timing
+  mash_res = list()
+  mash_res$mash <- mres
+  list(mash_timing = mash_timing, mash_res = mash_res,
+       flash_timing = flfits$timing, flash_res = flres)
 }
 
-output_res_mat <- function(res, caption) {
-  data.frame(MASH = c(res$mash_res$MSE, res$mash_res$CI),
-             FLASH_vanilla = c(res$flash_res$MSE, res$flash_res$CI),
-             FLASH_OHL = c(res$flash_OHL_res$MSE, res$flash_OHL_res$CI),
-             FLASH_OHF = c(res$flash_OHF_res$MSE, res$flash_OHF_res$CI),
-             FLASH_OHFp = c(res$flash_OHFplus_res$MSE,
-                               res$flash_OHFplus_res$CI),
-             row.names = c("MSE", "95% CI cov"))
+output_res_mat <- function(res) {
+  mat <- c(res$mash_res$mash$MSE, res$mash_res$mash$CI)
+  methods <- names(res$flash_res)
+  for (method in methods) {
+    mat <- cbind(mat, c(res$flash_res[[method]]$MSE,
+                        res$flash_res[[method]]$CI))
+  }
+  rownames(mat) = c("MSE", "95% CI cov")
+  colnames(mat) = c("MASH", methods)
+  mat
 }
 
-plot_timing <- function(res) {
-  data <- c(res$mash_timing$ed, res$mash_timing$mash,
-            res$flash_timing$greedy, res$flash_timing$backfit,
-            res$flash_OHL_timing$greedy, res$flash_OHL_timing$backfit,
-            res$flash_OHF_timing$greedy, res$flash_OHF_timing$backfit,
-            res$flash_OHFplus_timing$greedy,
-            res$flash_OHFplus_timing$backfit)
-  time_units <- units(data)
-  data <- matrix(as.numeric(data), 2, 5)
+plot_timing <- function(res, units="secs") {
+  data <- as.numeric(c(res$mash_timing$mash$ed,
+                       res$mash_timing$mash$mash),
+                     units=units)
+  methods <- names(res$flash_timing)
+  for (method in methods) {
+    data <- cbind(data,
+                  as.numeric(c(res$flash_timing[[method]]$greedy,
+                               res$flash_timing[[method]]$backfit),
+                             units=units))
+  }
   barplot(data, axes=T,
-          main=paste("Average time to fit in", time_units),
-          names.arg = c("MASH", "FLASH", "FL-OHL", "FL-OHF", "FL-OHF+"),
+          main=paste("Average time to fit in", units),
+          names.arg = c("MASH", methods),
           legend.text = c("ED/Greedy", "MASH/Backfit"),
           ylim = c(0, max(colSums(data))*2))
   # (increasing ylim is easiest way to deal with legend getting in way)
 }
 
-plot_ROC <- function(res, main="ROC curve") {
-  m_y <- res$mash_res$TP / res$mash_res$n_nonnulls
-  m_x <- res$mash_res$FP / res$mash_res$n_nulls
-  fl_y <- res$flash_res$TP / res$flash_res$n_nonnulls
-  fl_x <- res$flash_res$FP / res$flash_res$n_nulls
-  ohl_y <- res$flash_OHL_res$TP / res$flash_OHL_res$n_nonnulls
-  ohl_x <- res$flash_OHL_res$FP / res$flash_OHL_res$n_nulls
-  ohf_y <- res$flash_OHF_res$TP / res$flash_OHF_res$n_nonnulls
-  ohf_x <- res$flash_OHF_res$FP / res$flash_OHF_res$n_nulls
-  ohfp_y <- res$flash_OHFplus_res$TP / res$flash_OHFplus_res$n_nonnulls
-  ohfp_x <- res$flash_OHFplus_res$FP / res$flash_OHFplus_res$n_nulls
+plot_ROC <- function(res, main="ROC curve",
+                     colors=c("gold", "pink", "red", "green", "blue")) {
+  # Number of nulls and nonnulls are identical across methods
+  n_nonnulls <- res$mash_res$mash$n_nonnulls
+  n_nulls <- res$mash_res$mash$n_nulls
+
+  m_y <- res$mash_res$mash$TP / n_nonnulls
+  m_x <- res$mash_res$mash$FP / n_nulls
   plot(m_x, m_y, xlim=c(0, 1), ylim=c(0, 1), type='l',
        xlab='FPR', ylab='TPR', main=main)
-  lines(fl_x, fl_y, lty=2)
-  lines(ohl_x, ohl_y, lty=3)
-  lines(ohf_x, ohf_y, lty=4)
-  lines(ohfp_x, ohfp_y, lty=5)
-  legend("bottomright", c("MASH", "FLASH", "FLASH-OHL",
-                          "FLASH-OHF", "FLASH-OHF+"), lty=1:5)
+
+  methods <- names(res$flash_res)
+  idx <- 0
+  for (method in methods) {
+    idx <- idx + 1
+    y <- res$flash_res[[method]]$TP / n_nonnulls
+    x <- res$flash_res[[method]]$FP / n_nulls
+    lines(x, y, col=colors[idx])
+  }
+  legend("bottomright", c("MASH", methods), lty=1,
+         col=c("black", colors[1:idx]))
 }
 

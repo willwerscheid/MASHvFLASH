@@ -1,36 +1,68 @@
 # Fit using FLASH -------------------------------------------------------
-fit_flash <- function(Y, Kmax, method) {
+# Methods: 1. Vanilla, 2. Zero, 3. OHL, 4. OHF, 5. OHF+
+fit_flash <- function(Y, Kmax, methods=1:5) {
   n <- nrow(Y)
-  data <- flash_set_data(Y, S = 1)
+  fits <- list()
   timing <- list()
 
-  t0 <- Sys.time()
-  if (method %in% c("OHF", "OHFplus")) {
-    fl <- flash_add_fixed_l(data, diag(rep(1, n)))
-    fl <- flash_backfit(data, fl, nullcheck = F, var_type = "zero")
+  # Vanilla FLASH
+  if (1 %in% methods) {
+    timing$Vanilla <- list()
+    data <- flash_set_data(Y)
+    t0 <- Sys.time()
+    fl <- flash_add_greedy(data, Kmax, var_type="by_column")
     t1 <- Sys.time()
-    timing$backfit <- t1 - t0
-    fl <- flash_add_greedy(data, Kmax, fl, var_type = "zero")
-    timing$greedy <- Sys.time() - t1
-    if (method == "OHFplus") {
-      t2 <- Sys.time()
-      fl <- flash_backfit(data, fl, nullcheck = F, var_type = "zero")
-      timing$backfit <- timing$backfit + (Sys.time() - t2)
-    }
-  } else {
-    fl <- flash_add_greedy(data, Kmax, var_type = "zero")
-    t1 <- Sys.time()
-    timing$greedy <- t1 - t0
-    if (method == "OHL") {
-      fl <- flash_add_fixed_l(data, diag(rep(1, n)), fl)
-    }
-    fl <- flash_backfit(data, fl, nullcheck = F, var_type = "zero")
-    timing$backfit <- Sys.time() - t1
+    timing$Vanilla$greedy <- t1 - t0
+    fits$Vanilla <- flash_backfit(data, fl, var_type="by_column")
+    timing$Vanilla$backfit <- Sys.time() - t1
   }
 
-  timing$total <- Reduce(`+`, timing)
+  data <- flash_set_data(Y, S = 1)
 
-  list(fl = fl, timing = timing)
+  # Zero and OHL
+  if (2 %in% methods || 3 %in% methods) {
+    t0 <- Sys.time()
+    fl <- flash_add_greedy(data, Kmax, var_type="zero")
+    t1 <- Sys.time()
+    if (2 %in% methods) {
+      timing$Zero <- list()
+      timing$Zero$greedy <- t1 - t0
+      fits$Zero <- flash_backfit(data, fl, nullcheck=F, var_type="zero")
+      timing$Zero$backfit <- Sys.time() - t1
+    }
+    if (3 %in% methods) {
+      timing$OHL <- list()
+      timing$OHL$greedy <- t1 - t0
+      fl <- flash_add_fixed_l(data, diag(rep(1, n)), fl)
+      t2 <- Sys.time()
+      fits$OHL <- flash_backfit(data, fl, nullcheck=F, var_type="zero")
+      timing$OHL$backfit <- Sys.time() - t2
+    }
+  }
+
+  # OHF and OHF+
+  if (4 %in% methods || 5 %in% methods) {
+    t0 <- Sys.time()
+    fl <- flash_add_fixed_l(data, diag(rep(1, n)))
+    fl <- flash_backfit(data, fl, nullcheck=F, var_type="zero")
+    t1 <- Sys.time()
+    fl <- flash_add_greedy(data, Kmax, fl, var_type="zero")
+    t2 <- Sys.time()
+    if (4 %in% methods) {
+      fits$OHF <- fl
+      timing$OHF$backfit <- t1 - t0
+      timing$OHF$greedy <- t2 - t1
+    }
+    if (5 %in% methods) {
+      fits$OHFp <- flash_backfit(data, fl, nullcheck=F, var_type="zero")
+      timing$OHFp$backfit <- (t1 - t0) + (Sys.time() - t2)
+      timing$OHFp$greedy <- t2 - t1
+    }
+  }
+
+  # timing$total <- Reduce(`+`, timing)
+
+  list(fits = fits, timing = timing)
 }
 
 
@@ -56,7 +88,7 @@ fit_mash <- function(Y, ed=T) {
   m <- mash(data, U)
   timing$mash <- Sys.time() - t0
 
-  timing$total <- Reduce(`+`, timing)
+  # timing$total <- Reduce(`+`, timing)
 
   list(m = m, timing = timing)
 }
