@@ -331,7 +331,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-16</p>
+<p><strong>Last updated:</strong> 2018-06-20</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/eac4059fca5ec35717dfa5999b725b3a54a888ac" target="_blank">eac4059</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/122f83a25d9ea83f5c50e9b0f150ef5ecd854963" target="_blank">122f83a</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -364,6 +364,13 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
+    Ignored:    output/.DS_Store
+
+Unstaged changes:
+    Modified:   code/gtex.R
+    Modified:   output/gtexflfit.rds
+    Modified:   output/gtexfllfsr.rds
+    Modified:   output/gtexmfit.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -392,6 +399,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/122f83a25d9ea83f5c50e9b0f150ef5ecd854963/analysis/MASHvFLASHgtex.Rmd" target="_blank">122f83a</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-20
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHgtex.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/b1ff37c45685ef0877b34a2f3ad1b036333fcddd/docs/MASHvFLASHgtex.html" target="_blank">b1ff37c</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-16
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -448,29 +489,28 @@ analysis/index.Rmd
 </ul>
 <p></details></p>
 <hr />
-<p>Here I analyze some GTEx data. The dataset can be found at <a href="https://stephenslab.github.io/gtexresults/" class="uri">https://stephenslab.github.io/gtexresults/</a>.</p>
+<p>Here I analyze some GTEx data. The dataset can be found at <a href="https://stephenslab.github.io/gtexresults/" class="uri">https://stephenslab.github.io/gtexresults/</a>. I use the “random.z” dataset, which consists of <span class="math inline">\(z\)</span>-scores for 44 tissues and a random subset of 20000 genes.</p>
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
 <p>I used the same methods to fit the data that I used in my <a href="MASHvFLASHsims.html">simulation study</a>. These methods assume that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset.</p>
-<p>The simulation study suggested that the “one-hots last” method produces a much better fit than the “one-hots first” method, even though it can take quite a bit longer. Here I enter into some more detail.</p>
+<p>The simulation study suggested that the “one-hots last” method typically produces a better fit than the “one-hots first” method, even though it can take quite a bit longer. Here I enter into some more detail.</p>
 <p>First I load the data and the fits.</p>
-<pre class="r"><code>gtex &lt;- readRDS(&quot;./data/MatrixEQTLSumStats.Portable.Z.rds&quot;)
-data &lt;- gtex$test.z
+<pre class="r"><code>gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
+
+data &lt;- gtex$random.z
 data &lt;- t(data)
 fl_data &lt;- flash_set_data(data, S = 1)
 
 gtex_mfit &lt;- readRDS(&quot;./output/gtexmfit.rds&quot;)
-gtex_flfit &lt;- readRDS(&quot;./output/gtexflfit.rds&quot;)
-gtex_flfit2 &lt;- readRDS(&quot;./output/gtexflfit2.rds&quot;)
-gtex_flfit3 &lt;- readRDS(&quot;./output/gtexflfit3.rds&quot;)</code></pre>
-<p>The OHL fit was produced by greedily adding a total of 31 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was -1259284.</p>
-<p>The OHF fit added the 44 fixed one-hot factors, then backfit them, then added only 2 (!) more factors greedily. The resulting objective was much worse than that of the OHL fit, at -1635669.</p>
-<p>Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method “FLASH-OHF+” in the plot below). The final objective was -1306242: better, but still not as good as the OHL fit.</p>
+gtex_flfit &lt;- readRDS(&quot;./output/gtexflfit.rds&quot;)</code></pre>
+<p>The OHL fit was produced by greedily adding a total of 17 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was -1277145.</p>
+<p>The OHF fit added the 44 fixed one-hot factors, then backfit them, then added only 4 (!) more factors greedily. The resulting objective was much worse than that of the OHL fit, at -1315285.</p>
+<p>Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method “FLASH-OHF+” in the simulation study). The final objective was -1278991: better, but still not as good as the OHL fit.</p>
 <p>It seems clear that the OHL method is the way to go. However, it does take a long time (over twice as long as MASH):</p>
 <pre class="r"><code>data &lt;- c(gtex_mfit$timing$ed, gtex_mfit$timing$mash,
-          gtex_flfit$timing$greedy, gtex_flfit$timing$backfit,
-          gtex_flfit2$timing$greedy, gtex_flfit2$timing$backfit,
-          gtex_flfit3$timing$greedy, gtex_flfit3$timing$backfit)
+          gtex_flfit$timing$OHL$greedy, gtex_flfit$timing$OHL$backfit,
+          gtex_flfit$timing$OHF$greedy, gtex_flfit$timing$OHF$backfit,
+          gtex_flfit$timing$OHFp$greedy, gtex_flfit$timing$OHFp$backfit)
 time_units &lt;- units(data)
 data &lt;- matrix(as.numeric(data), 2, 4)
 barplot(data, axes=T,
@@ -512,7 +552,7 @@ Jason Willwerscheid
 </div>
 <div id="mash-v-flash-posterior-means" class="section level2">
 <h2>MASH v FLASH posterior means</h2>
-<p>The posterior means are quite similar (correlation coefficient = 0.98):</p>
+<p>The posterior means are quite similar (correlation coefficient = 0.95). The dashed line plots <span class="math inline">\(y = x\)</span>:</p>
 <div class="figure">
 <img src="images/gtexcompare.png" />
 
@@ -520,7 +560,7 @@ Jason Willwerscheid
 </div>
 <div id="mash-v-flash-lfsr" class="section level2">
 <h2>MASH v FLASH LFSR</h2>
-<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. For each threshold, MASH and FLASH agree in approximately 85-87% of cases.</p>
+<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. As in the <a href="MASHvFLASHsims.html">simulation study</a>, I used a built-in function to evaluate LFSR for the MASH fit and I sampled from the posterior for the FLASH fit. Interestingly, FLASH turns out to be more conservative than MASH at higher LFSR thresholds but less conservative at <span class="math inline">\(t = 0.001\)</span>.</p>
 <pre class="r"><code>m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
 fl_lfsr &lt;- readRDS(&quot;./output/gtexfllfsr.rds&quot;)
 
@@ -534,62 +574,47 @@ confusion_matrix &lt;- function(t) {
 <pre class="r"><code>confusion_matrix(.05)</code></pre>
 <pre><code>           flash_signif
 mash_signif FALSE  TRUE
-      FALSE 0.407 0.116
-      TRUE  0.036 0.441</code></pre>
+      FALSE 0.744 0.025
+      TRUE  0.084 0.147</code></pre>
 <p>At 1%:</p>
 <pre class="r"><code>confusion_matrix(.01)</code></pre>
 <pre><code>           flash_signif
 mash_signif FALSE  TRUE
-      FALSE 0.523 0.076
-      TRUE  0.056 0.346</code></pre>
+      FALSE 0.862 0.017
+      TRUE  0.039 0.082</code></pre>
 <p>At 0.1%:</p>
 <pre class="r"><code>confusion_matrix(.001)</code></pre>
 <pre><code>           flash_signif
 mash_signif FALSE  TRUE
-      FALSE 0.585 0.088
-      TRUE  0.048 0.279</code></pre>
+      FALSE 0.910 0.027
+      TRUE  0.011 0.052</code></pre>
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
-<p>Click the button to view the code used to obtain the above results.</p>
+<p>Click the “Code” button to view the code used to obtain the above results.</p>
 <pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
 library(mashr)
 
-gtex &lt;- readRDS(&quot;./data/MatrixEQTLSumStats.Portable.Z.rds&quot;)
-data &lt;- gtex$test.z
+gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
+
+data &lt;- gtex$random.z
 data &lt;- t(data)
 fl_data &lt;- flash_set_data(data, S = 1)
 
 source(&quot;./code/fits.R&quot;)
 source(&quot;./code/sims.R&quot;)
+source(&quot;./code/utils.R&quot;)
 
 gtex_mfit &lt;- fit_mash(data)
 saveRDS(gtex_mfit, &quot;./output/gtexmfit.rds&quot;)
 
-gtex_flfit &lt;- fit_flash(data, Kmax = 40, add_onehots_first = FALSE)
+gtex_flfit &lt;- fit_flash(data, Kmax = 40, methods=2:5)
 saveRDS(gtex_flfit, &quot;./output/gtexflfit.rds&quot;)
 
-obj1 &lt;- flash_get_objective(fl_data, gtex_flfit$fl) # -1259284
-
-
-# Try OHF method of fitting FLASH object and compare likelihoods
-gtex_flfit2 &lt;- fit_flash(data, Kmax = 40, add_onehots_first = TRUE)
-saveRDS(gtex_flfit2, &quot;./output/gtexflfit2.rds&quot;)
-
-obj2 &lt;- flash_get_objective(fl_data, gtex_flfit2$fl) # -1635669
-
-# Now do an additional backfit on the OHF fit
-gtex_flfit3 &lt;- list()
-t0 &lt;- Sys.time()
-gtex_flfit3$fl &lt;- flash_backfit(fl_data, gtex_flfit2$fl, var_type = &quot;zero&quot;,
-                             nullcheck = F, verbose = T)
-t &lt;- Sys.time() - t0
-gtex_flfit3$timing &lt;- gtex_flfit2$timing
-gtex_flfit3$timing$backfit &lt;- gtex_flfit3$timing$backfit + t
-gtex_flfit3$timing$total &lt;- gtex_flfit3$timing$total + t
-saveRDS(gtex_flfit3, &quot;./output/gtexflfit3.rds&quot;)
-
-obj3 &lt;- flash_get_objective(fl_data, gtex_flfit3$fl) # -1306242
+flash_get_objective(fl_data, gtex_flfit$fits$Zero) # -1277881
+flash_get_objective(fl_data, gtex_flfit$fits$OHL) # -1277145
+flash_get_objective(fl_data, gtex_flfit$fits$OHF) # -1315285
+flash_get_objective(fl_data, gtex_flfit$fits$OHFp) # -1278991
 
 
 # Use PM from each method as &quot;true Y&quot; and do diagnostics
@@ -603,18 +628,19 @@ obj3 &lt;- flash_get_objective(fl_data, gtex_flfit3$fl) # -1306242
 
 
 # Plot FLASH PM vs. MASH PM
-fl_pm &lt;- flash_get_lf(gtex_flfit$fl)
+fl_pm &lt;- flash_get_lf(gtex_flfit$fits$OHL)
 m_pm &lt;- t(get_pm(gtex_mfit$m))
 png(&quot;./output/gtexcompare.png&quot;)
 plot(as.vector(fl_pm), as.vector(m_pm), xlab=&quot;FLASH PM&quot;, ylab=&quot;MASH PM&quot;,
      main=&quot;Posterior means on GTEx data&quot;, pch=&#39;.&#39;)
+abline(0, 1, lty=2)
 dev.off()
-corr &lt;- cor(as.vector(fl_pm), as.vector(m_pm))
+cor(as.vector(fl_pm), as.vector(m_pm)) # 0.952
 
 # Use LFSR to get &quot;significant&quot; effects and get confusion matrices
 m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
 
-fl_sampler &lt;- flash_lf_sampler(data, gtex_flfit$fl, ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
+fl_sampler &lt;- flash_lf_sampler(data, gtex_flfit$fits$OHL, ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
 fl_lfsr &lt;- flash_lfsr(fl_sampler(200))
 saveRDS(fl_lfsr, &quot;./output/gtexfllfsr.rds&quot;)
 
