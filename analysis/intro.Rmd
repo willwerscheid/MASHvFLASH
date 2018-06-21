@@ -44,7 +44,7 @@ F_{jm} \mid I_{jm} = 0 &\sim \delta_0 \\
 F_{jm} \mid I_{jm} = 1 &\sim N(0, \tau_m^2) \\
 I_{jm} &\sim \text{Bernoulli}(\pi_m)
 \end{aligned}$$
-so that $I_{jm} = 1$ if gene $j$ is "active" for factor $m$ and $I_{jm} = 0$ otherwise.
+so that $I_{jm} = 1$ if column $j$ is "active" for factor $m$ and $I_{jm} = 0$ otherwise.
 
 Now, if one regards the variables $I_{jm}$ (as well as $L$) as fixed, then one obtains
 $$ \begin{aligned}
