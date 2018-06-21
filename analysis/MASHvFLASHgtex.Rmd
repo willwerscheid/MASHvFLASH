@@ -11,7 +11,7 @@ devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
 library(mashr)
 ```
 
-Here I analyze some GTEx data. The dataset can be found at https://stephenslab.github.io/gtexresults/. I use the "random.z" dataset, which consists of $z$-scores for 44 tissues and a random subset of 20000 genes.
+Here I analyze some GTEx data. The dataset can be found at https://stephenslab.github.io/gtexresults/. I use the "random.z" dataset, which consists of $z$-scores for 44 tissues and a random subset of 20000 tests.
 
 ## Fitting methods
 
