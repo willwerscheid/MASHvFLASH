@@ -5,40 +5,24 @@ library(mashr)
 
 gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
 
-data <- gtex$test.z
+data <- gtex$random.z
 data <- t(data)
 fl_data <- flash_set_data(data, S = 1)
 
 source("./code/fits.R")
 source("./code/sims.R")
+source("./code/utils.R")
 
 gtex_mfit <- fit_mash(data)
 saveRDS(gtex_mfit, "./output/gtexmfit.rds")
 
-gtex_flfit <- fit_flash(data, Kmax = 40, add_onehots_first = FALSE)
+gtex_flfit <- fit_flash(data, Kmax = 40, methods=2:5)
 saveRDS(gtex_flfit, "./output/gtexflfit.rds")
 
-obj1 <- flash_get_objective(fl_data, gtex_flfit$fl) # -1259284
-
-
-# Try OHF method of fitting FLASH object and compare likelihoods
-gtex_flfit2 <- fit_flash(data, Kmax = 40, add_onehots_first = TRUE)
-saveRDS(gtex_flfit2, "./output/gtexflfit2.rds")
-
-obj2 <- flash_get_objective(fl_data, gtex_flfit2$fl) # -1635669
-
-# Now do an additional backfit on the OHF fit
-gtex_flfit3 <- list()
-t0 <- Sys.time()
-gtex_flfit3$fl <- flash_backfit(fl_data, gtex_flfit2$fl, var_type = "zero",
-                             nullcheck = F, verbose = T)
-t <- Sys.time() - t0
-gtex_flfit3$timing <- gtex_flfit2$timing
-gtex_flfit3$timing$backfit <- gtex_flfit3$timing$backfit + t
-gtex_flfit3$timing$total <- gtex_flfit3$timing$total + t
-saveRDS(gtex_flfit3, "./output/gtexflfit3.rds")
-
-obj3 <- flash_get_objective(fl_data, gtex_flfit3$fl) # -1306242
+flash_get_objective(fl_data, gtex_flfit$fits$Zero) # -1277881
+flash_get_objective(fl_data, gtex_flfit$fits$OHL) # -1277145
+flash_get_objective(fl_data, gtex_flfit$fits$OHF) # -1315285
+flash_get_objective(fl_data, gtex_flfit$fits$OHFp) # -1278991
 
 
 # Use PM from each method as "true Y" and do diagnostics
@@ -52,18 +36,19 @@ obj3 <- flash_get_objective(fl_data, gtex_flfit3$fl) # -1306242
 
 
 # Plot FLASH PM vs. MASH PM
-fl_pm <- flash_get_lf(gtex_flfit$fl)
+fl_pm <- flash_get_lf(gtex_flfit$fits$OHL)
 m_pm <- t(get_pm(gtex_mfit$m))
 png("./output/gtexcompare.png")
 plot(as.vector(fl_pm), as.vector(m_pm), xlab="FLASH PM", ylab="MASH PM",
      main="Posterior means on GTEx data", pch='.')
+abline(0, 1, lty=2)
 dev.off()
-corr <- cor(as.vector(fl_pm), as.vector(m_pm))
+cor(as.vector(fl_pm), as.vector(m_pm)) # 0.952
 
 # Use LFSR to get "significant" effects and get confusion matrices
 m_lfsr <- t(get_lfsr(gtex_mfit$m))
 
-fl_sampler <- flash_lf_sampler(data, gtex_flfit$fl, ebnm_fn=ebnm_pn, fixed="loadings")
+fl_sampler <- flash_lf_sampler(data, gtex_flfit$fits$OHL, ebnm_fn=ebnm_pn, fixed="loadings")
 fl_lfsr <- flash_lfsr(fl_sampler(200))
 saveRDS(fl_lfsr, "./output/gtexfllfsr.rds")
 
