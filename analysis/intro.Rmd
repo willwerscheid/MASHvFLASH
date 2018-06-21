@@ -77,7 +77,7 @@ By the same logic as above, this model should be able to accommodate conical com
 
 Now the full model is
 $$\begin{aligned} 
-Y &= \begin{pmatrix} L & I_n \end{pmatrix} F' + E \\
+Y &= \begin{pmatrix} L & I_n \end{pmatrix} F' + E. \\
 \end{aligned}$$
 
 Notice that this approach only makes sense if the standard errors for $E$ are considered fixed. Writing
@@ -104,7 +104,7 @@ Finally, the recommended procedure is as follows:
 
 ## Example with simulated data
 
-The first code chunk simulates a $10 \times 400$ data matrix where a quarter of columns $X_{:, j}$ are null across all conditions, a quarter are nonnull in the first condition only, a quarter are nonnull in all conditions with effect sizes that are independent across conditions, and a quarter are nonnull in all conditions with an effect size that is identical across conditions. 
+The first code chunk simulates a $10 \times 400$ data matrix where a quarter of columns $X_{:, j}$ are null across all conditions, a quarter are nonnull in the first condition only, a quarter are nonnull in all conditions with effect sizes that are independent across conditions, and a quarter are nonnull in all conditions with an effect size that is identical across conditions. The effect sizes are all drawn from a normal distribution with standard deviation equal to 5.
 
 ```{r simulate_data}
 set.seed(1)
