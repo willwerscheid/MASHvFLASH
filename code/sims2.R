@@ -1,0 +1,181 @@
+source("./code/fits.R")
+source("./code/sims.R")
+source("./code/utils.R")
+
+set.seed(1)
+
+n <- 20
+p <- 1000
+nsims <- 10
+nsamp <- 200 # for sampling lfsr (FLASH fits)
+ncol <- 25 # number of columns that exhibit each variance type
+t <- 0.05 # "significance" threshold
+
+Sigma <- list()
+typenames <- c("IndSm", "IndLg", "IndDiff",
+               "IdentSm", "IdentLg", "Rank1",
+               "UniqSm", "UniqLg",
+               "Shar3", "Shar10", "Shar5diff",
+               "Band", "Rand", "Null")
+ntypes <- length(typenames)
+
+partnames <- c("IndSm", "IndLg", "IndDiff",
+               "IdentSm", "IdentLg", "Rank1",
+               "UniqSmNull", "UniqSmNonnull",
+               "UniqLgNull", "UniqLgNonnull",
+               "Shar3Null", "Shar3Nonnull",
+               "Shar10Null", "Shar10Nonnull",
+               "Shar5Null", "Shar5Nonnull",
+               "Band", "Rand", "Null")
+m <- length(partnames)
+
+# Independent (small)
+Sigma[[1]] <- diag(2^2, n)
+# Independent (large)
+Sigma[[2]] <- diag(5^2, n)
+# Independent (different sizes)
+sizes <- seq(1, 5, length.out=n)
+Sigma[[3]] <- diag(sizes^2)
+# Identical (small)
+Sigma[[4]] <- matrix(2^2, nrow=n, ncol=n)
+# Identical (large)
+Sigma[[5]] <- matrix(5^2, nrow=n, ncol=n)
+# Rank-one
+Sigma[[6]] <- outer(sizes, sizes)
+
+zeros <- matrix(0, nrow=n, ncol=n)
+for (j in 7:11) {
+  Sigma[[j]] <- zeros
+}
+# Unique (small)
+uniqsmidx <- 1
+Sigma[[7]][uniqsmidx, uniqsmidx] <- 3^2
+# Unique (large)
+uniqlgidx <- 2
+Sigma[[8]][uniqlgidx, uniqlgidx] <- 8^2
+# Shared (3 conditions)
+shar3idx <- 3:5
+Sigma[[9]][shar3idx, shar3idx] <- matrix(3^2, nrow=3, ncol=3)
+# Shared (10 conditions)
+shar10idx <- 1:10
+Sigma[[10]][shar10idx, shar10idx] <- matrix(2^2, nrow=10, ncol=10)
+# Shared (5 conditions, different sizes)
+shar5idx <- 6:10
+sizes <- seq(2, 4, length.out=5)
+Sigma[[11]][shar5idx, shar5idx] <- outer(sizes, sizes)
+
+# Banded
+Sigma[[12]] <- toeplitz(c(seq(5, 2, length.out=5)^2, rep(0, 15)))
+# Random
+A <- matrix(rnorm(n*n, 0, 2), nrow=n, ncol=n)
+Sigma[[13]] <- t(A) %*% A
+
+partxidx <- list(1:n, 1:n, 1:n, 1:n, 1:n, 1:n,
+                 setdiff(1:n, uniqsmidx), uniqsmidx,
+                 setdiff(1:n, uniqlgidx), uniqlgidx,
+                 setdiff(1:n, shar3idx), shar3idx,
+                 setdiff(1:n, shar10idx), shar10idx,
+                 setdiff(1:n, shar5idx), shar5idx,
+                 1:n, 1:n, 1:n)
+partyidx <- list(1:ncol, ncol + 1:ncol, 2*ncol + 1:ncol,
+                 3*ncol + 1:ncol, 4*ncol + 1:ncol, 5*ncol + 1:ncol,
+                 6*ncol + 1:ncol, 6*ncol + 1:ncol,
+                 7*ncol + 1:ncol, 7*ncol + 1:ncol,
+                 8*ncol + 1:ncol, 8*ncol + 1:ncol,
+                 9*ncol + 1:ncol, 9*ncol + 1:ncol,
+                 10*ncol + 1:ncol, 10*ncol + 1:ncol,
+                 11*ncol + 1:ncol, 12*ncol + 1:ncol,
+                 (13*ncol + 1):p)
+partition_by_type <- function(X) {
+  m <- length(partnames)
+  ret <- rep(0, m)
+  for (i in 1:m) {
+    ret[i] <- mean(X[partxidx[[i]], partyidx[[i]]])
+  }
+  names(ret) <- partnames
+  ret
+}
+
+runsum <- matrix(0, nrow=6, ncol=m)
+
+for (i in 1:nsims) {
+  X <- matrix(0, nrow=n, ncol=p)
+  for (j in 1:(ntypes-1)) {
+    start_col = 1 + ncol*(j-1)
+    end_col = ncol*j
+    X[, start_col:end_col] <- t(MASS::mvrnorm(ncol, rep(0, n), Sigma[[j]]))
+  }
+  Y <- X + rnorm(n*p)
+
+  fl.pn <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_pn) # OHL
+  fl.ash <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_ash)
+  m <- fit_mash(Y)
+
+  base.se <- (Y - X)^2
+  base.mse <- partition_by_type(base.se)
+
+  fl.pn.se <- (flash_get_lf(fl.pn$fits$OHL) - X)^2
+  fl.pn.mse <- partition_by_type(fl.pn.se) / base.mse
+
+  fl.ash.se <- (flash_get_lf(fl.ash$fits$OHL) - X)^2
+  fl.ash.mse <- partition_by_type(fl.ash.se) / base.mse
+
+  m.se <- (t(get_pm(m$m)) - X)^2
+  m.mse <- partition_by_type(m.se) / base.mse
+
+  fl.pn.sampler <- flash_lf_sampler(Y, fl.pn$fits$OHL,
+                                    ebnm_fn=ebnm_pn, fixed="loadings")
+  fl.pn.samp <- fl.pn.sampler(nsamp)
+  fl.pn.lfsr <- flash_lfsr(fl.pn.samp)
+  fl.pn.signif <- fl.pn.lfsr <= t
+  fl.pn.pr <- partition_by_type(fl.pn.signif)
+
+  fl.ash.sampler <- flash_lf_sampler(Y, fl.ash$fits$OHL,
+                                    ebnm_fn=ebnm_ash, fixed="loadings")
+  fl.ash.samp <- fl.ash.sampler(nsamp)
+  fl.ash.lfsr <- flash_lfsr(fl.ash.samp)
+  fl.ash.signif <- fl.ash.lfsr <= t
+  fl.ash.pr <- partition_by_type(fl.ash.signif)
+
+  m.lfsr <- t(get_lfsr(m$m))
+  m.signif <- m.lfsr <= t
+  m.pr <- partition_by_type(m.signif)
+
+  runsum[1,] <- runsum[1,] + fl.pn.mse
+  runsum[2,] <- runsum[2,] + fl.ash.mse
+  runsum[3,] <- runsum[3,] + m.mse
+  runsum[4,] <- runsum[4,] + fl.pn.pr
+  runsum[5,] <- runsum[5,] + fl.ash.pr
+  runsum[6,] <- runsum[6,] + m.pr
+}
+
+avgs <- runsum / nsims
+all.mses <- avgs[1:3, ]
+all.prs <- avg[4:6, ]
+
+# Nulls
+nullidx <- c(7, 9, 11, 13, 15, 19)
+null.names <- c("SmUniq", "LgUniq", "Shar3", "Shar10", "Shar5", "Null")
+
+# Effects that are independent or identical across conditions
+indididx <- 1:5
+indid.names <- c("SmInd", "LgInd", "DiffInd", "SmIdent", "LgIdent")
+
+# Effects that are unique to one or several conditions
+unshidx <- c(8, 10, 12, 14, 16)
+unsh.names <- c("SmUniq", "LgUniq", "Shar3", "Shar10", "Shar5")
+
+# Other
+otheridx <- c(16, 17, 18)
+other.names <- c("Rank1", "Banded", "Random")
+
+barplot(all.mses[,nullidx], names.arg = null.names, beside=T, ylim=c(0, 1))
+barplot(all.mses[,unshidx], names.arg = unsh.names, beside=T, ylim=c(0, 1))
+barplot(all.mses[,indididx], names.arg = indid.names, beside=T, ylim=c(0, 1))
+barplot(all.mses[,otheridx], names.arg = other.names, beside=T, ylim=c(0, 1))
+
+barplot(all.prs[,nullidx], names.arg = null.names, beside=T)
+barplot(all.prs[,unshidx], names.arg = unsh.names, beside=T)
+barplot(all.prs[,indididx], names.arg = indid.names, beside=T)
+barplot(all.prs[,otheridx], names.arg = other.names, beside=T)
+
