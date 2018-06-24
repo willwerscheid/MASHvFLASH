@@ -62,7 +62,7 @@ The posterior means are quite similar (correlation coefficient = 0.95). The dash
 
 ## MASH v FLASH LFSR 
 
-Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. As in the [simulation study](MASHvFLASHsims.html), I used a built-in function to evaluate LFSR for the MASH fit and I sampled from the posterior for the FLASH fit. Interestingly, FLASH turns out to be more conservative than MASH at higher LFSR thresholds but less conservative at $t = 0.001$.
+Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. As in the [simulation study](MASHvFLASHsims.html), I used a built-in function to evaluate LFSR for the MASH fit and I sampled from the posterior for the FLASH fit. In general, FLASH appears be more conservative than MASH.
 
 ```{r lfsr}
 m_lfsr <- t(get_lfsr(gtex_mfit$m))
@@ -86,10 +86,11 @@ At 1%:
 confusion_matrix(.01)
 ```
 
-At 0.1%:
-```{r cm001}
-confusion_matrix(.001)
-```
+<!-- Note: we cannot do 0.1% if we only have 200 samples from the posterior! -->
+<!-- At 0.1%: -->
+<!-- ```{r cm001} -->
+<!-- confusion_matrix(.001) -->
+<!-- ``` -->
 
 ## Code
 

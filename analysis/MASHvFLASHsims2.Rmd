@@ -137,3 +137,13 @@ barplot(all.prs[,otheridx], names.arg = other.names, beside=T,
         ylim=c(0, 1), ylab="TPR", main="",
         legend.text=legend.names, args.legend=legend.args)
 ```
+
+## Code
+
+Click the "Code" button to view the code used to obtain the above results.
+```{r code, echo=F, include=F}
+knitr::read_chunk("./code/sims2.R")
+```
+```{r sims2, eval=F}
+```
+
