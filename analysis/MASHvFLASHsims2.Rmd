@@ -1,5 +1,5 @@
 ---
-title: "MASH v FLASH simulation: detailed study"
+title: "MASH v FLASH detailed simulation study"
 output: 
   workflowr::wflow_html:
     code_folding: hide
