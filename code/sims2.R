@@ -1,3 +1,5 @@
+## @knitr sims2
+
 source("./code/fits.R")
 source("./code/sims.R")
 source("./code/utils.R")
@@ -150,32 +152,4 @@ for (i in 1:nsims) {
 }
 
 avgs <- runsum / nsims
-all.mses <- avgs[1:3, ]
-all.prs <- avg[4:6, ]
-
-# Nulls
-nullidx <- c(7, 9, 11, 13, 15, 19)
-null.names <- c("SmUniq", "LgUniq", "Shar3", "Shar10", "Shar5", "Null")
-
-# Effects that are independent or identical across conditions
-indididx <- 1:5
-indid.names <- c("SmInd", "LgInd", "DiffInd", "SmIdent", "LgIdent")
-
-# Effects that are unique to one or several conditions
-unshidx <- c(8, 10, 12, 14, 16)
-unsh.names <- c("SmUniq", "LgUniq", "Shar3", "Shar10", "Shar5")
-
-# Other
-otheridx <- c(16, 17, 18)
-other.names <- c("Rank1", "Banded", "Random")
-
-barplot(all.mses[,nullidx], names.arg = null.names, beside=T, ylim=c(0, 1))
-barplot(all.mses[,unshidx], names.arg = unsh.names, beside=T, ylim=c(0, 1))
-barplot(all.mses[,indididx], names.arg = indid.names, beside=T, ylim=c(0, 1))
-barplot(all.mses[,otheridx], names.arg = other.names, beside=T, ylim=c(0, 1))
-
-barplot(all.prs[,nullidx], names.arg = null.names, beside=T)
-barplot(all.prs[,unshidx], names.arg = unsh.names, beside=T)
-barplot(all.prs[,indididx], names.arg = indid.names, beside=T)
-barplot(all.prs[,otheridx], names.arg = other.names, beside=T)
-
+saveRDS(avgs, "./output/sims2.rds")
