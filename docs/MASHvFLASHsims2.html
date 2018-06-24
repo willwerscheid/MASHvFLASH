@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/411c3b41d268eab99f8c2d2198008b2301d63bdb" target="_blank">411c3b4</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/42cd89c485cdf6fb255679adcd67c8e2b098018e" target="_blank">42cd89c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -370,7 +370,6 @@ Untracked files:
     Untracked:  output/sims2.rds
 
 Unstaged changes:
-    Modified:   analysis/MASHvFLASHgtex.Rmd
     Modified:   code/sims2.R
 
 </code></pre>
@@ -400,6 +399,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/42cd89c485cdf6fb255679adcd67c8e2b098018e/analysis/MASHvFLASHsims2.Rmd" target="_blank">42cd89c</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/MASHvFLASHsims2.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/MASHvFLASHsims2.html" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -472,20 +505,140 @@ barplot(all.rrmses[,nullidx], names.arg = null.names, beside=T,
         ylim=c(0, 1), ylab=&quot;RRMSE&quot;, main=&quot;RRMSE for null effects&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/mse_null-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_null-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/mse_null-1.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>And RRMSE for nonnull effects is as follows.</p>
 <pre class="r"><code>par(mar = c(5,4,4,6))
 barplot(all.rrmses[,indididx], names.arg = indid.names, beside=T,
         ylim=c(0, 2), ylab=&quot;RRMSE&quot;, main=&quot;RRMSE for nonnull effects&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_nonnull-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-1.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>barplot(all.rrmses[,unshidx], names.arg = unsh.names, beside=T,
         ylim=c(0, 2), ylab=&quot;RRMSE&quot;, main=&quot;&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_nonnull-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-2.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>barplot(all.rrmses[,otheridx], names.arg = other.names, beside=T,
         ylim=c(0, 2), ylab=&quot;RRMSE&quot;, main=&quot;&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_nonnull-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-3.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="results-fprtpr" class="section level2">
 <h2>Results: FPR/TPR</h2>
@@ -498,20 +651,297 @@ barplot(all.prs[,nullidx], names.arg = null.names, beside=T,
         ylim=c(0, 0.25), ylab=&quot;FPR&quot;, main=&quot;FPR for null effects&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/fpr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of fpr-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/fpr-1.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>And the true positive rates are as follows.</p>
 <pre class="r"><code>par(mar = c(5,4,4,6))
 barplot(all.prs[,unshidx], names.arg = unsh.names, beside=T,
         ylim=c(0, 1), ylab=&quot;TPR&quot;, main=&quot;TPR for nonnull effects&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of tpr-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/tpr-1.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>barplot(all.prs[,indididx], names.arg = indid.names, beside=T,
         ylim=c(0, 1), ylab=&quot;TPR&quot;, main=&quot;&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of tpr-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/tpr-2.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>barplot(all.prs[,otheridx], names.arg = other.names, beside=T,
         ylim=c(0, 1), ylab=&quot;TPR&quot;, main=&quot;&quot;,
         legend.text=legend.names, args.legend=legend.args)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of tpr-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/17ae3f327922f59fc22e50d5b188f66ace7a38d3/docs/figure/MASHvFLASHsims2.Rmd/tpr-3.png" target="_blank">17ae3f3</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+</div>
+<div id="code" class="section level2">
+<h2>Code</h2>
+<p>Click the “Code” button to view the code used to obtain the above results.</p>
+<pre class="r"><code>source(&quot;./code/fits.R&quot;)
+source(&quot;./code/sims.R&quot;)
+source(&quot;./code/utils.R&quot;)
+
+set.seed(1)
+
+n &lt;- 20
+p &lt;- 1000
+nsims &lt;- 10
+nsamp &lt;- 200 # for sampling lfsr (FLASH fits)
+ncol &lt;- 25 # number of columns that exhibit each variance type
+t &lt;- 0.05 # &quot;significance&quot; threshold
+
+Sigma &lt;- list()
+typenames &lt;- c(&quot;IndSm&quot;, &quot;IndLg&quot;, &quot;IndDiff&quot;,
+               &quot;IdentSm&quot;, &quot;IdentLg&quot;, &quot;Rank1&quot;,
+               &quot;UniqSm&quot;, &quot;UniqLg&quot;,
+               &quot;Shar3&quot;, &quot;Shar10&quot;, &quot;Shar5diff&quot;,
+               &quot;Band&quot;, &quot;Rand&quot;, &quot;Null&quot;)
+ntypes &lt;- length(typenames)
+
+partnames &lt;- c(&quot;IndSm&quot;, &quot;IndLg&quot;, &quot;IndDiff&quot;,
+               &quot;IdentSm&quot;, &quot;IdentLg&quot;, &quot;Rank1&quot;,
+               &quot;UniqSmNull&quot;, &quot;UniqSmNonnull&quot;,
+               &quot;UniqLgNull&quot;, &quot;UniqLgNonnull&quot;,
+               &quot;Shar3Null&quot;, &quot;Shar3Nonnull&quot;,
+               &quot;Shar10Null&quot;, &quot;Shar10Nonnull&quot;,
+               &quot;Shar5Null&quot;, &quot;Shar5Nonnull&quot;,
+               &quot;Band&quot;, &quot;Rand&quot;, &quot;Null&quot;)
+m &lt;- length(partnames)
+
+# Independent (small)
+Sigma[[1]] &lt;- diag(2^2, n)
+# Independent (large)
+Sigma[[2]] &lt;- diag(5^2, n)
+# Independent (different sizes)
+sizes &lt;- seq(1, 5, length.out=n)
+Sigma[[3]] &lt;- diag(sizes^2)
+# Identical (small)
+Sigma[[4]] &lt;- matrix(2^2, nrow=n, ncol=n)
+# Identical (large)
+Sigma[[5]] &lt;- matrix(5^2, nrow=n, ncol=n)
+# Rank-one
+Sigma[[6]] &lt;- outer(sizes, sizes)
+
+zeros &lt;- matrix(0, nrow=n, ncol=n)
+for (j in 7:11) {
+  Sigma[[j]] &lt;- zeros
+}
+# Unique (small)
+uniqsmidx &lt;- 1
+Sigma[[7]][uniqsmidx, uniqsmidx] &lt;- 3^2
+# Unique (large)
+uniqlgidx &lt;- 2
+Sigma[[8]][uniqlgidx, uniqlgidx] &lt;- 8^2
+# Shared (3 conditions)
+shar3idx &lt;- 3:5
+Sigma[[9]][shar3idx, shar3idx] &lt;- matrix(3^2, nrow=3, ncol=3)
+# Shared (10 conditions)
+shar10idx &lt;- 1:10
+Sigma[[10]][shar10idx, shar10idx] &lt;- matrix(2^2, nrow=10, ncol=10)
+# Shared (5 conditions, different sizes)
+shar5idx &lt;- 6:10
+sizes &lt;- seq(2, 4, length.out=5)
+Sigma[[11]][shar5idx, shar5idx] &lt;- outer(sizes, sizes)
+
+# Banded
+Sigma[[12]] &lt;- toeplitz(c(seq(5, 2, length.out=5)^2, rep(0, 15)))
+# Random
+A &lt;- matrix(rnorm(n*n, 0, 2), nrow=n, ncol=n)
+Sigma[[13]] &lt;- t(A) %*% A
+
+partxidx &lt;- list(1:n, 1:n, 1:n, 1:n, 1:n, 1:n,
+                 setdiff(1:n, uniqsmidx), uniqsmidx,
+                 setdiff(1:n, uniqlgidx), uniqlgidx,
+                 setdiff(1:n, shar3idx), shar3idx,
+                 setdiff(1:n, shar10idx), shar10idx,
+                 setdiff(1:n, shar5idx), shar5idx,
+                 1:n, 1:n, 1:n)
+partyidx &lt;- list(1:ncol, ncol + 1:ncol, 2*ncol + 1:ncol,
+                 3*ncol + 1:ncol, 4*ncol + 1:ncol, 5*ncol + 1:ncol,
+                 6*ncol + 1:ncol, 6*ncol + 1:ncol,
+                 7*ncol + 1:ncol, 7*ncol + 1:ncol,
+                 8*ncol + 1:ncol, 8*ncol + 1:ncol,
+                 9*ncol + 1:ncol, 9*ncol + 1:ncol,
+                 10*ncol + 1:ncol, 10*ncol + 1:ncol,
+                 11*ncol + 1:ncol, 12*ncol + 1:ncol,
+                 (13*ncol + 1):p)
+partition_by_type &lt;- function(X) {
+  m &lt;- length(partnames)
+  ret &lt;- rep(0, m)
+  for (i in 1:m) {
+    ret[i] &lt;- mean(X[partxidx[[i]], partyidx[[i]]])
+  }
+  names(ret) &lt;- partnames
+  ret
+}
+
+runsum &lt;- matrix(0, nrow=6, ncol=m)
+
+for (i in 1:nsims) {
+  X &lt;- matrix(0, nrow=n, ncol=p)
+  for (j in 1:(ntypes-1)) {
+    start_col = 1 + ncol*(j-1)
+    end_col = ncol*j
+    X[, start_col:end_col] &lt;- t(MASS::mvrnorm(ncol, rep(0, n), Sigma[[j]]))
+  }
+  Y &lt;- X + rnorm(n*p)
+
+  fl.pn &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_pn) # OHL
+  fl.ash &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_ash)
+  m &lt;- fit_mash(Y)
+
+  base.se &lt;- (Y - X)^2
+  base.mse &lt;- partition_by_type(base.se)
+
+  fl.pn.se &lt;- (flash_get_lf(fl.pn$fits$OHL) - X)^2
+  fl.pn.mse &lt;- partition_by_type(fl.pn.se) / base.mse
+
+  fl.ash.se &lt;- (flash_get_lf(fl.ash$fits$OHL) - X)^2
+  fl.ash.mse &lt;- partition_by_type(fl.ash.se) / base.mse
+
+  m.se &lt;- (t(get_pm(m$m)) - X)^2
+  m.mse &lt;- partition_by_type(m.se) / base.mse
+
+  fl.pn.sampler &lt;- flash_lf_sampler(Y, fl.pn$fits$OHL,
+                                    ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
+  fl.pn.samp &lt;- fl.pn.sampler(nsamp)
+  fl.pn.lfsr &lt;- flash_lfsr(fl.pn.samp)
+  fl.pn.signif &lt;- fl.pn.lfsr &lt;= t
+  fl.pn.pr &lt;- partition_by_type(fl.pn.signif)
+
+  fl.ash.sampler &lt;- flash_lf_sampler(Y, fl.ash$fits$OHL,
+                                    ebnm_fn=ebnm_ash, fixed=&quot;loadings&quot;)
+  fl.ash.samp &lt;- fl.ash.sampler(nsamp)
+  fl.ash.lfsr &lt;- flash_lfsr(fl.ash.samp)
+  fl.ash.signif &lt;- fl.ash.lfsr &lt;= t
+  fl.ash.pr &lt;- partition_by_type(fl.ash.signif)
+
+  m.lfsr &lt;- t(get_lfsr(m$m))
+  m.signif &lt;- m.lfsr &lt;= t
+  m.pr &lt;- partition_by_type(m.signif)
+
+  runsum[1,] &lt;- runsum[1,] + fl.pn.mse
+  runsum[2,] &lt;- runsum[2,] + fl.ash.mse
+  runsum[3,] &lt;- runsum[3,] + m.mse
+  runsum[4,] &lt;- runsum[4,] + fl.pn.pr
+  runsum[5,] &lt;- runsum[5,] + fl.ash.pr
+  runsum[6,] &lt;- runsum[6,] + m.pr
+}
+
+avgs &lt;- runsum / nsims
+saveRDS(avgs, &quot;./output/sims2.rds&quot;)</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>

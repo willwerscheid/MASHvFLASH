@@ -331,7 +331,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-21</p>
+<p><strong>Last updated:</strong> 2018-06-24</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/aeaca04f5f52161df88b1ba71fc9c1877f5cea53" target="_blank">aeaca04</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/42cd89c485cdf6fb255679adcd67c8e2b098018e" target="_blank">42cd89c</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -365,6 +365,12 @@ Ignored files:
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  output/sims2.rds
+
+Unstaged changes:
+    Modified:   code/sims2.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -393,6 +399,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/42cd89c485cdf6fb255679adcd67c8e2b098018e/analysis/MASHvFLASHgtex.Rmd" target="_blank">42cd89c</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/MASHvFLASHsims2.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/0397c51fd4f4c65f9cb593dff226d5f432d47090/docs/MASHvFLASHgtex.html" target="_blank">0397c51</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-21
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -599,7 +639,7 @@ Jason Willwerscheid
 </div>
 <div id="mash-v-flash-lfsr" class="section level2">
 <h2>MASH v FLASH LFSR</h2>
-<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. As in the <a href="MASHvFLASHsims.html">simulation study</a>, I used a built-in function to evaluate LFSR for the MASH fit and I sampled from the posterior for the FLASH fit. Interestingly, FLASH turns out to be more conservative than MASH at higher LFSR thresholds but less conservative at <span class="math inline">\(t = 0.001\)</span>.</p>
+<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. As in the <a href="MASHvFLASHsims.html">simulation study</a>, I used a built-in function to evaluate LFSR for the MASH fit and I sampled from the posterior for the FLASH fit. In general, FLASH appears be more conservative than MASH.</p>
 <pre class="r"><code>m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
 fl_lfsr &lt;- readRDS(&quot;./output/gtexfllfsr.rds&quot;)
 
@@ -621,12 +661,11 @@ mash_signif FALSE  TRUE
 mash_signif FALSE  TRUE
       FALSE 0.862 0.017
       TRUE  0.039 0.082</code></pre>
-<p>At 0.1%:</p>
-<pre class="r"><code>confusion_matrix(.001)</code></pre>
-<pre><code>           flash_signif
-mash_signif FALSE  TRUE
-      FALSE 0.910 0.027
-      TRUE  0.011 0.052</code></pre>
+<!-- Note: we cannot do 0.1% if we only have 200 samples from the posterior! -->
+<!-- At 0.1%: -->
+<!-- ```{r cm001} -->
+<!-- confusion_matrix(.001) -->
+<!-- ``` -->
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
