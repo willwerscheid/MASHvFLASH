@@ -167,7 +167,7 @@ plot_fprvtpr(22, "Identical plus unique (17)")
 
 ## Code
 
-Click the "Code" button to view the code used to obtain the above results.
+Click "Code" to view the code used to obtain the above results.
 ```{r code, echo=F, include=F}
 knitr::read_chunk("./code/sims2.R")
 ```
