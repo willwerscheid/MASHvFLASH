@@ -77,42 +77,79 @@ abline(0, 1, lty=2)
 dev.off()
 cor(as.vector(fl.pm), as.vector(m.pm)) # 0.98
 
-fl.signif <- fl.lfsr <= .05
-m.signif <- m.lfsr <= .05
-flnotmash <- fl.signif & !t(m.signif)
-which(colSums(flnotmash) >= 24) # 6129, 6897, 13684
-mnotflash <- !fl.signif & t(m.signif)
-which(colSums(mnotflash) >= 40) #2969, 4533, 10011, 11188
-
-plot_comparison <- function(n) {
-  clr = rep("peachpuff", 44)
-  clr[fl.lfsr[, n] <= .05] <- "red4"
-  clr[fl.lfsr[, n] <= .01] <- "red1"
-  clr[m.lfsr[n, ] <= .05] <- "blue4"
-  clr[m.lfsr[n, ] <= .01] <- "blue1"
-  clr[fl.lfsr[, n] <= .05 & m.lfsr[n, ] <= .05] <- "purple"
-  plot(strong[n, ], pch=19, col=clr)
-  #plot((1 - pnorm(abs(strong[n, ])))*sign(strong[n, ]),
-       #ylab="", pch=19, ylim=c(-1, 1))
-  #points(fl.lfsr[, n], pch=2, ylab="")
-  #points(m.lfsr[n, ], pch=3)
-  #abline(.05, 0)
-  #abline(-.05, 0)
-}
-plot_comparison(6129)
-plot_comparison(6897)
-plot_comparison(13684)
-plot_comparison(2969)
-plot_comparison(4533)
-plot_comparison(10011)
-plot_comparison(11188)
-
 confusion_matrix <- function(t) {
-  mash_signif <- m.lfsr <= t
+  mash_signif <- t(m.lfsr) <= t
   flash_signif <- fl.lfsr <= t
   round(table(mash_signif, flash_signif)
         / length(mash_signif), digits=3)
 }
 confusion_matrix(.05)
 confusion_matrix(.01)
-confusion_matrix(.001)
+
+calibrate_t <- function(t) {
+  mash_signif <- t(m.lfsr) <= t
+  flash_signif <- fl.lfsr <= .05
+  (sum(mash_signif & flash_signif) + sum(!mash_signif & !flash_signif)) / length(mash_signif)
+}
+ts <- seq(.005, .15, by=.005)
+calibrated <- rep(0, length(ts))
+for (j in 1:length(ts)) {
+  calibrated[j] <- calibrate_t(ts[j])
+}
+plot(ts, calibrated, type='l')
+mash_t <- ts[which.max(calibrated)]
+
+fl.signif <- fl.lfsr <= .05
+m.signif <- m.lfsr <= mash_t
+flnotm <- fl.signif & !t(m.signif)
+ex_flnotm <- which(colSums(flnotm) >= 25) # 6129, 6897, 13684
+mnotfl <- !fl.signif & t(m.signif)
+ex_mnotfl <- which(colSums(mnotfl) >= 38) # 2969, 4533, 10011, 11188
+agree <- which(colSums(flnotm) == 0 & colSums(mnotfl) == 0)
+agree <- sample(agree, 4)
+
+# plot_comparison <- function(n) {
+#   pch = rep(1, 44)
+#   pch[fl.lfsr[, n] <= .05 | m.lfsr[n, ] <= .05] <- 19
+#   clr = rep(1, 44)
+#   clr[fl.lfsr[, n] <= .05] <- "red4"
+#   clr[fl.lfsr[, n] <= .01] <- "red1"
+#   clr[m.lfsr[n, ] <= .05] <- "blue4"
+#   clr[m.lfsr[n, ] <= .01] <- "blue1"
+#   clr[fl.lfsr[, n] <= .05 & m.lfsr[n, ] <= .05] <- "purple"
+#   plot(strong[n, ], pch=pch, col=clr)
+#   #plot((1 - pnorm(abs(strong[n, ])))*sign(strong[n, ]),
+#        #ylab="", pch=19, ylim=c(-1, 1))
+#   #points(fl.lfsr[, n], pch=2, ylab="")
+#   #points(m.lfsr[n, ], pch=3)
+#   #abline(.05, 0)
+#   #abline(-.05, 0)
+#   segments(6.5, -.05, 6.5, .05)
+#   segments(16.5, -.05, 16.5, .05)
+# }
+
+plot_comparison <- function(n) {
+  plot(strong[n, ], pch=1, col="black", ylab="",
+       main=paste0("Test #", n))
+  col = rep("peachpuff", 44)
+  col[fl.lfsr[, n] <= .05] <- "tomato"
+  col[fl.lfsr[, n] <= .01] <- "tomato4"
+  points(fl.pm[, n], pch=15, col=col, cex=.8)
+  col = rep("peachpuff", 44)
+  col[m.lfsr[n, ] <= mash_t] <- "turquoise"
+  col[m.lfsr[n, ] <= mash_t/5] <- "slateblue4"
+  points(m.pm[, n], pch=17, col=col, cex=.8)
+  abline(0, 0)
+  segments(6.5, -2, 6.5, 2)
+  segments(16.5, -2, 16.5, 2)
+}
+
+for (n in ex_flnotm) {
+  plot_comparison(n)
+}
+for (n in ex_mnotfl) {
+  plot_comparison(n)
+}
+for (n in agree) {
+  plot_comparison(n)
+}
