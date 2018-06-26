@@ -12,6 +12,6 @@ output:
 
 [MASH v FLASH on GTEx.](MASHvFLASHgtex.html) Compares FLASH to MASH using a real dataset. Results are similar, but FLASH is more conservative.
 
-[MASH v FLASH detailed simulation study.](MASHvFLASHsims2.html) Using the "OHL" method, compares the performance of FLASH-pn, FLASH-ash, and MASH in a single simulation setting. FLASH and MASH perform differently on different covariance structures.
+[MASH v FLASH detailed simulation study.](MASHvFLASHsims2.html) Using the "OHL" method, compares the performance of FLASH-pn, FLASH-ash, and MASH in a single simulation setting. FLASH and MASH perform differently on different covariance structures. There is little or no advantage to using ash priors rather than point-normals.
 
 [A first attempt.](mashvflash.html) Stowed and forgotten.
