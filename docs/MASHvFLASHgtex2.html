@@ -291,9 +291,6 @@ div.tocify {
 <li>
   <a href="about.html">About</a>
 </li>
-<li>
-  <a href="license.html">License</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -331,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-26</p>
+<p><strong>Last updated:</strong> 2018-06-27</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/1ced9081bee45955fbe007db55f7c645f0394ddd" target="_blank">1ced908</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/eb906037eb4f0f349b2a24277518fc83da3764e0" target="_blank">eb90603</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -366,13 +363,14 @@ Ignored files:
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
 
+Untracked files:
+    Untracked:  output/gtex2mrandfit.rds
+
 Unstaged changes:
-    Modified:   analysis/MASHvFLASHgtex.Rmd
+    Modified:   analysis/about.Rmd
+    Modified:   analysis/index.Rmd
     Modified:   code/gtex2.R
-    Modified:   output/gtex2flfit.rds
-    Modified:   output/gtex2lfsr.rds
-    Modified:   output/gtexrandomfit.rds
-    Modified:   output/gtexstrongfit.rds
+    Modified:   output/gtex2mfit.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -406,6 +404,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/eb906037eb4f0f349b2a24277518fc83da3764e0/analysis/MASHvFLASHgtex2.Rmd" target="_blank">eb90603</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-27
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHgtex2.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/MASHvFLASHgtex2.html" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/1ced9081bee45955fbe007db55f7c645f0394ddd/analysis/MASHvFLASHgtex2.Rmd" target="_blank">1ced908</a>
 </td>
 <td style="text-align:left;">
@@ -425,27 +457,36 @@ wflow_publish(“analysis/MASHvFLASHgtex2.Rmd”)
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Here I return to the GTEx data in order to try to determine when MASH and FLASH fits lead to different conclusions. Further, instead of simply comparing MASH and FLASH on a random subset of tests, I follow a workflow analogous to the one suggested for the GTEx data in this <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html">MASH vignette</a>.</p>
+<p>Here I return to the GTEx data in order to examine cases where MASH and FLASH lead to different conclusions. While my previous <a href="MASHvFLASHgtex.html">analysis</a> compared MASH and FLASH fits on a random subset of tests, here I follow a workflow analogous to the one suggested for the GTEx data in this <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html">MASH vignette</a>.</p>
 </div>
 <div id="fitting-methods" class="section level2">
 <h2>Fitting Methods</h2>
-<p>For MASH, I follow the workflow in the vignette linked above, except that I assume that the null tests are uncorrelated (that is, I set <span class="math inline">\(V = I\)</span>). This is almost certainly not the case, but we have not yet carefully looked into how to handle the case <span class="math inline">\(V \ne I\)</span> in FLASH.</p>
+<p>For MASH, I follow the workflow in the vignette linked above, except that I assume that the null tests are uncorrelated (that is, I set <span class="math inline">\(V = I\)</span>). This is almost certainly not the case, but some more work needs to be done before we can handle the case <span class="math inline">\(V \ne I\)</span> in FLASH.</p>
 <p>The workflow for FLASH proceeds along similar lines to the workflow for MASH:</p>
 <ol style="list-style-type: decimal">
-<li><p>Using the “OHL” method described in my <a href="MASHvFLASHsims.html">simulation study</a>, I first fit a FLASH object to the “strong” tests (these tests correspond to the “top” eQTL for each gene — that is, the eQTL with the single most significant raw effect). As I point out in the <a href="intro.html">vignette</a>, I expect the FLASH loadings to say something about how the strong effects covary. Thus this step is analogous to producing “data-driven” covariance matrices in MASH.</p></li>
-<li><p>Now I fix the loadings from the first model at their expectation <span class="math inline">\(EL\)</span> and add them as <em>fixed</em> loadings to a FLASH object. (As usual, I also add a set of 44 fixed one-hot vectors, which can be viewed as analogous to the “canonical” covariance matrices in MASH. See my discussion in this <a href="intro.html">vignette</a>.) With the loadings fixed, I backfit a FLASH object to the <em>random</em> subset of tests to obtain priors <span class="math inline">\(g_f\)</span> on the factors. I use the random subset rather than the “strong” subset because I want the priors to hold generally, and not just for the strong tests. (For this analysis, I use ash priors rather than point-normal priors, despite my <a href="MASHvFLASHsims2.html">results</a> suggesting that ash priors provide little benefit. Due to a bug in the <code>ebnm</code> package, I cannot at present fix <span class="math inline">\(g_f\)</span> using point-normal priors.)</p></li>
+<li><p>Using the “OHL” method described in my <a href="MASHvFLASHsims.html">simulation study</a>, I fit a FLASH object to the “strong” tests (which correspond to the “top” eQTL for each gene — that is, the eQTL with the largest (absolute) raw <span class="math inline">\(z\)</span>-score). As I point out in my MASH v FLASH <a href="intro.html">vignette</a>, I expect the FLASH loadings to say something about how the strong effects covary. Thus this step is analogous to producing “data-driven” covariance matrices in MASH.</p></li>
+<li><p>Now I fix the loadings from the first model at their expectation <span class="math inline">\(EL\)</span> and add them as <em>fixed</em> loadings to a FLASH object. (As usual, I also add a set of 44 fixed one-hot vectors, which can be viewed as analogous to the “canonical” covariance matrices in MASH. See the discussion in my <a href="intro.html">vignette</a>.) With the loadings fixed, I backfit a FLASH object to the random subset of tests to obtain priors <span class="math inline">\(g_f\)</span> on the factors. I use the random subset rather than the “strong” subset because I want the priors to hold generally, and not just for the strong tests. (For this analysis, I use ash priors rather than point-normal priors, despite <a href="MASHvFLASHsims2.html">results</a> suggesting that ash priors provide little benefit. Due to a bug in the <code>ebnm</code> package, I cannot at present fix <span class="math inline">\(g_f\)</span> using point-normal priors.)</p></li>
 <li><p>Finally, using the same fixed loadings from step 1 (and one-hot vectors), as well as the ash priors <span class="math inline">\(g_f\)</span> obtained in step 2, I backfit a FLASH object to the strong tests to get posterior means and variances.</p></li>
 </ol>
 </div>
 <div id="comments-on-mash-fit" class="section level2">
 <h2>Comments on MASH fit</h2>
-<p>TODO</p>
+<pre class="r"><code>m.random &lt;- readRDS(&quot;./output/gtex2mrandfit.rds&quot;)
+m &lt;- readRDS(&quot;./output/gtex2mfit.rds&quot;)</code></pre>
+<p>It took 2.4 minutes to run Extreme Deconvolution to find “data-driven” covariance matrices. The MASH fit on the random subset of tests (to determine mixture weights) required 2.8 minutes, and the final MASH fit on the “strong” tests required only 18 seconds.</p>
+<p>The estimated mixture weights were as follows. Note in particular that there are large weights on the data-driven matrices “ED_tPCA” and “ED_PCA_2”, as well as on the canonical “equal_effects” matrix. There are moderate weights on the null matrix, some unique effects (including Testis, Thyroid, and Cells_Transformed_fibroblasts), and two of the canonical “simple_het” matrices (where effect sizes are assumed to be of equal variance and equally correlated, with correlation coefficients of, respectively, 0.25 and 0.5).</p>
+<pre class="r"><code>barplot(get_estimated_pi(m.random), las = 2, cex.names = 0.4)</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/mixwts-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Correlation plots for the data-driven matrices are as follows. The first (“ED_tPCA”) describes effects that are strongly correlated across a handful of tissues (which, notably, does not include brain tissues).</p>
+<pre class="r"><code>corrplot(m.random$fitted_g$Ulist[[&quot;ED_tPCA&quot;]], tl.cex=0.5)</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/corr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The second (“ED_PCA_2”) describes a pattern of strong correlation among brain tissues and, interestingly, strong anti-correlation with whole blood.</p>
+<pre class="r"><code>corrplot(m.random$fitted_g$Ulist[[&quot;ED_PCA_2&quot;]], tl.cex=0.5)</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/corr2-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="comments-on-flash-fit" class="section level2">
 <h2>Comments on FLASH fit</h2>
-<p>First I load the fits.</p>
-<pre class="r"><code>m &lt;- readRDS(&quot;./output/gtex2mfit.rds&quot;)
-flash_fit.strong &lt;- readRDS(&quot;./output/gtexstrongfit.rds&quot;)
+<pre class="r"><code>flash_fit.strong &lt;- readRDS(&quot;./output/gtexstrongfit.rds&quot;)
 fl.strong &lt;- flash_fit.strong$fits$OHL
 flash_fit.random &lt;- readRDS(&quot;./output/gtexrandomfit.rds&quot;)
 fl.random &lt;- flash_fit.random$fit
@@ -457,18 +498,108 @@ fl &lt;- flash_fit.final$fit</code></pre>
 <pre class="r"><code>strong.pve &lt;- flash_get_pve(fl.strong)
 barplot(strong.pve[2:75], ylim=c(0, .03), main=&quot;PVE for strong fit&quot;, names.arg=2:75)</code></pre>
 <p><img src="figure/MASHvFLASHgtex2.Rmd/pve.strong-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of pve.strong-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/pve.strong-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <ol start="2" style="list-style-type: decimal">
 <li>4.0 minutes were needed to fit the 75 fixed loadings from step 1 to the random subset of tests. Now the first factor explains only 21% of the variance, and the PVE of the remaining factors is as follows.</li>
 </ol>
 <pre class="r"><code>random.pve &lt;- flash_get_pve(fl.random)
 barplot(random.pve[2:75], ylim=c(0, .03), main=&quot;PVE for random fit&quot;, names.arg=2:75)</code></pre>
 <p><img src="figure/MASHvFLASHgtex2.Rmd/pve.random-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of pve.random-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/pve.random-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <ol start="3" style="list-style-type: decimal">
-<li>The final backfitting (using the fixed loadings from step 1 and the priors on the factors from step 2) took 13.4 minutes. (Recall that I am using ash priors. Point-normal priors would likely require less time.) The first factor now explains 76% of the variance, with the PVE of the remaining factors as follows.</li>
+<li>The final backfitting (using the fixed loadings from step 1 and the priors on the factors from step 2) took 13.4 minutes. (Recall that I am using ash priors. Point-normal priors would likely require less time.) The first factor now explains 76% of the variance, with the PVE of the remaining factors as follows. (The moderately-sized PVE at index 61 corresponds to the one-hot vector for Pancreas).</li>
 </ol>
 <pre class="r"><code>final.pve &lt;- flash_get_pve(fl)
 barplot(final.pve[2:75], ylim=c(0, .03), main=&quot;PVE for final fit&quot;, names.arg=2:75)</code></pre>
 <p><img src="figure/MASHvFLASHgtex2.Rmd/pve.final-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of pve.final-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/pve.final-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="mash-v-flash-initial-observations" class="section level2">
 <h2>MASH v FLASH initial observations</h2>
@@ -501,7 +632,7 @@ mash_signif FALSE  TRUE
 </div>
 <div id="choosing-a-significance-threshold" class="section level2">
 <h2>Choosing a significance threshold</h2>
-<p>Note that (as pointed out in my previous <a href="MASHvFLASHgtex.html">GTEx analysis</a>) FLASH is more conservative than MASH. To achieve the greatest similarity between fits, I calibrate thresholds before comparing MASH and FLASH on individual tests. Setting the FLASH significance threshold at 5%, I set the threshold for MASH at the level that gives the greatest possible agreement between FLASH and MASH.</p>
+<p>Note that (as pointed out in my previous <a href="MASHvFLASHgtex.html">analysis</a> of GTEx data) FLASH is more conservative than MASH. To achieve the greatest similarity between fits, I calibrate thresholds before comparing MASH and FLASH on individual tests. Setting the FLASH significance threshold at 5%, I set the threshold for MASH at the level that gives the greatest possible agreement between FLASH and MASH.</p>
 <pre class="r"><code>calibrate_t &lt;- function(t) {
   mash_signif &lt;- m.lfsr &lt;= t
   flash_signif &lt;- fl.lfsr &lt;= .05
@@ -514,6 +645,36 @@ for (j in 1:length(ts)) {
 }
 plot(ts, calibrated, type=&#39;l&#39;, xlab=&quot;MASH threshold&quot;, ylab=&quot;% agreement&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHgtex2.Rmd/calibrate-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of calibrate-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/calibrate-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>The maximum agreement occurs at:</p>
 <pre class="r"><code>mash_t &lt;- ts[which.max(calibrated)]
 mash_t</code></pre>
@@ -524,7 +685,7 @@ mash_t</code></pre>
 <h2>Effects significant in FLASH but not MASH</h2>
 <p>In the plots below, I examine tests with regard to which FLASH and MASH strongly disagree.</p>
 <p>There are six tests for which there are 26 or more conditions that FLASH finds significant but MASH does not. They are all tests with a very large effect size in a single condition. Whereas MASH tends to only find this one condition to be significant, FLASH often finds that other conditions share a smaller yet significant effect (this effect is often roughly identical either among all conditions or separately among brain and non-brain tissues). It is worth noting that my <a href="MASHvFLASHsims2.html">detailed simulation study</a> found that MASH had especially low power on a combination of small effects shared among conditions and a large effect unique to a single condition. Thus FLASH might very well match the reality of the situation in these cases.</p>
-<p>The raw effects are plotted as hollow circles. The FLASH posterior means are plotted as squares, with significant effects (LFSR <span class="math inline">\(\le .05\)</span>) colored light red and highly significant effects (LFSR <span class="math inline">\(\le .01\)</span>) colored dark red. MASH posterior means are plotted as triangles, with significant effects (LFSR <span class="math inline">\(\le 0.018\)</span>) colored light blue and highly significant effects (LFSR <span class="math inline">\(\le \frac{0.018}{5}\)</span>) colored dark blue.</p>
+<p>The raw <span class="math inline">\(z\)</span>-scores are plotted as hollow circles. The FLASH posterior means are plotted as squares, with significant effects (LFSR <span class="math inline">\(\le .05\)</span>) colored light red and highly significant effects (LFSR <span class="math inline">\(\le .01\)</span>) colored dark red. MASH posterior means are plotted as triangles, with significant effects (LFSR <span class="math inline">\(\le 0.018\)</span>) colored light blue and highly significant effects (LFSR <span class="math inline">\(\le \frac{0.018}{5}\)</span>) colored dark blue.</p>
 <pre class="r"><code>gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
 strong &lt;- gtex$strong.z
 
@@ -555,12 +716,192 @@ legend_loc = c(&quot;bottomleft&quot;, &quot;topleft&quot;, &quot;bottomleft&quo
 for (i in 1:length(ex_flnotm)) {
   plot_comparison(ex_flnotm[i], legend_loc[i])
 }</code></pre>
-<p><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flnotm-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flnotm-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flnotm-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flnotm-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flnotm-2.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flnotm-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flnotm-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flnotm-3.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flnotm-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flnotm-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flnotm-4.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flnotm-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flnotm-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flnotm-5.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flnotm-6.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flnotm-6.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flnotm-6.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="effects-significant-in-mash-but-not-flash" class="section level2">
 <h2>Effects significant in MASH but not FLASH</h2>
-<p>There are seven tests in which MASH declares significant 36 or more conditions that FLASH finds to be insignficant. I find these results to be more puzzling than the above results. It is clear that MASH is finding “identical effects” in most of these examples (6278, 10243, 12011, 12987, 15355), and it is true that these are all cases in which the mean effect size is located away from zero. But it’s not immediately clear that the latter is not simply the result of chance.</p>
-<p>The other two examples (428 and 10404) are even more baffling. Here both MASH and FLASH find an effect that is shared among brain tissues, but MASH finds smaller (and uneven) significant effects in nearly all of the other conditions. I don’t know what’s happening here.</p>
+<p>There are seven tests for which MASH declares significant 36 or more conditions that FLASH finds to be insignficant. I find these results to be more puzzling than the above results. It is clear that MASH is finding “identical effects” in most of these examples (6278, 10243, 12011, 12987, 15355), and it is true that these are all cases in which the mean effect size is located away from zero. But it’s not immediately clear that the latter is not simply the result of chance.</p>
+<p>The other two examples (428 and 10404) are fairly baffling. Here both MASH and FLASH find an effect that is shared among brain tissues, but MASH finds smaller (and uneven) significant effects in nearly all of the other conditions. I don’t know what’s happening here.</p>
 <pre class="r"><code>mnotfl &lt;- !fl.signif &amp; m.signif
 ex_mnotfl &lt;- which(colSums(mnotfl) &gt;= 36)
 
@@ -568,11 +909,221 @@ legend_loc = c(&quot;topright&quot;, &quot;bottomright&quot;, &quot;topleft&quot
 for (i in 1:length(ex_mnotfl)) {
   plot_comparison(ex_mnotfl[i], legend_loc[i])
 }</code></pre>
-<p><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mnotfl-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/mnotfl-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mnotfl-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/mnotfl-2.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mnotfl-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/mnotfl-3.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mnotfl-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/mnotfl-4.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mnotfl-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/mnotfl-5.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-6.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mnotfl-6.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/mnotfl-6.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-7.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mnotfl-7.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/mnotfl-7.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="tests-for-which-mash-and-flash-agree" class="section level2">
 <h2>Tests for which MASH and FLASH agree</h2>
-<p>The following are all examples in which MASH and FLASH agree for all conditions. (There are many such examples; I sampled six of them at random.) The first five examples are all cases in which effects are uniformly large and obvious. The last example (14815) is more interesting.</p>
+<p>The following are all examples in which MASH and FLASH agree for all conditions. (There are many such examples — I sampled six of them at random.) The first five examples are all cases in which effects are uniformly large and obvious. The last example (14815) is more interesting.</p>
 <pre class="r"><code>agree &lt;- which(colSums(flnotm) == 0 &amp; colSums(mnotfl) == 0)
 set.seed(1)
 agree &lt;- sample(agree, 6)
@@ -581,7 +1132,187 @@ legend_loc = c(&quot;bottomleft&quot;, &quot;bottomright&quot;, &quot;topleft&qu
 for (i in 1:length(agree)) {
   plot_comparison(agree[i], legend_loc[i])
 }</code></pre>
-<p><img src="figure/MASHvFLASHgtex2.Rmd/agree-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/agree-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of agree-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/agree-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/agree-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of agree-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/agree-2.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/agree-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of agree-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/agree-3.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/agree-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of agree-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/agree-4.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/agree-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of agree-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/agree-5.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/agree-6.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of agree-6.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/agree-6.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="flash-factors" class="section level2">
 <h2>FLASH factors</h2>
@@ -595,7 +1326,157 @@ fl.l &lt;- flash_get_l(fl)
 for(i in 1:30){
   barplot(fl.l[, i], main=paste0(&#39;Factor &#39;, i, &#39;: pve = &#39;, round(final.pve[i], 4)), las=2, cex.names = 0.4, col=as.character(gtex.colors), names=&quot;&quot;)
 }</code></pre>
-<p><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_factors-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flash_factors-1.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_factors-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flash_factors-2.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_factors-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flash_factors-3.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_factors-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flash_factors-4.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_factors-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/89b9e6961fa70dbbe8556ee7ab38517bfcd1ae83/docs/figure/MASHvFLASHgtex2.Rmd/flash_factors-5.png" target="_blank">89b9e69</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
@@ -610,31 +1491,40 @@ gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/bl
 strong &lt;- gtex$strong.z
 random &lt;- gtex$random.z
 
+
 # MASH ------------------------------------------------------------------
 mdata.strong &lt;- mash_set_data(strong, Shat = 1)
 mdata.random &lt;- mash_set_data(random, Shat = 1)
 
 # 1. Learn &quot;data-driven&quot; loadings using &quot;strong&quot; tests
+start_time &lt;- Sys.time()
 U.pca &lt;- cov_pca(mdata.strong, 5)
 U.ed &lt;- cov_ed(mdata.strong, U.pca)
+ed_time &lt;- Sys.time() - start_time
 
 # 2. Fit the model to the random tests to learn mixture weights
 U.c &lt;- cov_canonical(mdata.random)
-m &lt;- mash(mdata.random, Ulist = c(U.ed,U.c))
-m.pi &lt;- get_estimated_pi(m)
+start_time &lt;- Sys.time()
+m.random &lt;- mash(mdata.random, Ulist = c(U.ed,U.c))
+mrand_time &lt;- Sys.time() - start_time
+saveRDS(m.random, &quot;./output/gtex2mrandfit.rds&quot;)
+
+m.pi &lt;- get_estimated_pi(m.random)
 m.pi[m.pi &gt; .00005] * 20000 # not sparse!
-corrplot(m$fitted_g$Ulist[[&quot;ED_tPCA&quot;]])
-corrplot(m$fitted_g$Ulist[[&quot;ED_PCA_2&quot;]])
-corrplot(m$fitted_g$Ulist[[&quot;simple_het_2&quot;]])
-random.lfsr &lt;- get_lfsr(m)
+corrplot(m.random$fitted_g$Ulist[[&quot;ED_tPCA&quot;]])
+corrplot(m.random$fitted_g$Ulist[[&quot;ED_PCA_2&quot;]])
+corrplot(m.random$fitted_g$Ulist[[&quot;simple_het_2&quot;]])
+random.lfsr &lt;- get_lfsr(m.random)
 sum (random.lfsr &gt; .05) / length(random.lfsr) # 0.76
 
 # 3. Compute posterior summaries on the strong tests
-m2 &lt;- mash(mdata.strong, g=get_fitted_g(m), fixg=TRUE)
-saveRDS(m2, &quot;./output/gtex2mfit.rds&quot;)
-m.lfsr &lt;- get_lfsr(m2)
+start_time &lt;- Sys.time()
+m &lt;- mash(mdata.strong, g=get_fitted_g(m.random), fixg=TRUE)
+m_time &lt;- Sys.time() - start_time
+saveRDS(m, &quot;./output/gtex2mfit.rds&quot;)
+m.lfsr &lt;- get_lfsr(m)
 sum(m.lfsr &gt; .05) / length(m.lfsr) # 0.44
-get_loglik(m2) # -1353494
+get_loglik(m) # -1353494
 
 
 # FLASH -----------------------------------------------------------------
@@ -787,7 +1677,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] mashr_0.2-7  ashr_2.2-7   flashr_0.5-8
+[1] corrplot_0.84 mashr_0.2-7   ashr_2.2-7    flashr_0.5-8 
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17        pillar_1.2.1        plyr_1.8.4         
