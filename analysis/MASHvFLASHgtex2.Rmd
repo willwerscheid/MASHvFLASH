@@ -1,0 +1,222 @@
+---
+title: "MASH v FLASH detailed GTEx study"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+library(mashr)
+```
+
+## Introduction
+
+Here I return to the GTEx data in order to try to determine when MASH and FLASH fits lead to different conclusions. Further, instead of simply comparing MASH and FLASH on a random subset of tests, I follow a workflow analogous to the one suggested for the GTEx data in this [MASH vignette](https://stephenslab.github.io/mashr/articles/eQTL_outline.html). 
+
+
+## Fitting Methods
+
+For MASH, I follow the workflow in the vignette linked above, except that I assume that the null tests are uncorrelated (that is, I set $V = I$). This is almost certainly not the case, but we have not yet carefully looked into how to handle the case $V \ne I$ in FLASH.
+
+The workflow for FLASH proceeds along similar lines to the workflow for MASH:
+
+1. Using the "OHL" method described in my [simulation study](MASHvFLASHsims.html), I first fit a FLASH object to the "strong" tests (these tests correspond to the "top" eQTL for each gene --- that is, the eQTL with the single most significant raw effect). As I point out in the [vignette](intro.html), I expect the FLASH loadings to say something about how the strong effects covary. Thus this step is analogous to producing "data-driven" covariance matrices in MASH.
+
+2. Now I fix the loadings from the first model at their expectation $EL$ and add them as *fixed* loadings to a FLASH object. (As usual, I also add a set of 44 fixed one-hot vectors, which can be viewed as analogous to the "canonical" covariance matrices in MASH. See my discussion in this [vignette](intro.html).) With the loadings fixed, I backfit a FLASH object to the *random* subset of tests to obtain priors $g_f$ on the factors. I use the random subset rather than the "strong" subset because I want the priors to hold generally, and not just for the strong tests. (For this analysis, I use ash priors rather than point-normal priors, despite my [results](MASHvFLASHsims2.html) suggesting that ash priors provide little benefit. Due to a bug in the `ebnm` package, I cannot at present fix $g_f$ using point-normal priors.)
+
+3. Finally, using the same fixed loadings from step 1 (and one-hot vectors), as well as the ash priors $g_f$ obtained in step 2, I backfit a FLASH object to the strong tests to get posterior means and variances.
+
+
+## Comments on MASH fit
+
+TODO
+
+## Comments on FLASH fit
+
+First I load the fits.
+
+```{r load_fits}
+m <- readRDS("./output/gtex2mfit.rds")
+flash_fit.strong <- readRDS("./output/gtexstrongfit.rds")
+fl.strong <- flash_fit.strong$fits$OHL
+flash_fit.random <- readRDS("./output/gtexrandomfit.rds")
+fl.random <- flash_fit.random$fit
+flash_fit.final <- readRDS("./output/gtex2flfit.rds")
+fl <- flash_fit.final$fit
+```
+
+1. 18.7 minutes were required to greedily add 31 factor/loadings (the last of which was zeroed out) and then backfit both the greedily added factor/loadings and the 44 one-hot vectors added as fixed loadings. (To view plots of the factors, scroll down to the "FLASH factors" section below.) The first factor explains 73% of the variance. The PVE of the remaining factor/loadings is as follows.
+
+```{r pve.strong}
+strong.pve <- flash_get_pve(fl.strong)
+barplot(strong.pve[2:75], ylim=c(0, .03), main="PVE for strong fit", names.arg=2:75)
+```
+
+2. 4.0 minutes were needed to fit the 75 fixed loadings from step 1 to the random subset of tests. Now the first factor explains only 21% of the variance, and the PVE of the remaining factors is as follows.
+
+```{r pve.random}
+random.pve <- flash_get_pve(fl.random)
+barplot(random.pve[2:75], ylim=c(0, .03), main="PVE for random fit", names.arg=2:75)
+```
+
+3. The final backfitting (using the fixed loadings from step 1 and the priors on the factors from step 2) took 13.4 minutes. (Recall that I am using ash priors. Point-normal priors would likely require less time.) The first factor now explains 76% of the variance, with the PVE of the remaining factors as follows.
+
+```{r pve.final}
+final.pve <- flash_get_pve(fl)
+barplot(final.pve[2:75], ylim=c(0, .03), main="PVE for final fit", names.arg=2:75)
+```
+
+
+## MASH v FLASH initial observations
+
+The posterior means are mostly similar (correlation coefficient = 0.98), but there do seem to be important discrepancies. (The dashed line below plots $y = x$.)
+
+![](images/gtex2compare.png)
+
+Indeed, at both 5% and 1% significance levels, MASH and FLASH disagree in about 17-18% of cases.
+
+```{r lfsr}
+m.pm <- t(get_pm(m))
+fl.pm <- flash_get_lf(fl)
+m.lfsr <- t(get_lfsr(m))
+fl.lfsr <- readRDS("./output/gtex2lfsr.rds")
+confusion_matrix <- function(t) {
+  mash_signif <- m.lfsr <= t
+  flash_signif <- fl.lfsr <= t
+  round(table(mash_signif, flash_signif)
+        / length(mash_signif), digits=3)
+}
+confusion_matrix(.05)
+confusion_matrix(.01)
+```
+
+
+## Choosing a significance threshold
+
+Note that (as pointed out in my previous [GTEx analysis](MASHvFLASHgtex.html)) FLASH is more conservative than MASH. To achieve the greatest similarity between fits, I calibrate thresholds before comparing MASH and FLASH on individual tests. Setting the FLASH significance threshold at 5%, I set the threshold for MASH at the level that gives the greatest possible agreement between FLASH and MASH.
+
+```{r calibrate}
+calibrate_t <- function(t) {
+  mash_signif <- m.lfsr <= t
+  flash_signif <- fl.lfsr <= .05
+  (sum(mash_signif & flash_signif) + sum(!mash_signif & !flash_signif)) / length(mash_signif)
+}
+ts <- seq(.001, .15, by=.001)
+calibrated <- rep(0, length(ts))
+for (j in 1:length(ts)) {
+  calibrated[j] <- calibrate_t(ts[j])
+}
+plot(ts, calibrated, type='l', xlab="MASH threshold", ylab="% agreement")
+```
+
+The maximum agreement occurs at:
+```{r calibrate2}
+mash_t <- ts[which.max(calibrated)]
+mash_t
+```
+
+So, I will adjust for the relative conservativeness of FLASH by declaring effects significant according to FLASH when they have an LFSR $\le 0.05$ and significant according to MASH when they have an LFSR $\le 0.018$.  
+
+
+## Effects significant in FLASH but not MASH
+
+In the plots below, I examine tests with regard to which FLASH and MASH strongly disagree. 
+
+There are six tests for which there are 26 or more conditions that FLASH finds significant but MASH does not. They are all tests with a very large effect size in a single condition. Whereas MASH tends to only find this one condition to be significant, FLASH often finds that other conditions share a smaller yet significant effect (this effect is often roughly identical either among all conditions or separately among brain and non-brain tissues). It is worth noting that my [detailed simulation study](MASHvFLASHsims2.html) found that MASH had especially low power on a combination of small effects shared among conditions and a large effect unique to a single condition. Thus FLASH might very well match the reality of the situation in these cases.
+
+The raw effects are plotted as hollow circles. The FLASH posterior means are plotted as squares, with significant effects (LFSR $\le .05$) colored light red and highly significant effects (LFSR $\le .01$) colored dark red. MASH posterior means are plotted as triangles, with significant effects (LFSR $\le 0.018$) colored light blue and highly significant effects (LFSR $\le \frac{0.018}{5}$) colored dark blue.
+
+```{r flnotm}
+gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
+strong <- gtex$strong.z
+
+plot_comparison <- function(n, legend_loc) {
+  plot(strong[n, ], pch=1, col="black", ylab="",
+       main=paste0("Test #", n))
+  col = rep("peachpuff", 44)
+  col[fl.lfsr[, n] <= .05] <- "tomato"
+  col[fl.lfsr[, n] <= .01] <- "tomato4"
+  points(fl.pm[, n], pch=15, col=col, cex=.8)
+  col = rep("peachpuff", 44)
+  col[m.lfsr[, n] <= mash_t] <- "turquoise"
+  col[m.lfsr[, n] <= mash_t/5] <- "slateblue4"
+  points(m.pm[, n], pch=17, col=col, cex=.8)
+  abline(0, 0)
+  # segments(6.5, -1, 6.5, 1)
+  # segments(16.5, -1, 16.5, 1)
+  legend(x=legend_loc, legend=c("raw z-score", "flash pm", "mash pm"), pch=c(1, 15, 17), col=c("black", "tomato4", "slateblue4"))
+}
+
+fl.signif <- fl.lfsr <= .05
+m.signif <- m.lfsr <= mash_t
+
+flnotm <- fl.signif & !m.signif
+ex_flnotm <- which(colSums(flnotm) >= 26)
+
+legend_loc = c("bottomleft", "topleft", "bottomleft", "topleft", "bottomleft", "topleft")
+for (i in 1:length(ex_flnotm)) {
+  plot_comparison(ex_flnotm[i], legend_loc[i])
+}
+```
+
+
+## Effects significant in MASH but not FLASH
+
+There are seven tests in which MASH declares significant 36 or more conditions that FLASH finds to be insignficant. I find these results to be more puzzling than the above results. It is clear that MASH is finding "identical effects" in most of these examples (6278, 10243, 12011, 12987, 15355), and it is true that these are all cases in which the mean effect size is located away from zero. But it's not immediately clear that the latter is not simply the result of chance.
+
+The other two examples (428 and 10404) are even more baffling. Here both MASH and FLASH find an effect that is shared among brain tissues, but MASH finds smaller (and uneven) significant effects in nearly all of the other conditions. I don't know what's happening here.
+
+```{r mnotfl}
+mnotfl <- !fl.signif & m.signif
+ex_mnotfl <- which(colSums(mnotfl) >= 36)
+
+legend_loc = c("topright", "bottomright", "topleft", "topleft", "bottomleft", "topleft", "bottomright")
+for (i in 1:length(ex_mnotfl)) {
+  plot_comparison(ex_mnotfl[i], legend_loc[i])
+}
+```
+
+
+## Tests for which MASH and FLASH agree
+
+The following are all examples in which MASH and FLASH agree for all conditions. (There are many such examples; I sampled six of them at random.) The first five examples are all cases in which effects are uniformly large and obvious. The last example (14815) is more interesting.
+
+```{r agree}
+agree <- which(colSums(flnotm) == 0 & colSums(mnotfl) == 0)
+set.seed(1)
+agree <- sample(agree, 6)
+
+legend_loc = c("bottomleft", "bottomright", "topleft", "topleft", "topleft", "topleft")
+for (i in 1:length(agree)) {
+  plot_comparison(agree[i], legend_loc[i])
+}
+```
+
+
+## FLASH factors
+
+The factors (as fitted on the "strong" tests) are as follows. The PVE given is the proportion of variance explained for the final fit.
+
+```{r flash_factors}
+missing.tissues <- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
+gtex.colors <- read.table("https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE", sep = '\t', comment.char = '')[-missing.tissues, 2]
+
+par(mar=c(1,1,1,1))
+par(mfrow=c(3,2))
+fl.l <- flash_get_l(fl)
+for(i in 1:30){
+  barplot(fl.l[, i], main=paste0('Factor ', i, ': pve = ', round(final.pve[i], 4)), las=2, cex.names = 0.4, col=as.character(gtex.colors), names="")
+}
+```
+
+
+## Code
+
+Click "Code" to view the code used to obtain the above results.
+```{r gtexcode, echo=F, include=F}
+knitr::read_chunk("./code/gtex2.R")
+```
+```{r gtex2, eval=F}
+```
