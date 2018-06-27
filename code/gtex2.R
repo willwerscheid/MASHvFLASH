@@ -10,31 +10,40 @@ gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/maste
 strong <- gtex$strong.z
 random <- gtex$random.z
 
+
 # MASH ------------------------------------------------------------------
 mdata.strong <- mash_set_data(strong, Shat = 1)
 mdata.random <- mash_set_data(random, Shat = 1)
 
 # 1. Learn "data-driven" loadings using "strong" tests
+start_time <- Sys.time()
 U.pca <- cov_pca(mdata.strong, 5)
 U.ed <- cov_ed(mdata.strong, U.pca)
+ed_time <- Sys.time() - start_time
 
 # 2. Fit the model to the random tests to learn mixture weights
 U.c <- cov_canonical(mdata.random)
-m <- mash(mdata.random, Ulist = c(U.ed,U.c))
-m.pi <- get_estimated_pi(m)
+start_time <- Sys.time()
+m.random <- mash(mdata.random, Ulist = c(U.ed,U.c))
+mrand_time <- Sys.time() - start_time
+saveRDS(m.random, "./output/gtex2mrandfit.rds")
+
+m.pi <- get_estimated_pi(m.random)
 m.pi[m.pi > .00005] * 20000 # not sparse!
-corrplot(m$fitted_g$Ulist[["ED_tPCA"]])
-corrplot(m$fitted_g$Ulist[["ED_PCA_2"]])
-corrplot(m$fitted_g$Ulist[["simple_het_2"]])
-random.lfsr <- get_lfsr(m)
+corrplot(m.random$fitted_g$Ulist[["ED_tPCA"]])
+corrplot(m.random$fitted_g$Ulist[["ED_PCA_2"]])
+corrplot(m.random$fitted_g$Ulist[["simple_het_2"]])
+random.lfsr <- get_lfsr(m.random)
 sum (random.lfsr > .05) / length(random.lfsr) # 0.76
 
 # 3. Compute posterior summaries on the strong tests
-m2 <- mash(mdata.strong, g=get_fitted_g(m), fixg=TRUE)
-saveRDS(m2, "./output/gtex2mfit.rds")
-m.lfsr <- get_lfsr(m2)
+start_time <- Sys.time()
+m <- mash(mdata.strong, g=get_fitted_g(m.random), fixg=TRUE)
+m_time <- Sys.time() - start_time
+saveRDS(m, "./output/gtex2mfit.rds")
+m.lfsr <- get_lfsr(m)
 sum(m.lfsr > .05) / length(m.lfsr) # 0.44
-get_loglik(m2) # -1353494
+get_loglik(m) # -1353494
 
 
 # FLASH -----------------------------------------------------------------
@@ -68,7 +77,7 @@ start_time <- Sys.time()
 fl <- flash_backfit(fldata.strong, fl, var_type="zero", ebnm_fn = ebnm_ash,
                     gf=flash_get_gf(fl.random), fixgf=T, nullcheck=F, verbose=T)
 end_time <- Sys.time() - start_time
-# likelihood: -1348502
+# likelihood: -1348503
 flash_fit.final <- list()
 flash_fit.final$fit <- fl
 flash_fit.final$timing <- end_time
@@ -84,7 +93,7 @@ saveRDS(fl.lfsr, "./output/gtex2lfsr.rds")
 sum(fl.lfsr > .05) / length(fl.lfsr) # 0.50
 
 fl.pm <- flash_get_lf(fl)
-m.pm <- t(get_pm(m2))
+m.pm <- t(get_pm(m))
 png("./output/gtex2compare.png")
 plot(as.vector(fl.pm), as.vector(m.pm), xlab="FLASH PM", ylab="MASH PM",
      main="Posterior means on GTEx data", pch='.')
