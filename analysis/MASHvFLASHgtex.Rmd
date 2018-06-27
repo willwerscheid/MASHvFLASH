@@ -94,7 +94,7 @@ confusion_matrix(.01)
 
 ## Code
 
-Click the "Code" button to view the code used to obtain the above results.
+Click "Code" to view the code used to obtain the above results.
 ```{r gtexcode, echo=F, include=F}
 knitr::read_chunk("./code/gtex.R")
 ```
