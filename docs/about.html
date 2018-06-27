@@ -184,9 +184,6 @@ $(document).ready(function () {
 <li>
   <a href="about.html">About</a>
 </li>
-<li>
-  <a href="license.html">License</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -216,7 +213,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-09</p>
+<p><strong>Last updated:</strong> 2018-06-27</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -225,11 +222,24 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> 3314e19 </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/2ce499f27cbb6623a570da477eda1908d7bfbd39" target="_blank">2ce499f</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    docs/.DS_Store
+    Ignored:    docs/images/.DS_Store
+    Ignored:    output/.DS_Store
+
+Untracked files:
+    Untracked:  output/gtex2mrandfit.rds
+
+Unstaged changes:
+    Modified:   README.md
+    Modified:   code/gtex2.R
+    Modified:   output/gtex2mfit.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -263,7 +273,41 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
-3314e19
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/2ce499f27cbb6623a570da477eda1908d7bfbd39/analysis/about.Rmd" target="_blank">2ce499f</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-27
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/about.Rmd”, “analysis/index.Rmd”))
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/53ca12cfc814dac4103403256f3b2725ae85ff71/docs/about.html" target="_blank">53ca12c</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-09
+</td>
+<td style="text-align:left;">
+initial setup
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/3314e19bf7c33df03ac2fd9ffe73faf33e13d06a/analysis/about.Rmd" target="_blank">3314e19</a>
 </td>
 <td style="text-align:left;">
 Jason Willwerscheid
@@ -280,7 +324,7 @@ Start workflowr project.
 </ul>
 <p></details></p>
 <hr />
-<p>Describe your project.</p>
+<p>One of the primary uses of <code>mashr</code> is to learn about how effects covary across conditions. In a series of analyses, I explore how <code>flashr</code> might be used to similar ends by comparing MASH and FLASH fits to simulated and real datasets.</p>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
