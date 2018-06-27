@@ -9,36 +9,56 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
 library(mashr)
+library(corrplot)
 ```
 
 ## Introduction
 
-Here I return to the GTEx data in order to try to determine when MASH and FLASH fits lead to different conclusions. Further, instead of simply comparing MASH and FLASH on a random subset of tests, I follow a workflow analogous to the one suggested for the GTEx data in this [MASH vignette](https://stephenslab.github.io/mashr/articles/eQTL_outline.html). 
+Here I return to the GTEx data in order to examine cases where MASH and FLASH lead to different conclusions. While my previous [analysis](MASHvFLASHgtex.html) compared MASH and FLASH fits on a random subset of tests, here I follow a workflow analogous to the one suggested for the GTEx data in this [MASH vignette](https://stephenslab.github.io/mashr/articles/eQTL_outline.html). 
 
 
 ## Fitting Methods
 
-For MASH, I follow the workflow in the vignette linked above, except that I assume that the null tests are uncorrelated (that is, I set $V = I$). This is almost certainly not the case, but we have not yet carefully looked into how to handle the case $V \ne I$ in FLASH.
+For MASH, I follow the workflow in the vignette linked above, except that I assume that the null tests are uncorrelated (that is, I set $V = I$). This is almost certainly not the case, but some more work needs to be done before we can handle the case $V \ne I$ in FLASH.
 
 The workflow for FLASH proceeds along similar lines to the workflow for MASH:
 
-1. Using the "OHL" method described in my [simulation study](MASHvFLASHsims.html), I first fit a FLASH object to the "strong" tests (these tests correspond to the "top" eQTL for each gene --- that is, the eQTL with the single most significant raw effect). As I point out in the [vignette](intro.html), I expect the FLASH loadings to say something about how the strong effects covary. Thus this step is analogous to producing "data-driven" covariance matrices in MASH.
+1. Using the "OHL" method described in my [simulation study](MASHvFLASHsims.html), I fit a FLASH object to the "strong" tests (which correspond to the "top" eQTL for each gene --- that is, the eQTL with the largest (absolute) raw $z$-score). As I point out in my MASH v FLASH [vignette](intro.html), I expect the FLASH loadings to say something about how the strong effects covary. Thus this step is analogous to producing "data-driven" covariance matrices in MASH.
 
-2. Now I fix the loadings from the first model at their expectation $EL$ and add them as *fixed* loadings to a FLASH object. (As usual, I also add a set of 44 fixed one-hot vectors, which can be viewed as analogous to the "canonical" covariance matrices in MASH. See my discussion in this [vignette](intro.html).) With the loadings fixed, I backfit a FLASH object to the *random* subset of tests to obtain priors $g_f$ on the factors. I use the random subset rather than the "strong" subset because I want the priors to hold generally, and not just for the strong tests. (For this analysis, I use ash priors rather than point-normal priors, despite my [results](MASHvFLASHsims2.html) suggesting that ash priors provide little benefit. Due to a bug in the `ebnm` package, I cannot at present fix $g_f$ using point-normal priors.)
+2. Now I fix the loadings from the first model at their expectation $EL$ and add them as *fixed* loadings to a FLASH object. (As usual, I also add a set of 44 fixed one-hot vectors, which can be viewed as analogous to the "canonical" covariance matrices in MASH. See the discussion in my [vignette](intro.html).) With the loadings fixed, I backfit a FLASH object to the random subset of tests to obtain priors $g_f$ on the factors. I use the random subset rather than the "strong" subset because I want the priors to hold generally, and not just for the strong tests. (For this analysis, I use ash priors rather than point-normal priors, despite [results](MASHvFLASHsims2.html) suggesting that ash priors provide little benefit. Due to a bug in the `ebnm` package, I cannot at present fix $g_f$ using point-normal priors.)
 
 3. Finally, using the same fixed loadings from step 1 (and one-hot vectors), as well as the ash priors $g_f$ obtained in step 2, I backfit a FLASH object to the strong tests to get posterior means and variances.
 
 
 ## Comments on MASH fit
 
-TODO
+```{r load_mash}
+m.random <- readRDS("./output/gtex2mrandfit.rds")
+m <- readRDS("./output/gtex2mfit.rds")
+```
+
+It took 2.4 minutes to run Extreme Deconvolution to find "data-driven" covariance matrices. The MASH fit on the random subset of tests (to determine mixture weights) required 2.8 minutes, and the final MASH fit on the "strong" tests required only 18 seconds.
+
+The estimated mixture weights were as follows. Note in particular that there are large weights on the data-driven matrices "ED_tPCA" and "ED_PCA_2", as well as on the canonical "equal_effects" matrix. There are moderate weights on the null matrix, some unique effects (including Testis, Thyroid, and Cells_Transformed_fibroblasts), and two of the canonical "simple_het" matrices (where effect sizes are assumed to be of equal variance and equally correlated, with correlation coefficients of, respectively, 0.25 and 0.5).
+```{r mixwts}
+barplot(get_estimated_pi(m.random), las = 2, cex.names = 0.4)
+```
+
+Correlation plots for the data-driven matrices are as follows. The first ("ED_tPCA") describes effects that are strongly correlated across a handful of tissues (which, notably, does not include brain tissues). 
+
+```{r corr}
+corrplot(m.random$fitted_g$Ulist[["ED_tPCA"]], tl.cex=0.5)
+```
+
+The second ("ED_PCA_2") describes a pattern of strong correlation among brain tissues and, interestingly, strong anti-correlation with whole blood.
+
+```{r corr2}
+corrplot(m.random$fitted_g$Ulist[["ED_PCA_2"]], tl.cex=0.5)
+```
 
 ## Comments on FLASH fit
 
-First I load the fits.
-
-```{r load_fits}
-m <- readRDS("./output/gtex2mfit.rds")
+```{r load_flash}
 flash_fit.strong <- readRDS("./output/gtexstrongfit.rds")
 fl.strong <- flash_fit.strong$fits$OHL
 flash_fit.random <- readRDS("./output/gtexrandomfit.rds")
@@ -61,7 +81,7 @@ random.pve <- flash_get_pve(fl.random)
 barplot(random.pve[2:75], ylim=c(0, .03), main="PVE for random fit", names.arg=2:75)
 ```
 
-3. The final backfitting (using the fixed loadings from step 1 and the priors on the factors from step 2) took 13.4 minutes. (Recall that I am using ash priors. Point-normal priors would likely require less time.) The first factor now explains 76% of the variance, with the PVE of the remaining factors as follows.
+3. The final backfitting (using the fixed loadings from step 1 and the priors on the factors from step 2) took 13.4 minutes. (Recall that I am using ash priors. Point-normal priors would likely require less time.) The first factor now explains 76% of the variance, with the PVE of the remaining factors as follows. (The moderately-sized PVE at index 61 corresponds to the one-hot vector for Pancreas).
 
 ```{r pve.final}
 final.pve <- flash_get_pve(fl)
@@ -95,7 +115,7 @@ confusion_matrix(.01)
 
 ## Choosing a significance threshold
 
-Note that (as pointed out in my previous [GTEx analysis](MASHvFLASHgtex.html)) FLASH is more conservative than MASH. To achieve the greatest similarity between fits, I calibrate thresholds before comparing MASH and FLASH on individual tests. Setting the FLASH significance threshold at 5%, I set the threshold for MASH at the level that gives the greatest possible agreement between FLASH and MASH.
+Note that (as pointed out in my previous [analysis](MASHvFLASHgtex.html) of GTEx data) FLASH is more conservative than MASH. To achieve the greatest similarity between fits, I calibrate thresholds before comparing MASH and FLASH on individual tests. Setting the FLASH significance threshold at 5%, I set the threshold for MASH at the level that gives the greatest possible agreement between FLASH and MASH.
 
 ```{r calibrate}
 calibrate_t <- function(t) {
@@ -126,7 +146,7 @@ In the plots below, I examine tests with regard to which FLASH and MASH strongly
 
 There are six tests for which there are 26 or more conditions that FLASH finds significant but MASH does not. They are all tests with a very large effect size in a single condition. Whereas MASH tends to only find this one condition to be significant, FLASH often finds that other conditions share a smaller yet significant effect (this effect is often roughly identical either among all conditions or separately among brain and non-brain tissues). It is worth noting that my [detailed simulation study](MASHvFLASHsims2.html) found that MASH had especially low power on a combination of small effects shared among conditions and a large effect unique to a single condition. Thus FLASH might very well match the reality of the situation in these cases.
 
-The raw effects are plotted as hollow circles. The FLASH posterior means are plotted as squares, with significant effects (LFSR $\le .05$) colored light red and highly significant effects (LFSR $\le .01$) colored dark red. MASH posterior means are plotted as triangles, with significant effects (LFSR $\le 0.018$) colored light blue and highly significant effects (LFSR $\le \frac{0.018}{5}$) colored dark blue.
+The raw $z$-scores are plotted as hollow circles. The FLASH posterior means are plotted as squares, with significant effects (LFSR $\le .05$) colored light red and highly significant effects (LFSR $\le .01$) colored dark red. MASH posterior means are plotted as triangles, with significant effects (LFSR $\le 0.018$) colored light blue and highly significant effects (LFSR $\le \frac{0.018}{5}$) colored dark blue.
 
 ```{r flnotm}
 gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
@@ -164,9 +184,9 @@ for (i in 1:length(ex_flnotm)) {
 
 ## Effects significant in MASH but not FLASH
 
-There are seven tests in which MASH declares significant 36 or more conditions that FLASH finds to be insignficant. I find these results to be more puzzling than the above results. It is clear that MASH is finding "identical effects" in most of these examples (6278, 10243, 12011, 12987, 15355), and it is true that these are all cases in which the mean effect size is located away from zero. But it's not immediately clear that the latter is not simply the result of chance.
+There are seven tests for which MASH declares significant 36 or more conditions that FLASH finds to be insignficant. I find these results to be more puzzling than the above results. It is clear that MASH is finding "identical effects" in most of these examples (6278, 10243, 12011, 12987, 15355), and it is true that these are all cases in which the mean effect size is located away from zero. But it's not immediately clear that the latter is not simply the result of chance.
 
-The other two examples (428 and 10404) are even more baffling. Here both MASH and FLASH find an effect that is shared among brain tissues, but MASH finds smaller (and uneven) significant effects in nearly all of the other conditions. I don't know what's happening here.
+The other two examples (428 and 10404) are fairly baffling. Here both MASH and FLASH find an effect that is shared among brain tissues, but MASH finds smaller (and uneven) significant effects in nearly all of the other conditions. I don't know what's happening here.
 
 ```{r mnotfl}
 mnotfl <- !fl.signif & m.signif
@@ -181,7 +201,7 @@ for (i in 1:length(ex_mnotfl)) {
 
 ## Tests for which MASH and FLASH agree
 
-The following are all examples in which MASH and FLASH agree for all conditions. (There are many such examples; I sampled six of them at random.) The first five examples are all cases in which effects are uniformly large and obvious. The last example (14815) is more interesting.
+The following are all examples in which MASH and FLASH agree for all conditions. (There are many such examples --- I sampled six of them at random.) The first five examples are all cases in which effects are uniformly large and obvious. The last example (14815) is more interesting.
 
 ```{r agree}
 agree <- which(colSums(flnotm) == 0 & colSums(mnotfl) == 0)
