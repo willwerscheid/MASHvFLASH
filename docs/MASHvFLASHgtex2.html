@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>MASH v FLASH detailed GTEx study</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MASHvFLASH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/workflowr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">MASH v FLASH detailed GTEx study</h1>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-06-26</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180609)</code> </summary></p>
+<p>The command <code>set.seed(20180609)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/1ced9081bee45955fbe007db55f7c645f0394ddd" target="_blank">1ced908</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    docs/.DS_Store
+    Ignored:    docs/images/.DS_Store
+    Ignored:    output/.DS_Store
+
+Unstaged changes:
+    Modified:   analysis/MASHvFLASHgtex.Rmd
+    Modified:   code/gtex2.R
+    Modified:   output/gtex2flfit.rds
+    Modified:   output/gtex2lfsr.rds
+    Modified:   output/gtexrandomfit.rds
+    Modified:   output/gtexstrongfit.rds
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1ced9081bee45955fbe007db55f7c645f0394ddd/analysis/MASHvFLASHgtex2.Rmd" target="_blank">1ced908</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHgtex2.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Here I return to the GTEx data in order to try to determine when MASH and FLASH fits lead to different conclusions. Further, instead of simply comparing MASH and FLASH on a random subset of tests, I follow a workflow analogous to the one suggested for the GTEx data in this <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html">MASH vignette</a>.</p>
+</div>
+<div id="fitting-methods" class="section level2">
+<h2>Fitting Methods</h2>
+<p>For MASH, I follow the workflow in the vignette linked above, except that I assume that the null tests are uncorrelated (that is, I set <span class="math inline">\(V = I\)</span>). This is almost certainly not the case, but we have not yet carefully looked into how to handle the case <span class="math inline">\(V \ne I\)</span> in FLASH.</p>
+<p>The workflow for FLASH proceeds along similar lines to the workflow for MASH:</p>
+<ol style="list-style-type: decimal">
+<li><p>Using the “OHL” method described in my <a href="MASHvFLASHsims.html">simulation study</a>, I first fit a FLASH object to the “strong” tests (these tests correspond to the “top” eQTL for each gene — that is, the eQTL with the single most significant raw effect). As I point out in the <a href="intro.html">vignette</a>, I expect the FLASH loadings to say something about how the strong effects covary. Thus this step is analogous to producing “data-driven” covariance matrices in MASH.</p></li>
+<li><p>Now I fix the loadings from the first model at their expectation <span class="math inline">\(EL\)</span> and add them as <em>fixed</em> loadings to a FLASH object. (As usual, I also add a set of 44 fixed one-hot vectors, which can be viewed as analogous to the “canonical” covariance matrices in MASH. See my discussion in this <a href="intro.html">vignette</a>.) With the loadings fixed, I backfit a FLASH object to the <em>random</em> subset of tests to obtain priors <span class="math inline">\(g_f\)</span> on the factors. I use the random subset rather than the “strong” subset because I want the priors to hold generally, and not just for the strong tests. (For this analysis, I use ash priors rather than point-normal priors, despite my <a href="MASHvFLASHsims2.html">results</a> suggesting that ash priors provide little benefit. Due to a bug in the <code>ebnm</code> package, I cannot at present fix <span class="math inline">\(g_f\)</span> using point-normal priors.)</p></li>
+<li><p>Finally, using the same fixed loadings from step 1 (and one-hot vectors), as well as the ash priors <span class="math inline">\(g_f\)</span> obtained in step 2, I backfit a FLASH object to the strong tests to get posterior means and variances.</p></li>
+</ol>
+</div>
+<div id="comments-on-mash-fit" class="section level2">
+<h2>Comments on MASH fit</h2>
+<p>TODO</p>
+</div>
+<div id="comments-on-flash-fit" class="section level2">
+<h2>Comments on FLASH fit</h2>
+<p>First I load the fits.</p>
+<pre class="r"><code>m &lt;- readRDS(&quot;./output/gtex2mfit.rds&quot;)
+flash_fit.strong &lt;- readRDS(&quot;./output/gtexstrongfit.rds&quot;)
+fl.strong &lt;- flash_fit.strong$fits$OHL
+flash_fit.random &lt;- readRDS(&quot;./output/gtexrandomfit.rds&quot;)
+fl.random &lt;- flash_fit.random$fit
+flash_fit.final &lt;- readRDS(&quot;./output/gtex2flfit.rds&quot;)
+fl &lt;- flash_fit.final$fit</code></pre>
+<ol style="list-style-type: decimal">
+<li>18.7 minutes were required to greedily add 31 factor/loadings (the last of which was zeroed out) and then backfit both the greedily added factor/loadings and the 44 one-hot vectors added as fixed loadings. (To view plots of the factors, scroll down to the “FLASH factors” section below.) The first factor explains 73% of the variance. The PVE of the remaining factor/loadings is as follows.</li>
+</ol>
+<pre class="r"><code>strong.pve &lt;- flash_get_pve(fl.strong)
+barplot(strong.pve[2:75], ylim=c(0, .03), main=&quot;PVE for strong fit&quot;, names.arg=2:75)</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/pve.strong-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ol start="2" style="list-style-type: decimal">
+<li>4.0 minutes were needed to fit the 75 fixed loadings from step 1 to the random subset of tests. Now the first factor explains only 21% of the variance, and the PVE of the remaining factors is as follows.</li>
+</ol>
+<pre class="r"><code>random.pve &lt;- flash_get_pve(fl.random)
+barplot(random.pve[2:75], ylim=c(0, .03), main=&quot;PVE for random fit&quot;, names.arg=2:75)</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/pve.random-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ol start="3" style="list-style-type: decimal">
+<li>The final backfitting (using the fixed loadings from step 1 and the priors on the factors from step 2) took 13.4 minutes. (Recall that I am using ash priors. Point-normal priors would likely require less time.) The first factor now explains 76% of the variance, with the PVE of the remaining factors as follows.</li>
+</ol>
+<pre class="r"><code>final.pve &lt;- flash_get_pve(fl)
+barplot(final.pve[2:75], ylim=c(0, .03), main=&quot;PVE for final fit&quot;, names.arg=2:75)</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/pve.final-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="mash-v-flash-initial-observations" class="section level2">
+<h2>MASH v FLASH initial observations</h2>
+<p>The posterior means are mostly similar (correlation coefficient = 0.98), but there do seem to be important discrepancies. (The dashed line below plots <span class="math inline">\(y = x\)</span>.)</p>
+<div class="figure">
+<img src="images/gtex2compare.png" />
+
+</div>
+<p>Indeed, at both 5% and 1% significance levels, MASH and FLASH disagree in about 17-18% of cases.</p>
+<pre class="r"><code>m.pm &lt;- t(get_pm(m))
+fl.pm &lt;- flash_get_lf(fl)
+m.lfsr &lt;- t(get_lfsr(m))
+fl.lfsr &lt;- readRDS(&quot;./output/gtex2lfsr.rds&quot;)
+confusion_matrix &lt;- function(t) {
+  mash_signif &lt;- m.lfsr &lt;= t
+  flash_signif &lt;- fl.lfsr &lt;= t
+  round(table(mash_signif, flash_signif)
+        / length(mash_signif), digits=3)
+}
+confusion_matrix(.05)</code></pre>
+<pre><code>           flash_signif
+mash_signif FALSE  TRUE
+      FALSE 0.378 0.065
+      TRUE  0.119 0.438</code></pre>
+<pre class="r"><code>confusion_matrix(.01)</code></pre>
+<pre><code>           flash_signif
+mash_signif FALSE  TRUE
+      FALSE 0.503 0.045
+      TRUE  0.126 0.326</code></pre>
+</div>
+<div id="choosing-a-significance-threshold" class="section level2">
+<h2>Choosing a significance threshold</h2>
+<p>Note that (as pointed out in my previous <a href="MASHvFLASHgtex.html">GTEx analysis</a>) FLASH is more conservative than MASH. To achieve the greatest similarity between fits, I calibrate thresholds before comparing MASH and FLASH on individual tests. Setting the FLASH significance threshold at 5%, I set the threshold for MASH at the level that gives the greatest possible agreement between FLASH and MASH.</p>
+<pre class="r"><code>calibrate_t &lt;- function(t) {
+  mash_signif &lt;- m.lfsr &lt;= t
+  flash_signif &lt;- fl.lfsr &lt;= .05
+  (sum(mash_signif &amp; flash_signif) + sum(!mash_signif &amp; !flash_signif)) / length(mash_signif)
+}
+ts &lt;- seq(.001, .15, by=.001)
+calibrated &lt;- rep(0, length(ts))
+for (j in 1:length(ts)) {
+  calibrated[j] &lt;- calibrate_t(ts[j])
+}
+plot(ts, calibrated, type=&#39;l&#39;, xlab=&quot;MASH threshold&quot;, ylab=&quot;% agreement&quot;)</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/calibrate-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The maximum agreement occurs at:</p>
+<pre class="r"><code>mash_t &lt;- ts[which.max(calibrated)]
+mash_t</code></pre>
+<pre><code>[1] 0.018</code></pre>
+<p>So, I will adjust for the relative conservativeness of FLASH by declaring effects significant according to FLASH when they have an LFSR <span class="math inline">\(\le 0.05\)</span> and significant according to MASH when they have an LFSR <span class="math inline">\(\le 0.018\)</span>.</p>
+</div>
+<div id="effects-significant-in-flash-but-not-mash" class="section level2">
+<h2>Effects significant in FLASH but not MASH</h2>
+<p>In the plots below, I examine tests with regard to which FLASH and MASH strongly disagree.</p>
+<p>There are six tests for which there are 26 or more conditions that FLASH finds significant but MASH does not. They are all tests with a very large effect size in a single condition. Whereas MASH tends to only find this one condition to be significant, FLASH often finds that other conditions share a smaller yet significant effect (this effect is often roughly identical either among all conditions or separately among brain and non-brain tissues). It is worth noting that my <a href="MASHvFLASHsims2.html">detailed simulation study</a> found that MASH had especially low power on a combination of small effects shared among conditions and a large effect unique to a single condition. Thus FLASH might very well match the reality of the situation in these cases.</p>
+<p>The raw effects are plotted as hollow circles. The FLASH posterior means are plotted as squares, with significant effects (LFSR <span class="math inline">\(\le .05\)</span>) colored light red and highly significant effects (LFSR <span class="math inline">\(\le .01\)</span>) colored dark red. MASH posterior means are plotted as triangles, with significant effects (LFSR <span class="math inline">\(\le 0.018\)</span>) colored light blue and highly significant effects (LFSR <span class="math inline">\(\le \frac{0.018}{5}\)</span>) colored dark blue.</p>
+<pre class="r"><code>gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
+strong &lt;- gtex$strong.z
+
+plot_comparison &lt;- function(n, legend_loc) {
+  plot(strong[n, ], pch=1, col=&quot;black&quot;, ylab=&quot;&quot;,
+       main=paste0(&quot;Test #&quot;, n))
+  col = rep(&quot;peachpuff&quot;, 44)
+  col[fl.lfsr[, n] &lt;= .05] &lt;- &quot;tomato&quot;
+  col[fl.lfsr[, n] &lt;= .01] &lt;- &quot;tomato4&quot;
+  points(fl.pm[, n], pch=15, col=col, cex=.8)
+  col = rep(&quot;peachpuff&quot;, 44)
+  col[m.lfsr[, n] &lt;= mash_t] &lt;- &quot;turquoise&quot;
+  col[m.lfsr[, n] &lt;= mash_t/5] &lt;- &quot;slateblue4&quot;
+  points(m.pm[, n], pch=17, col=col, cex=.8)
+  abline(0, 0)
+  # segments(6.5, -1, 6.5, 1)
+  # segments(16.5, -1, 16.5, 1)
+  legend(x=legend_loc, legend=c(&quot;raw z-score&quot;, &quot;flash pm&quot;, &quot;mash pm&quot;), pch=c(1, 15, 17), col=c(&quot;black&quot;, &quot;tomato4&quot;, &quot;slateblue4&quot;))
+}
+
+fl.signif &lt;- fl.lfsr &lt;= .05
+m.signif &lt;- m.lfsr &lt;= mash_t
+
+flnotm &lt;- fl.signif &amp; !m.signif
+ex_flnotm &lt;- which(colSums(flnotm) &gt;= 26)
+
+legend_loc = c(&quot;bottomleft&quot;, &quot;topleft&quot;, &quot;bottomleft&quot;, &quot;topleft&quot;, &quot;bottomleft&quot;, &quot;topleft&quot;)
+for (i in 1:length(ex_flnotm)) {
+  plot_comparison(ex_flnotm[i], legend_loc[i])
+}</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flnotm-6.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="effects-significant-in-mash-but-not-flash" class="section level2">
+<h2>Effects significant in MASH but not FLASH</h2>
+<p>There are seven tests in which MASH declares significant 36 or more conditions that FLASH finds to be insignficant. I find these results to be more puzzling than the above results. It is clear that MASH is finding “identical effects” in most of these examples (6278, 10243, 12011, 12987, 15355), and it is true that these are all cases in which the mean effect size is located away from zero. But it’s not immediately clear that the latter is not simply the result of chance.</p>
+<p>The other two examples (428 and 10404) are even more baffling. Here both MASH and FLASH find an effect that is shared among brain tissues, but MASH finds smaller (and uneven) significant effects in nearly all of the other conditions. I don’t know what’s happening here.</p>
+<pre class="r"><code>mnotfl &lt;- !fl.signif &amp; m.signif
+ex_mnotfl &lt;- which(colSums(mnotfl) &gt;= 36)
+
+legend_loc = c(&quot;topright&quot;, &quot;bottomright&quot;, &quot;topleft&quot;, &quot;topleft&quot;, &quot;bottomleft&quot;, &quot;topleft&quot;, &quot;bottomright&quot;)
+for (i in 1:length(ex_mnotfl)) {
+  plot_comparison(ex_mnotfl[i], legend_loc[i])
+}</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/mnotfl-7.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="tests-for-which-mash-and-flash-agree" class="section level2">
+<h2>Tests for which MASH and FLASH agree</h2>
+<p>The following are all examples in which MASH and FLASH agree for all conditions. (There are many such examples; I sampled six of them at random.) The first five examples are all cases in which effects are uniformly large and obvious. The last example (14815) is more interesting.</p>
+<pre class="r"><code>agree &lt;- which(colSums(flnotm) == 0 &amp; colSums(mnotfl) == 0)
+set.seed(1)
+agree &lt;- sample(agree, 6)
+
+legend_loc = c(&quot;bottomleft&quot;, &quot;bottomright&quot;, &quot;topleft&quot;, &quot;topleft&quot;, &quot;topleft&quot;, &quot;topleft&quot;)
+for (i in 1:length(agree)) {
+  plot_comparison(agree[i], legend_loc[i])
+}</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/agree-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/agree-6.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="flash-factors" class="section level2">
+<h2>FLASH factors</h2>
+<p>The factors (as fitted on the “strong” tests) are as follows. The PVE given is the proportion of variance explained for the final fit.</p>
+<pre class="r"><code>missing.tissues &lt;- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
+gtex.colors &lt;- read.table(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE&quot;, sep = &#39;\t&#39;, comment.char = &#39;&#39;)[-missing.tissues, 2]
+
+par(mar=c(1,1,1,1))
+par(mfrow=c(3,2))
+fl.l &lt;- flash_get_l(fl)
+for(i in 1:30){
+  barplot(fl.l[, i], main=paste0(&#39;Factor &#39;, i, &#39;: pve = &#39;, round(final.pve[i], 4)), las=2, cex.names = 0.4, col=as.character(gtex.colors), names=&quot;&quot;)
+}</code></pre>
+<p><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex2.Rmd/flash_factors-5.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="code" class="section level2">
+<h2>Code</h2>
+<p>Click “Code” to view the code used to obtain the above results.</p>
+<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
+library(mashr)
+library(corrplot)
+source(&quot;./code/fits.R&quot;)
+source(&quot;./code/utils.R&quot;)
+
+gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
+strong &lt;- gtex$strong.z
+random &lt;- gtex$random.z
+
+# MASH ------------------------------------------------------------------
+mdata.strong &lt;- mash_set_data(strong, Shat = 1)
+mdata.random &lt;- mash_set_data(random, Shat = 1)
+
+# 1. Learn &quot;data-driven&quot; loadings using &quot;strong&quot; tests
+U.pca &lt;- cov_pca(mdata.strong, 5)
+U.ed &lt;- cov_ed(mdata.strong, U.pca)
+
+# 2. Fit the model to the random tests to learn mixture weights
+U.c &lt;- cov_canonical(mdata.random)
+m &lt;- mash(mdata.random, Ulist = c(U.ed,U.c))
+m.pi &lt;- get_estimated_pi(m)
+m.pi[m.pi &gt; .00005] * 20000 # not sparse!
+corrplot(m$fitted_g$Ulist[[&quot;ED_tPCA&quot;]])
+corrplot(m$fitted_g$Ulist[[&quot;ED_PCA_2&quot;]])
+corrplot(m$fitted_g$Ulist[[&quot;simple_het_2&quot;]])
+random.lfsr &lt;- get_lfsr(m)
+sum (random.lfsr &gt; .05) / length(random.lfsr) # 0.76
+
+# 3. Compute posterior summaries on the strong tests
+m2 &lt;- mash(mdata.strong, g=get_fitted_g(m), fixg=TRUE)
+saveRDS(m2, &quot;./output/gtex2mfit.rds&quot;)
+m.lfsr &lt;- get_lfsr(m2)
+sum(m.lfsr &gt; .05) / length(m.lfsr) # 0.44
+get_loglik(m2) # -1353494
+
+
+# FLASH -----------------------------------------------------------------
+fldata.strong &lt;- flash_set_data(t(strong), S = 1)
+fldata.random &lt;- flash_set_data(t(random), S = 1)
+# 1. Learn &quot;data-driven&quot; loadings using &quot;strong&quot; tests (use ebnm_pn
+#   for speed).
+flash_fit.strong &lt;- fit_flash(t(strong), Kmax=50, methods=3) # OHL
+saveRDS(flash_fit.strong, &quot;./output/gtexstrongfit.rds&quot;)
+fl.strong &lt;- flash_fit.strong$fits$OHL
+
+flash_get_pve(fl.strong)[1:20] # 73% on first factor/loading
+
+# 2. Fit the model to the random tests to learn the priors on the factors.
+LL = flash_get_l(fl.strong)
+fl.random &lt;- flash_add_fixed_l(fldata.random, LL)
+start_time &lt;- Sys.time()
+fl.random &lt;- flash_backfit(fldata.random, fl.random, var_type=&quot;zero&quot;,
+                           ebnm_fn = ebnm_ash, nullcheck=F, verbose=T)
+end_time &lt;- Sys.time() - start_time
+flash_fit.random &lt;- list()
+flash_fit.random$fit &lt;- fl.random
+flash_fit.random$timing &lt;- end_time
+saveRDS(flash_fit.random, &quot;./output/gtexrandomfit.rds&quot;)
+
+flash_get_pve(fl.random) # now only 21%
+
+# 3. Compute posterior summaries on the strong tests, using g_f from step 2.
+fl &lt;- flash_add_fixed_l(fldata.strong, LL)
+start_time &lt;- Sys.time()
+fl &lt;- flash_backfit(fldata.strong, fl, var_type=&quot;zero&quot;, ebnm_fn = ebnm_ash,
+                    gf=flash_get_gf(fl.random), fixgf=T, nullcheck=F, verbose=T)
+end_time &lt;- Sys.time() - start_time
+# likelihood: -1348502
+flash_fit.final &lt;- list()
+flash_fit.final$fit &lt;- fl
+flash_fit.final$timing &lt;- end_time
+saveRDS(flash_fit.final, &quot;./output/gtex2flfit.rds&quot;)
+
+# Calculate LFSR by sampling from the posterior
+fl.sampler &lt;- flash_lf_sampler(fldata.strong, fl, ebnm_fn=ebnm_ash,
+                               fixed=&quot;loadings&quot;)
+set.seed(1)
+fl.samp &lt;- fl.sampler(200)
+fl.lfsr &lt;- flash_lfsr(fl.samp)
+saveRDS(fl.lfsr, &quot;./output/gtex2lfsr.rds&quot;)
+sum(fl.lfsr &gt; .05) / length(fl.lfsr) # 0.50
+
+fl.pm &lt;- flash_get_lf(fl)
+m.pm &lt;- t(get_pm(m2))
+png(&quot;./output/gtex2compare.png&quot;)
+plot(as.vector(fl.pm), as.vector(m.pm), xlab=&quot;FLASH PM&quot;, ylab=&quot;MASH PM&quot;,
+     main=&quot;Posterior means on GTEx data&quot;, pch=&#39;.&#39;)
+abline(0, 1, lty=2)
+dev.off()
+cor(as.vector(fl.pm), as.vector(m.pm)) # 0.98
+
+confusion_matrix &lt;- function(t) {
+  mash_signif &lt;- t(m.lfsr) &lt;= t
+  flash_signif &lt;- fl.lfsr &lt;= t
+  round(table(mash_signif, flash_signif)
+        / length(mash_signif), digits=3)
+}
+confusion_matrix(.05)
+confusion_matrix(.01)
+
+calibrate_t &lt;- function(t) {
+  mash_signif &lt;- t(m.lfsr) &lt;= t
+  flash_signif &lt;- fl.lfsr &lt;= .05
+  (sum(mash_signif &amp; flash_signif) + sum(!mash_signif &amp; !flash_signif)) / length(mash_signif)
+}
+ts &lt;- seq(.005, .15, by=.005)
+calibrated &lt;- rep(0, length(ts))
+for (j in 1:length(ts)) {
+  calibrated[j] &lt;- calibrate_t(ts[j])
+}
+plot(ts, calibrated, type=&#39;l&#39;)
+mash_t &lt;- ts[which.max(calibrated)]
+
+fl.signif &lt;- fl.lfsr &lt;= .05
+m.signif &lt;- m.lfsr &lt;= mash_t
+flnotm &lt;- fl.signif &amp; !t(m.signif)
+ex_flnotm &lt;- which(colSums(flnotm) &gt;= 25)
+mnotfl &lt;- !fl.signif &amp; t(m.signif)
+ex_mnotfl &lt;- which(colSums(mnotfl) &gt;= 38)
+agree &lt;- which(colSums(flnotm) == 0 &amp; colSums(mnotfl) == 0)
+agree &lt;- sample(agree, 4)
+
+# plot_comparison &lt;- function(n) {
+#   pch = rep(1, 44)
+#   pch[fl.lfsr[, n] &lt;= .05 | m.lfsr[n, ] &lt;= .05] &lt;- 19
+#   clr = rep(1, 44)
+#   clr[fl.lfsr[, n] &lt;= .05] &lt;- &quot;red4&quot;
+#   clr[fl.lfsr[, n] &lt;= .01] &lt;- &quot;red1&quot;
+#   clr[m.lfsr[n, ] &lt;= .05] &lt;- &quot;blue4&quot;
+#   clr[m.lfsr[n, ] &lt;= .01] &lt;- &quot;blue1&quot;
+#   clr[fl.lfsr[, n] &lt;= .05 &amp; m.lfsr[n, ] &lt;= .05] &lt;- &quot;purple&quot;
+#   plot(strong[n, ], pch=pch, col=clr)
+#   #plot((1 - pnorm(abs(strong[n, ])))*sign(strong[n, ]),
+#        #ylab=&quot;&quot;, pch=19, ylim=c(-1, 1))
+#   #points(fl.lfsr[, n], pch=2, ylab=&quot;&quot;)
+#   #points(m.lfsr[n, ], pch=3)
+#   #abline(.05, 0)
+#   #abline(-.05, 0)
+#   segments(6.5, -.05, 6.5, .05)
+#   segments(16.5, -.05, 16.5, .05)
+# }
+
+plot_comparison &lt;- function(n) {
+  plot(strong[n, ], pch=1, col=&quot;black&quot;, ylab=&quot;&quot;,
+       main=paste0(&quot;Test #&quot;, n))
+  col = rep(&quot;peachpuff&quot;, 44)
+  col[fl.lfsr[, n] &lt;= .05] &lt;- &quot;tomato&quot;
+  col[fl.lfsr[, n] &lt;= .01] &lt;- &quot;tomato4&quot;
+  points(fl.pm[, n], pch=15, col=col, cex=.8)
+  col = rep(&quot;peachpuff&quot;, 44)
+  col[m.lfsr[n, ] &lt;= mash_t] &lt;- &quot;turquoise&quot;
+  col[m.lfsr[n, ] &lt;= mash_t/5] &lt;- &quot;slateblue4&quot;
+  points(m.pm[, n], pch=17, col=col, cex=.8)
+  abline(0, 0)
+  segments(6.5, -2, 6.5, 2)
+  segments(16.5, -2, 16.5, 2)
+}
+
+for (n in ex_flnotm) {
+  plot_comparison(n)
+}
+for (n in ex_mnotfl) {
+  plot_comparison(n)
+}
+for (n in agree) {
+  plot_comparison(n)
+}</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] mashr_0.2-7  ashr_2.2-7   flashr_0.5-8
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.17        pillar_1.2.1        plyr_1.8.4         
+ [4] compiler_3.4.3      git2r_0.21.0        workflowr_1.0.1    
+ [7] R.methodsS3_1.7.1   R.utils_2.6.0       iterators_1.0.9    
+[10] tools_3.4.3         testthat_2.0.0      digest_0.6.15      
+[13] tibble_1.4.2        evaluate_0.10.1     memoise_1.1.0      
+[16] gtable_0.2.0        lattice_0.20-35     rlang_0.2.0        
+[19] Matrix_1.2-12       foreach_1.4.4       commonmark_1.4     
+[22] yaml_2.1.17         parallel_3.4.3      mvtnorm_1.0-7      
+[25] ebnm_0.1-11         withr_2.1.1.9000    stringr_1.3.0      
+[28] roxygen2_6.0.1.9000 xml2_1.2.0          knitr_1.20         
+[31] devtools_1.13.4     rprojroot_1.3-2     grid_3.4.3         
+[34] R6_2.2.2            rmarkdown_1.8       rmeta_3.0          
+[37] ggplot2_2.2.1       magrittr_1.5        whisker_0.3-2      
+[40] backports_1.1.2     scales_0.5.0        codetools_0.2-15   
+[43] htmltools_0.3.6     MASS_7.3-48         assertthat_0.2.0   
+[46] softImpute_1.4      colorspace_1.3-2    stringi_1.1.6      
+[49] lazyeval_0.2.1      munsell_0.4.3       doParallel_1.0.11  
+[52] pscl_1.5.2          truncnorm_1.0-8     SQUAREM_2017.10-1  
+[55] R.oo_1.21.0        </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
