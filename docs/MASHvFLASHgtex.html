@@ -331,7 +331,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-24</p>
+<p><strong>Last updated:</strong> 2018-06-26</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +355,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/42cd89c485cdf6fb255679adcd67c8e2b098018e" target="_blank">42cd89c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/8fa6b091a5b8f8207595a1e81477ec5ac6e10235" target="_blank">8fa6b09</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -366,11 +366,12 @@ Ignored files:
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
 
-Untracked files:
-    Untracked:  output/sims2.rds
-
 Unstaged changes:
-    Modified:   code/sims2.R
+    Modified:   code/gtex2.R
+    Modified:   output/gtex2flfit.rds
+    Modified:   output/gtex2lfsr.rds
+    Modified:   output/gtexrandomfit.rds
+    Modified:   output/gtexstrongfit.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -399,6 +400,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/8fa6b091a5b8f8207595a1e81477ec5ac6e10235/analysis/MASHvFLASHgtex.Rmd" target="_blank">8fa6b09</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHgtex.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/97fa87ceb554d2998662e546e58eceebcea3ce5d/docs/MASHvFLASHgtex.html" target="_blank">97fa87c</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-24
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -669,7 +704,7 @@ mash_signif FALSE  TRUE
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
-<p>Click the “Code” button to view the code used to obtain the above results.</p>
+<p>Click “Code” to view the code used to obtain the above results.</p>
 <pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
 library(mashr)
 
