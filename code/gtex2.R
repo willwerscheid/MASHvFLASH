@@ -1,3 +1,5 @@
+## @knitr gtex2
+
 devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
 library(mashr)
 library(corrplot)
@@ -31,8 +33,8 @@ sum (random.lfsr > .05) / length(random.lfsr) # 0.76
 m2 <- mash(mdata.strong, g=get_fitted_g(m), fixg=TRUE)
 saveRDS(m2, "./output/gtex2mfit.rds")
 m.lfsr <- get_lfsr(m2)
-sum(strong.lfsr > .05) / length(strong.lfsr) # 0.44
-get_loglik(m2) -1353494
+sum(m.lfsr > .05) / length(m.lfsr) # 0.44
+get_loglik(m2) # -1353494
 
 
 # FLASH -----------------------------------------------------------------
@@ -40,33 +42,46 @@ fldata.strong <- flash_set_data(t(strong), S = 1)
 fldata.random <- flash_set_data(t(random), S = 1)
 # 1. Learn "data-driven" loadings using "strong" tests (use ebnm_pn
 #   for speed).
-# No backfit...
-fl.strong <- flash(fldata.strong, Kmax=50, var_type="zero", verbose=T)
-saveRDS(fl.strong, "./output/gtexstrongfit.rds")
-flash_get_pve(fl.strong) * 100 # 73% on first factor/loading
+flash_fit.strong <- fit_flash(t(strong), Kmax=50, methods=3) # OHL
+saveRDS(flash_fit.strong, "./output/gtexstrongfit.rds")
+fl.strong <- flash_fit.strong$fits$OHL
+
+flash_get_pve(fl.strong)[1:20] # 73% on first factor/loading
 
 # 2. Fit the model to the random tests to learn the priors on the factors.
-LL = cbind(flash_get_l(fl.strong), diag(rep(1, 44)))
+LL = flash_get_l(fl.strong)
 fl.random <- flash_add_fixed_l(fldata.random, LL)
+start_time <- Sys.time()
 fl.random <- flash_backfit(fldata.random, fl.random, var_type="zero",
                            ebnm_fn = ebnm_ash, nullcheck=F, verbose=T)
-saveRDS(fl.random, "./output/gtexrandomfit.rds")
+end_time <- Sys.time() - start_time
+flash_fit.random <- list()
+flash_fit.random$fit <- fl.random
+flash_fit.random$timing <- end_time
+saveRDS(flash_fit.random, "./output/gtexrandomfit.rds")
+
 flash_get_pve(fl.random) # now only 21%
-flash_plot_pve(fl.random)
 
 # 3. Compute posterior summaries on the strong tests, using g_f from step 2.
 fl <- flash_add_fixed_l(fldata.strong, LL)
+start_time <- Sys.time()
 fl <- flash_backfit(fldata.strong, fl, var_type="zero", ebnm_fn = ebnm_ash,
                     gf=flash_get_gf(fl.random), fixgf=T, nullcheck=F, verbose=T)
-# likelihood: -1361278
-saveRDS(fl, "./output/gtex2flfit.rds")
+end_time <- Sys.time() - start_time
+# likelihood: -1348502
+flash_fit.final <- list()
+flash_fit.final$fit <- fl
+flash_fit.final$timing <- end_time
+saveRDS(flash_fit.final, "./output/gtex2flfit.rds")
 
+# Calculate LFSR by sampling from the posterior
 fl.sampler <- flash_lf_sampler(fldata.strong, fl, ebnm_fn=ebnm_ash,
                                fixed="loadings")
+set.seed(1)
 fl.samp <- fl.sampler(200)
 fl.lfsr <- flash_lfsr(fl.samp)
 saveRDS(fl.lfsr, "./output/gtex2lfsr.rds")
-sum(fl.lfsr > .05) / length(fl.lfsr) # 0.51
+sum(fl.lfsr > .05) / length(fl.lfsr) # 0.50
 
 fl.pm <- flash_get_lf(fl)
 m.pm <- t(get_pm(m2))
@@ -102,9 +117,9 @@ mash_t <- ts[which.max(calibrated)]
 fl.signif <- fl.lfsr <= .05
 m.signif <- m.lfsr <= mash_t
 flnotm <- fl.signif & !t(m.signif)
-ex_flnotm <- which(colSums(flnotm) >= 25) # 6129, 6897, 13684
+ex_flnotm <- which(colSums(flnotm) >= 25)
 mnotfl <- !fl.signif & t(m.signif)
-ex_mnotfl <- which(colSums(mnotfl) >= 38) # 2969, 4533, 10011, 11188
+ex_mnotfl <- which(colSums(mnotfl) >= 38)
 agree <- which(colSums(flnotm) == 0 & colSums(mnotfl) == 0)
 agree <- sample(agree, 4)
 
