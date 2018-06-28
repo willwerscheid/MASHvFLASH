@@ -76,6 +76,13 @@ fl <- flash_add_fixed_l(fldata.strong, LL)
 start_time <- Sys.time()
 fl <- flash_backfit(fldata.strong, fl, var_type="zero", ebnm_fn = ebnm_ash,
                     gf=flash_get_gf(fl.random), fixgf=T, nullcheck=F, verbose=T)
+# Updated interface:
+# ebnm_param_f = lapply(fl.random$gf, function(g) {list(g=g, fixg=T)})
+# fl <- flash_backfit(fldata.strong, fl, var_type="zero",
+#                     ebnm_fn = "ebnm_ash",
+#                     ebnm_param = list(f = ebnm_param_f, l = list()),
+#                     nullcheck=F, verbose=T)
+
 end_time <- Sys.time() - start_time
 # likelihood: -1348503
 flash_fit.final <- list()
