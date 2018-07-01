@@ -62,7 +62,7 @@ These effects are directly modeled by canonical covariance matrices.
 
 Effects were nonnull in several conditions. The nonnull effects were either identical across conditions or fixed multiples of one another. I included $(9)$ medium effects ($\sigma^2 = 3^2$) identical across 3 conditions (3-5), $(10)$ small effects ($\sigma^2 = 2^2$) identical across 10 conditions (1-10), and $(11)$ effects of differing sizes over 5 conditions (6-10), with variances ranging from $2^2$ to $4^2$.
 
-None of these effects are modeled by canonical covariance matrices.
+None of these types of effects are modeled by canonical covariance matrices.
 
 ## Random covariance
 

@@ -37,20 +37,20 @@ m.random <- readRDS("./output/gtex2mrandfit.rds")
 m <- readRDS("./output/gtex2mfit.rds")
 ```
 
-It took 2.4 minutes to run Extreme Deconvolution to find "data-driven" covariance matrices. The MASH fit on the random subset of tests (to determine mixture weights) required 2.8 minutes, and the final MASH fit on the "strong" tests required only 18 seconds.
+It took 2.4 minutes to run Extreme Deconvolution to find data-driven covariance matrices. The MASH fit on the random subset of tests (to determine mixture weights) required 2.8 minutes, and the final MASH fit on the strong tests required only 18 seconds.
 
-The estimated mixture weights were as follows. Note in particular that there are large weights on the data-driven matrices "ED_tPCA" and "ED_PCA_2", as well as on the canonical "equal_effects" matrix. There are moderate weights on the null matrix, some unique effects (including Testis, Thyroid, and Cells_Transformed_fibroblasts), and two of the canonical "simple_het" matrices (where effect sizes are assumed to be of equal variance and equally correlated, with correlation coefficients of, respectively, 0.25 and 0.5).
+The estimated mixture weights were as follows. Note in particular that there are large weights on the data-driven matrices "ED_tPCA" and "ED_PCA_2," as well as on the canonical "equal_effects" matrix. There are moderate weights on the null matrix, some unique effects (including Testis, Thyroid, and Cells_Transformed_fibroblasts), and two of the canonical "simple_het" matrices (where effect sizes are assumed to be of equal variance and equally correlated, with correlation coefficients of, respectively, 0.25 and 0.5).
 ```{r mixwts}
 barplot(get_estimated_pi(m.random), las = 2, cex.names = 0.4)
 ```
 
-Correlation plots for the data-driven matrices are as follows. The first ("ED_tPCA") describes effects that are strongly correlated across a handful of tissues (which, notably, does not include brain tissues). 
+Correlation plots for the data-driven matrices are as follows. The first ("ED_tPCA") describes effects that are shared across a handful of tissues (which, notably, does not include brain tissues). 
 
 ```{r corr}
 corrplot(m.random$fitted_g$Ulist[["ED_tPCA"]], tl.cex=0.5)
 ```
 
-The second ("ED_PCA_2") describes a pattern of strong correlation among brain tissues and, interestingly, strong anti-correlation with whole blood.
+The second ("ED_PCA_2") describes a pattern of sharing among brain tissues that is, interestingly, strongly anti-correlated with whole blood.
 
 ```{r corr2}
 corrplot(m.random$fitted_g$Ulist[["ED_PCA_2"]], tl.cex=0.5)
@@ -95,7 +95,7 @@ The posterior means are mostly similar (correlation coefficient = 0.98), but the
 
 ![](images/gtex2compare.png)
 
-Indeed, at both 5% and 1% significance levels, MASH and FLASH disagree in about 17-18% of cases.
+Indeed, at both 5% and 1% significance levels, MASH and FLASH disagree in about 17-18% of cases. At 5%:
 
 ```{r lfsr}
 m.pm <- t(get_pm(m))
@@ -109,6 +109,10 @@ confusion_matrix <- function(t) {
         / length(mash_signif), digits=3)
 }
 confusion_matrix(.05)
+```
+
+And at 1%:
+```{r lfsr2}
 confusion_matrix(.01)
 ```
 
@@ -217,7 +221,7 @@ for (i in 1:length(agree)) {
 
 ## FLASH factors
 
-The factors (as fitted on the "strong" tests) are as follows. The PVE given is the proportion of variance explained for the final fit.
+The factors (as fitted on the strong tests) are as follows. The PVE given is the proportion of variance explained for the final fit.
 
 ```{r flash_factors}
 missing.tissues <- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
