@@ -291,13 +291,10 @@ div.tocify {
 <li>
   <a href="about.html">About</a>
 </li>
-<li>
-  <a href="license.html">License</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/jdblischak/workflowr">
+  <a href="https://github.com/willwerscheid/MASHvFLASH">
     <span class="fa fa-github"></span>
      
   </a>
@@ -331,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-21</p>
+<p><strong>Last updated:</strong> 2018-07-22</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/56b00c1ca80dd7655697dff44146bf397a829e9f" target="_blank">56b00c1</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/678ca2557c116ded5b75d11fd3dcb031695715a0" target="_blank">678ca25</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -365,6 +362,11 @@ Ignored files:
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/fits.R
+    Modified:   code/gtex.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -393,6 +395,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/678ca2557c116ded5b75d11fd3dcb031695715a0/analysis/intro.Rmd" target="_blank">678ca25</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/intro.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/99f2f4287d2ff7b3455a6755a21b880ef4852eec/docs/intro.html" target="_blank">99f2f42</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-21
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -672,8 +708,8 @@ X = cbind(X.zero, X.one, X.ind, X.ident)
 E = matrix(rnorm(4*ncond*nsamp), nrow=ncond, ncol=4*nsamp)
 Y = X + E</code></pre>
 <p>The next code chunk fits a flash object using the procedure described in the previous section.</p>
-<pre class="r"><code>#library(flashr)
-devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
+<pre class="r"><code># library(flashr)
+devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
 data &lt;- flash_set_data(Y, S = 1)
 fl_greedy &lt;- flash_add_greedy(data, Kmax = 10, var_type = &quot;zero&quot;)
 I_n &lt;- diag(rep(1, n))
@@ -682,10 +718,10 @@ fl_backfit &lt;- flash_backfit(data, fl_fixedl, var_type = &quot;zero&quot;, nul
 <p>Finally, the following code chunk calculates the mean squared error obtained using the flash fit object posterior means, relative to the mean squared error that would be obtained by simply estimating <span class="math inline">\(X\)</span> using the data matrix <span class="math inline">\(Y\)</span>.</p>
 <pre class="r"><code>baseline_mse &lt;- sum((Y - X)^2)/(n * p)
 
-fl_preds &lt;- flash_get_lf(fl_backfit)
+fl_preds &lt;- flash_get_fitted_values(fl_backfit)
 flash_mse &lt;- sum((fl_preds - X)^2)/(n * p)
 flash_mse / baseline_mse</code></pre>
-<pre><code>[1] 0.5224411</code></pre>
+<pre><code>[1] 0.5227473</code></pre>
 <p>To verify that <code>flashr</code> has in fact learned something about how the data covaries, one can collapse the data into a vector and use <code>ashr</code> to fit a prior that is a univariate mixture of normals.</p>
 <pre class="r"><code>ash_fit &lt;- ashr::ash(betahat = as.vector(Y), sebetahat = 1)
 ash_pm &lt;- ashr::get_pm(ash_fit)
@@ -717,7 +753,7 @@ mash_mse / baseline_mse</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS High Sierra 10.13.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
@@ -730,7 +766,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] mashr_0.2-7  ashr_2.2-7   flashr_0.5-8
+[1] mashr_0.2-7   ashr_2.2-10   flashr_0.5-12
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17             pillar_1.2.1            
@@ -745,7 +781,7 @@ loaded via a namespace (and not attached):
 [19] Matrix_1.2-12            foreach_1.4.4           
 [21] commonmark_1.4           yaml_2.1.17             
 [23] parallel_3.4.3           mvtnorm_1.0-7           
-[25] ebnm_0.1-11              withr_2.1.1.9000        
+[25] ebnm_0.1-12              withr_2.1.1.9000        
 [27] stringr_1.3.0            roxygen2_6.0.1.9000     
 [29] xml2_1.2.0               knitr_1.20              
 [31] REBayes_1.2              devtools_1.13.4         
