@@ -13,6 +13,7 @@ source("./code/fits.R")
 source("./code/sims.R")
 source("./code/utils.R")
 
+set.seed(1)
 gtex_mfit <- fit_mash(data)
 saveRDS(gtex_mfit, "./output/gtexmfit.rds")
 
@@ -60,4 +61,3 @@ confusion_matrix <- function(t) {
 }
 confusion_matrix(.05)
 confusion_matrix(.01)
-confusion_matrix(.001)
