@@ -294,7 +294,7 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/jdblischak/workflowr">
+  <a href="https://github.com/willwerscheid/MASHvFLASH">
     <span class="fa fa-github"></span>
      
   </a>
@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-01</p>
+<p><strong>Last updated:</strong> 2018-07-22</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/1874a0d6a3e899671c92b176fb197918b9102aa5" target="_blank">1874a0d</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/044fb97dcd6a939dd85448f777624479a5f72588" target="_blank">044fb97</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -362,6 +362,16 @@ Ignored files:
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
+
+Unstaged changes:
+    Modified:   analysis/MASHvFLASHgtex2.Rmd
+    Modified:   analysis/mashvflash.Rmd
+    Modified:   code/sims2.R
+    Modified:   output/README.md
+    Modified:   output/sims2mse.rds
+    Modified:   output/sims2prash.rds
+    Modified:   output/sims2prm.rds
+    Modified:   output/sims2prpn.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -390,6 +400,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/044fb97dcd6a939dd85448f777624479a5f72588/analysis/MASHvFLASHsims2.Rmd" target="_blank">044fb97</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/8720e9c0eec4613a756a8113d69999cb1622cf7f/docs/MASHvFLASHsims2.html" target="_blank">8720e9c</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-01
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -582,7 +626,10 @@ wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
 </ul>
 <p></details></p>
 <hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
 <p>Here I study in detail simulations from a MASH model that extends the “model with independent, unique, and shared effects” from my larger <a href="MASHvFLASHsims.html">simulation study</a>. I run 10 simulations, each of which simulates data for 20 conditions and 1200 tests. I use 17 different covariance structures, each of which are used to simulate 25 tests. The other 775 tests are null across all conditions.</p>
+</div>
 <div id="independent-effects" class="section level2">
 <h2>Independent effects</h2>
 <p>Effects were nonnull for all conditions and generated independently from a <span class="math inline">\(N(0, \sigma^2)\)</span> distribution. I simulated <span class="math inline">\((1)\)</span> small independent effects (<span class="math inline">\(\sigma^2 = 2^2\)</span>), <span class="math inline">\((2)\)</span> large independent effects (<span class="math inline">\(\sigma^2 = 5^2\)</span>), and <span class="math inline">\((3)\)</span> independent effects of varying sizes (with <span class="math inline">\(\sigma^2\)</span> ranging from <span class="math inline">\(1^2\)</span> to <span class="math inline">\(5^2\)</span>).</p>
@@ -620,6 +667,27 @@ wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
 <p>For each simulation, I fitted a MASH model and two FLASH models using the “one-hots last” method described in my larger <a href="MASHvFLASHsims.html">simulation study</a>. One FLASH model used the point-normal approach to solve the ebnm problem (<code>ebnm_fn = ebnm_pn</code>); the other used <code>ashr</code> (<code>ebnm_fn = ebnm_ash</code>).</p>
+<p>First I load results.</p>
+<pre class="r"><code>all.rrmses &lt;- sqrt(readRDS(&quot;./output/sims2mse.rds&quot;))
+pr.pn &lt;- readRDS(&quot;./output/sims2prpn.rds&quot;)
+pr.ash &lt;- readRDS(&quot;./output/sims2prash.rds&quot;)
+pr.m &lt;- readRDS(&quot;./output/sims2prm.rds&quot;)
+
+# Nulls
+nullidx &lt;- c(7, 9, 11, 13, 15, 23)
+null.names &lt;- c(&quot;UnSm(7)&quot;, &quot;UnLg(8)&quot;, &quot;Sh3(9)&quot;, &quot;Sh10(10)&quot;, &quot;Sh5(11)&quot;, &quot;Null&quot;)
+
+# Effects that are independent or identical across conditions
+indididx &lt;- 1:6
+indid.names &lt;- c(&quot;IndSm(1)&quot;, &quot;IndLg(2)&quot;, &quot;IndDif(3)&quot;, &quot;IdSm(4)&quot;, &quot;IdLg(5)&quot;, &quot;Rnk1(6)&quot;)
+
+# Effects that are unique to one or several conditions
+unshidx &lt;- c(8, 10, 12, 14, 16)
+unsh.names &lt;- c(&quot;UnSm(7)&quot;, &quot;UnLg(8)&quot;, &quot;Sh3(9)&quot;, &quot;Sh10(10)&quot;, &quot;Sh5(11)&quot;)
+
+# Other
+otheridx &lt;- c(17:22)
+other.names &lt;- c(&quot;Rn5(12)&quot;, &quot;Rn10(13)&quot;, &quot;Rnd(14)&quot;, &quot;IdIn(15)&quot;, &quot;InUn(16)&quot;, &quot;IdUn(17)&quot;)</code></pre>
 </div>
 <div id="results-rrmse" class="section level2">
 <h2>Results: RRMSE</h2>
@@ -1078,7 +1146,7 @@ Jason Willwerscheid
 <div id="code" class="section level2">
 <h2>Code</h2>
 <p>Click “Code” to view the code used to obtain the above results.</p>
-<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
+<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
 library(mashr)
 
 source(&quot;./code/fits.R&quot;)
@@ -1203,17 +1271,17 @@ for (i in 1:nsims) {
   }
   Y &lt;- X + rnorm(n*p)
 
-  fl.pn &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_pn) # OHL
-  fl.ash &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_ash)
+  fl.pn &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=&quot;ebnm_pn&quot;) # OHL
+  fl.ash &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=&quot;ebnm_ash&quot;)
   m &lt;- fit_mash(Y)
 
   base.se &lt;- (Y - X)^2
   base.mse &lt;- partition_by_type(base.se)
 
-  fl.pn.se &lt;- (flash_get_lf(fl.pn$fits$OHL) - X)^2
+  fl.pn.se &lt;- (flash_get_fitted_values(fl.pn$fits$OHL) - X)^2
   fl.pn.mse &lt;- partition_by_type(fl.pn.se) / base.mse
 
-  fl.ash.se &lt;- (flash_get_lf(fl.ash$fits$OHL) - X)^2
+  fl.ash.se &lt;- (flash_get_fitted_values(fl.ash$fits$OHL) - X)^2
   fl.ash.mse &lt;- partition_by_type(fl.ash.se) / base.mse
 
   m.se &lt;- (t(get_pm(m$m)) - X)^2
@@ -1224,13 +1292,11 @@ for (i in 1:nsims) {
   mses[3,] &lt;- mses[3,] + m.mse
 
 
-  fl.pn.sampler &lt;- flash_lf_sampler(Y, fl.pn$fits$OHL,
-                                    ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
+  fl.pn.sampler &lt;- flash_sampler(Y, fl.pn$fits$OHL, fixed=&quot;loadings&quot;)
   fl.pn.samp &lt;- fl.pn.sampler(nsamp)
   fl.pn.lfsr &lt;- flash_lfsr(fl.pn.samp)
 
-  fl.ash.sampler &lt;- flash_lf_sampler(Y, fl.ash$fits$OHL,
-                                    ebnm_fn=ebnm_ash, fixed=&quot;loadings&quot;)
+  fl.ash.sampler &lt;- flash_sampler(Y, fl.ash$fits$OHL, fixed=&quot;loadings&quot;)
   fl.ash.samp &lt;- fl.ash.sampler(nsamp)
   fl.ash.lfsr &lt;- flash_lfsr(fl.ash.samp)
 
@@ -1268,7 +1334,7 @@ saveRDS(pr.m, &quot;./output/sims2prm.rds&quot;)</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS High Sierra 10.13.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
