@@ -7,28 +7,9 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-all.rrmses <- sqrt(readRDS("./output/sims2mse.rds"))
-pr.pn <- readRDS("./output/sims2prpn.rds")
-pr.ash <- readRDS("./output/sims2prash.rds")
-pr.m <- readRDS("./output/sims2prm.rds")
-
-# Nulls
-nullidx <- c(7, 9, 11, 13, 15, 23)
-null.names <- c("UnSm(7)", "UnLg(8)", "Sh3(9)", "Sh10(10)", "Sh5(11)", "Null")
-
-# Effects that are independent or identical across conditions
-indididx <- 1:6
-indid.names <- c("IndSm(1)", "IndLg(2)", "IndDif(3)", "IdSm(4)", "IdLg(5)", "Rnk1(6)")
-
-# Effects that are unique to one or several conditions
-unshidx <- c(8, 10, 12, 14, 16)
-unsh.names <- c("UnSm(7)", "UnLg(8)", "Sh3(9)", "Sh10(10)", "Sh5(11)")
-
-# Other
-otheridx <- c(17:22)
-other.names <- c("Rn5(12)", "Rn10(13)", "Rnd(14)", "IdIn(15)", "InUn(16)", "IdUn(17)")
 ```
+
+## Introduction
 
 Here I study in detail simulations from a MASH model that extends the "model with independent, unique, and shared effects" from my larger [simulation study](MASHvFLASHsims.html). I run 10 simulations, each of which simulates data for 20 conditions and 1200 tests. I use 17 different covariance structures, each of which are used to simulate 25 tests. The other 775 tests are null across all conditions.
 
@@ -75,6 +56,30 @@ Finally, I included several combinations of the above types of effects. In parti
 ## Fitting methods
 
 For each simulation, I fitted a MASH model and two FLASH models using the "one-hots last" method described in my larger [simulation study](MASHvFLASHsims.html). One FLASH model used the point-normal approach to solve the ebnm problem (`ebnm_fn = ebnm_pn`); the other used `ashr` (`ebnm_fn = ebnm_ash`).
+
+First I load results.
+```{r load_res}
+all.rrmses <- sqrt(readRDS("./output/sims2mse.rds"))
+pr.pn <- readRDS("./output/sims2prpn.rds")
+pr.ash <- readRDS("./output/sims2prash.rds")
+pr.m <- readRDS("./output/sims2prm.rds")
+
+# Nulls
+nullidx <- c(7, 9, 11, 13, 15, 23)
+null.names <- c("UnSm(7)", "UnLg(8)", "Sh3(9)", "Sh10(10)", "Sh5(11)", "Null")
+
+# Effects that are independent or identical across conditions
+indididx <- 1:6
+indid.names <- c("IndSm(1)", "IndLg(2)", "IndDif(3)", "IdSm(4)", "IdLg(5)", "Rnk1(6)")
+
+# Effects that are unique to one or several conditions
+unshidx <- c(8, 10, 12, 14, 16)
+unsh.names <- c("UnSm(7)", "UnLg(8)", "Sh3(9)", "Sh10(10)", "Sh5(11)")
+
+# Other
+otheridx <- c(17:22)
+other.names <- c("Rn5(12)", "Rn10(13)", "Rnd(14)", "IdIn(15)", "InUn(16)", "IdUn(17)")
+```
 
 ## Results: RRMSE 
 
