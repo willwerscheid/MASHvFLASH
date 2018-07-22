@@ -1,4 +1,5 @@
-devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+# library(flashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
 library(mashr)
 
 source("./code/sims.R")

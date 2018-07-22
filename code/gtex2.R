@@ -91,15 +91,14 @@ flash_fit.final$timing <- end_time
 saveRDS(flash_fit.final, "./output/gtex2flfit.rds")
 
 # Calculate LFSR by sampling from the posterior
-fl.sampler <- flash_lf_sampler(fldata.strong, fl, ebnm_fn=ebnm_ash,
-                               fixed="loadings")
+fl.sampler <- flash_sampler(fldata.strong, fl, fixed="loadings")
 set.seed(1)
 fl.samp <- fl.sampler(200)
 fl.lfsr <- flash_lfsr(fl.samp)
 saveRDS(fl.lfsr, "./output/gtex2lfsr.rds")
 sum(fl.lfsr > .05) / length(fl.lfsr) # 0.50
 
-fl.pm <- flash_get_lf(fl)
+fl.pm <- flash_get_fitted_values(fl)
 m.pm <- t(get_pm(m))
 png("./output/gtex2compare.png")
 plot(as.vector(fl.pm), as.vector(m.pm), xlab="FLASH PM", ylab="MASH PM",

@@ -1,6 +1,6 @@
 # Fit using FLASH -------------------------------------------------------
 # Methods: 1. Vanilla, 2. Zero, 3. OHL, 4. OHF, 5. OHF+
-fit_flash <- function(Y, Kmax, methods=1:5, ebnm_fn=ebnm_pn) {
+fit_flash <- function(Y, Kmax, methods=1:5, ebnm_fn="ebnm_pn") {
   n <- nrow(Y)
   fits <- list()
   timing <- list()

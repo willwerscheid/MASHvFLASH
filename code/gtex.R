@@ -1,6 +1,6 @@
 ## @knitr gtex
 
-devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
 library(mashr)
 
 gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
@@ -26,7 +26,7 @@ flash_get_objective(fl_data, gtex_flfit$fits$OHFp) # -1278991
 
 
 # Use PM from each method as "true Y" and do diagnostics
-# fl_pm <- flash_get_lf(gtex_flfit$fl)
+# fl_pm <- flash_get_fitted_values(gtex_flfit$fl)
 # gtex_mres <- mash_diagnostics(gtex_mfit$m, fl_pm)
 # saveRDS(gtex_mres, "./output/gtexmres.rds")
 #
@@ -36,7 +36,7 @@ flash_get_objective(fl_data, gtex_flfit$fits$OHFp) # -1278991
 
 
 # Plot FLASH PM vs. MASH PM
-fl_pm <- flash_get_lf(gtex_flfit$fits$OHL)
+fl_pm <- flash_get_fitted_values(gtex_flfit$fits$OHL)
 m_pm <- t(get_pm(gtex_mfit$m))
 png("./output/gtexcompare.png")
 plot(as.vector(fl_pm), as.vector(m_pm), xlab="FLASH PM", ylab="MASH PM",
@@ -48,7 +48,7 @@ cor(as.vector(fl_pm), as.vector(m_pm)) # 0.952
 # Use LFSR to get "significant" effects and get confusion matrices
 m_lfsr <- t(get_lfsr(gtex_mfit$m))
 
-fl_sampler <- flash_lf_sampler(data, gtex_flfit$fits$OHL, ebnm_fn=ebnm_pn, fixed="loadings")
+fl_sampler <- flash_sampler(data, gtex_flfit$fits$OHL, fixed="loadings")
 fl_lfsr <- flash_lfsr(fl_sampler(200))
 saveRDS(fl_lfsr, "./output/gtexfllfsr.rds")
 

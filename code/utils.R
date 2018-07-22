@@ -4,7 +4,7 @@ flash_diagnostics <- function(fl, Y, true_Y, nsamp) {
   MSE <- flash_mse(fl, true_Y)
 
   # Sample from FLASH fit to estimate CI coverage and TPR vs. FPR
-  fl_sampler <- flash_lf_sampler(Y, fl, ebnm_fn=ebnm_pn, fixed="loadings")
+  fl_sampler <- flash_sampler(Y, fl, fixed="loadings")
   fl_samp <- fl_sampler(nsamp)
 
   CI <- flash_ci(fl_samp, true_Y)
@@ -26,7 +26,7 @@ mash_diagnostics <- function(m, true_Y) {
 
 # MSE of posterior means (FLASH) ----------------------------------------
 flash_mse <- function(fl, true_Y) {
-  mean((flash_get_lf(fl) - true_Y)^2)
+  mean((flash_get_fitted_values(fl) - true_Y)^2)
 }
 
 # MSE for MASH ----------------------------------------------------------
@@ -75,7 +75,7 @@ flash_lfsr <- function(fl_samp) {
 
 # Quantities for plotting ROC curves -----------------------------------
 flash_roc <- function(fl, fl_samp, true_Y, step=0.01) {
-  roc_data(flash_get_lf(fl), true_Y, flash_lfsr(fl_samp), step)
+  roc_data(flash_get_fitted_values(fl), true_Y, flash_lfsr(fl_samp), step)
 }
 
 mash_roc <- function(m, true_Y, step=0.01) {

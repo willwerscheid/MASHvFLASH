@@ -125,17 +125,17 @@ for (i in 1:nsims) {
   }
   Y <- X + rnorm(n*p)
 
-  fl.pn <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_pn) # OHL
-  fl.ash <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=ebnm_ash)
+  fl.pn <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn="ebnm_pn") # OHL
+  fl.ash <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn="ebnm_ash")
   m <- fit_mash(Y)
 
   base.se <- (Y - X)^2
   base.mse <- partition_by_type(base.se)
 
-  fl.pn.se <- (flash_get_lf(fl.pn$fits$OHL) - X)^2
+  fl.pn.se <- (flash_get_fitted_values(fl.pn$fits$OHL) - X)^2
   fl.pn.mse <- partition_by_type(fl.pn.se) / base.mse
 
-  fl.ash.se <- (flash_get_lf(fl.ash$fits$OHL) - X)^2
+  fl.ash.se <- (flash_get_fitted_values(fl.ash$fits$OHL) - X)^2
   fl.ash.mse <- partition_by_type(fl.ash.se) / base.mse
 
   m.se <- (t(get_pm(m$m)) - X)^2
@@ -146,13 +146,11 @@ for (i in 1:nsims) {
   mses[3,] <- mses[3,] + m.mse
 
 
-  fl.pn.sampler <- flash_lf_sampler(Y, fl.pn$fits$OHL,
-                                    ebnm_fn=ebnm_pn, fixed="loadings")
+  fl.pn.sampler <- flash_sampler(Y, fl.pn$fits$OHL, fixed="loadings")
   fl.pn.samp <- fl.pn.sampler(nsamp)
   fl.pn.lfsr <- flash_lfsr(fl.pn.samp)
 
-  fl.ash.sampler <- flash_lf_sampler(Y, fl.ash$fits$OHL,
-                                    ebnm_fn=ebnm_ash, fixed="loadings")
+  fl.ash.sampler <- flash_sampler(Y, fl.ash$fits$OHL, fixed="loadings")
   fl.ash.samp <- fl.ash.sampler(nsamp)
   fl.ash.lfsr <- flash_lfsr(fl.ash.samp)
 
