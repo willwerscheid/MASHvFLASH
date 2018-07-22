@@ -9,6 +9,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Introduction
+
+Here I compare MASH and FLASH fits to data simulated from various MASH and FLASH models. In addition to comparing the performance of the various FLASH fits, I was interested in seeing how FLASH performed on data generated from a MASH model (and vice versa). For code, see [below](#code).
+
 ## Fitting methods
 
 The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).
