@@ -291,13 +291,10 @@ div.tocify {
 <li>
   <a href="about.html">About</a>
 </li>
-<li>
-  <a href="license.html">License</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/jdblischak/workflowr">
+  <a href="https://github.com/willwerscheid/MASHvFLASH">
     <span class="fa fa-github"></span>
      
   </a>
@@ -331,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-26</p>
+<p><strong>Last updated:</strong> 2018-07-22</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/8fa6b091a5b8f8207595a1e81477ec5ac6e10235" target="_blank">8fa6b09</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/1ecdfadf50f08c908a327ea2cbfe803011b88bf1" target="_blank">1ecdfad</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -367,11 +364,12 @@ Ignored files:
     Ignored:    output/.DS_Store
 
 Unstaged changes:
-    Modified:   code/gtex2.R
-    Modified:   output/gtex2flfit.rds
-    Modified:   output/gtex2lfsr.rds
-    Modified:   output/gtexrandomfit.rds
-    Modified:   output/gtexstrongfit.rds
+    Modified:   analysis/MASHvFLASHgtex2.Rmd
+    Modified:   analysis/mashvflash.Rmd
+    Modified:   code/gtex.R
+    Modified:   output/gtexflfit.rds
+    Modified:   output/gtexfllfsr.rds
+    Modified:   output/gtexmfit.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -400,6 +398,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1ecdfadf50f08c908a327ea2cbfe803011b88bf1/analysis/MASHvFLASHgtex.Rmd" target="_blank">1ecdfad</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHgtex.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/ed5a35b8df25b43abfd2ab3ae094250adeb84180/docs/MASHvFLASHgtex.html" target="_blank">ed5a35b</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-26
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -598,6 +630,10 @@ analysis/index.Rmd
 <p>I used the same methods to fit the data that I used in my <a href="MASHvFLASHsims.html">simulation study</a>. These methods assume that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset.</p>
 <p>The simulation study suggested that the “one-hots last” method typically produces a better fit than the “one-hots first” method, even though it can take quite a bit longer. Here I enter into some more detail.</p>
 <p>First I load the data and the fits.</p>
+<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)</code></pre>
+<pre><code>Loading flashr</code></pre>
+<pre class="r"><code>library(mashr)</code></pre>
+<pre><code>Loading required package: ashr</code></pre>
 <pre class="r"><code>gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
 
 data &lt;- gtex$random.z
@@ -606,10 +642,10 @@ fl_data &lt;- flash_set_data(data, S = 1)
 
 gtex_mfit &lt;- readRDS(&quot;./output/gtexmfit.rds&quot;)
 gtex_flfit &lt;- readRDS(&quot;./output/gtexflfit.rds&quot;)</code></pre>
-<p>The OHL fit was produced by greedily adding a total of 17 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was -1277145.</p>
+<p>The OHL fit was produced by greedily adding a total of 17 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was -1277727.</p>
 <p>The OHF fit added the 44 fixed one-hot factors, then backfit them, then added only 4 (!) more factors greedily. The resulting objective was much worse than that of the OHL fit, at -1315285.</p>
-<p>Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method “FLASH-OHF+” in the simulation study). The final objective was -1278991: better, but still not as good as the OHL fit.</p>
-<p>It seems clear that the OHL method is the way to go. However, it does take a long time (over twice as long as MASH):</p>
+<p>Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method “FLASH-OHF+” in the simulation study). The final objective was -1279011: better, but still not as good as the OHL fit.</p>
+<p>It seems clear that the OHL method is the way to go. However, it does take a long time (about 50% longer than MASH):</p>
 <pre class="r"><code>data &lt;- c(gtex_mfit$timing$ed, gtex_mfit$timing$mash,
           gtex_flfit$timing$OHL$greedy, gtex_flfit$timing$OHL$backfit,
           gtex_flfit$timing$OHF$greedy, gtex_flfit$timing$OHF$backfit,
@@ -688,14 +724,14 @@ confusion_matrix &lt;- function(t) {
 <pre class="r"><code>confusion_matrix(.05)</code></pre>
 <pre><code>           flash_signif
 mash_signif FALSE  TRUE
-      FALSE 0.744 0.025
-      TRUE  0.084 0.147</code></pre>
+      FALSE 0.746 0.023
+      TRUE  0.086 0.145</code></pre>
 <p>At 1%:</p>
 <pre class="r"><code>confusion_matrix(.01)</code></pre>
 <pre><code>           flash_signif
 mash_signif FALSE  TRUE
-      FALSE 0.862 0.017
-      TRUE  0.039 0.082</code></pre>
+      FALSE 0.863 0.016
+      TRUE  0.040 0.081</code></pre>
 <!-- Note: we cannot do 0.1% if we only have 200 samples from the posterior! -->
 <!-- At 0.1%: -->
 <!-- ```{r cm001} -->
@@ -705,7 +741,7 @@ mash_signif FALSE  TRUE
 <div id="code" class="section level2">
 <h2>Code</h2>
 <p>Click “Code” to view the code used to obtain the above results.</p>
-<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr2/&quot;)
+<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
 library(mashr)
 
 gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
@@ -718,6 +754,7 @@ source(&quot;./code/fits.R&quot;)
 source(&quot;./code/sims.R&quot;)
 source(&quot;./code/utils.R&quot;)
 
+set.seed(1)
 gtex_mfit &lt;- fit_mash(data)
 saveRDS(gtex_mfit, &quot;./output/gtexmfit.rds&quot;)
 
@@ -731,7 +768,7 @@ flash_get_objective(fl_data, gtex_flfit$fits$OHFp) # -1278991
 
 
 # Use PM from each method as &quot;true Y&quot; and do diagnostics
-# fl_pm &lt;- flash_get_lf(gtex_flfit$fl)
+# fl_pm &lt;- flash_get_fitted_values(gtex_flfit$fl)
 # gtex_mres &lt;- mash_diagnostics(gtex_mfit$m, fl_pm)
 # saveRDS(gtex_mres, &quot;./output/gtexmres.rds&quot;)
 #
@@ -741,7 +778,7 @@ flash_get_objective(fl_data, gtex_flfit$fits$OHFp) # -1278991
 
 
 # Plot FLASH PM vs. MASH PM
-fl_pm &lt;- flash_get_lf(gtex_flfit$fits$OHL)
+fl_pm &lt;- flash_get_fitted_values(gtex_flfit$fits$OHL)
 m_pm &lt;- t(get_pm(gtex_mfit$m))
 png(&quot;./output/gtexcompare.png&quot;)
 plot(as.vector(fl_pm), as.vector(m_pm), xlab=&quot;FLASH PM&quot;, ylab=&quot;MASH PM&quot;,
@@ -753,7 +790,7 @@ cor(as.vector(fl_pm), as.vector(m_pm)) # 0.952
 # Use LFSR to get &quot;significant&quot; effects and get confusion matrices
 m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
 
-fl_sampler &lt;- flash_lf_sampler(data, gtex_flfit$fits$OHL, ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
+fl_sampler &lt;- flash_sampler(data, gtex_flfit$fits$OHL, fixed=&quot;loadings&quot;)
 fl_lfsr &lt;- flash_lfsr(fl_sampler(200))
 saveRDS(fl_lfsr, &quot;./output/gtexfllfsr.rds&quot;)
 
@@ -764,15 +801,14 @@ confusion_matrix &lt;- function(t) {
         / length(mash_signif), digits=3)
 }
 confusion_matrix(.05)
-confusion_matrix(.01)
-confusion_matrix(.001)</code></pre>
+confusion_matrix(.01)</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS High Sierra 10.13.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
@@ -785,7 +821,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] mashr_0.2-7  ashr_2.2-7   flashr_0.5-8
+[1] mashr_0.2-7   ashr_2.2-10   flashr_0.5-12
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17        pillar_1.2.1        plyr_1.8.4         
@@ -796,7 +832,7 @@ loaded via a namespace (and not attached):
 [16] gtable_0.2.0        lattice_0.20-35     rlang_0.2.0        
 [19] Matrix_1.2-12       foreach_1.4.4       commonmark_1.4     
 [22] yaml_2.1.17         parallel_3.4.3      mvtnorm_1.0-7      
-[25] ebnm_0.1-11         withr_2.1.1.9000    stringr_1.3.0      
+[25] ebnm_0.1-12         withr_2.1.1.9000    stringr_1.3.0      
 [28] roxygen2_6.0.1.9000 xml2_1.2.0          knitr_1.20         
 [31] devtools_1.13.4     rprojroot_1.3-2     grid_3.4.3         
 [34] R6_2.2.2            rmarkdown_1.8       rmeta_3.0          
