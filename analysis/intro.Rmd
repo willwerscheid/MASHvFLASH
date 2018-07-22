@@ -135,8 +135,8 @@ Y = X + E
 The next code chunk fits a flash object using the procedure described in the previous section.
 
 ```{r flash_fit, message=F}
-#library(flashr)
-devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+# library(flashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
 data <- flash_set_data(Y, S = 1)
 fl_greedy <- flash_add_greedy(data, Kmax = 10, var_type = "zero")
 I_n <- diag(rep(1, n))
@@ -149,7 +149,7 @@ Finally, the following code chunk calculates the mean squared error obtained usi
 ```{r flash_mse}
 baseline_mse <- sum((Y - X)^2)/(n * p)
 
-fl_preds <- flash_get_lf(fl_backfit)
+fl_preds <- flash_get_fitted_values(fl_backfit)
 flash_mse <- sum((fl_preds - X)^2)/(n * p)
 flash_mse / baseline_mse
 ```
