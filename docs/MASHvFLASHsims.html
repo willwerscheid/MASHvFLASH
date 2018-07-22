@@ -291,13 +291,10 @@ div.tocify {
 <li>
   <a href="about.html">About</a>
 </li>
-<li>
-  <a href="license.html">License</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/jdblischak/workflowr">
+  <a href="https://github.com/willwerscheid/MASHvFLASH">
     <span class="fa fa-github"></span>
      
   </a>
@@ -331,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-20</p>
+<p><strong>Last updated:</strong> 2018-07-22</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -355,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/abf0f70d7c77ab8cba395605aab7ea8116103c02" target="_blank">abf0f70</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/7f05edf0d238cdf6673bab50cefaba3a4d244a0a" target="_blank">7f05edf</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -365,6 +362,10 @@ Ignored files:
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
+
+Unstaged changes:
+    Modified:   analysis/MASHvFLASHgtex2.Rmd
+    Modified:   analysis/mashvflash.Rmd
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -393,6 +394,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/7f05edf0d238cdf6673bab50cefaba3a4d244a0a/analysis/MASHvFLASHsims.Rmd" target="_blank">7f05edf</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/69cecbc60b8616a3ceaf513a6f169f249bcca6d4/docs/MASHvFLASHsims.html" target="_blank">69cecbc</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-06-20
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -656,15 +691,15 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
 <p>The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).</p>
-<p>Five FLASH fits are produced. The first two serve as baselines. The “Vanilla” FLASH fit uses the default method to fit a flash object, adding up to ten factors greedily and then backfitting. The “Zero” fit does the same, but sets <code>var_type = zero</code> rather than using the default parameter option <code>var_type = by_column</code>. That is, the “Vanilla” fit estimates the residual variances, with the constraint that the variances are identical across any given column, while the “Zero” fit fixes the standard errors at their known values (here, <code>S = 1</code>).</p>
-<p>The remaining three fits also use parameter option <code>var_type = zero</code>. FLASH-OHL (for “one-hots last”) adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. As described in the <a href="intro.html">vignette</a>, the purpose of the one-hot vectors is to account for certain “canonical” covariance structures.</p>
+<p>Five FLASH fits are produced. The first two serve as baselines. The “Vanilla” FLASH fit uses the default method to fit a flash object, adding up to ten factors greedily and then backfitting. The “Zero” fit does the same, but sets <code>var_type = &quot;zero&quot;</code> rather than using the default parameter option <code>var_type = &quot;by_column&quot;</code>. That is, the “Vanilla” fit estimates the residual variances, with the constraint that the variances are identical across any given column, while the “Zero” fit fixes the standard errors at their known values (here, <code>S = 1</code>).</p>
+<p>The remaining three fits also use parameter option <code>var_type = &quot;zero&quot;</code>. FLASH-OHL (for “one-hots last”) adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. As described in the <a href="intro.html">vignette</a>, the purpose of the one-hot vectors is to account for certain “canonical” covariance structures.</p>
 <p>FLASH-OHF (for “one-hots first”) adds the one-hot vectors first, then backfits, then greedily adds up to ten factors. These greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL. FLASH-OHF+ begins with the FLASH-OHF fit and then performs a second backfitting.</p>
 </div>
 <div id="simulations" class="section level2">
 <h2>Simulations</h2>
 <p>All simulated datasets <span class="math inline">\(Y\)</span> are of dimension 25 x 1000. In each case, <span class="math inline">\(Y = X + E\)</span>, where <span class="math inline">\(X\)</span> is the matrix of “true” effects and <span class="math inline">\(E\)</span> is a matrix of <span class="math inline">\(N(0, 1)\)</span> noise. One simulation is from the null model, three are generated according to a MASH model, and three are generated from a FLASH model. See the individual sections below for details.</p>
 <p>The MASH fits are evaluated using built-in functions <code>get_pm()</code> to calculate MSE, <code>get_psd()</code> to calculate confidence intervals, and <code>get_lfsr()</code> to calculate true and false positive rates.</p>
-<p>For the FLASH fits, only MSE is calculated using a built-in function (<code>flash_get_lf()</code>). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function <code>flash_lf_sampler()</code>. For details, see the code below.</p>
+<p>For the FLASH fits, only MSE is calculated using a built-in function (<code>flash_get_fitted_values()</code>). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function <code>flash_sampler()</code>. For details, see the code below.</p>
 </div>
 <div id="results-overview" class="section level2">
 <h2>Results overview</h2>
@@ -690,16 +725,16 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.002</td>
+<td align="right">0.003</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0.002</td>
-<td align="right">0.002</td>
-<td align="right">0.002</td>
+<td align="right">0.003</td>
+<td align="right">0.003</td>
+<td align="right">0.003</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.940</td>
+<td align="right">0.864</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1.000</td>
@@ -731,21 +766,21 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.017</td>
-<td align="right">0.021</td>
+<td align="right">0.016</td>
+<td align="right">0.019</td>
 <td align="right">0.017</td>
 <td align="right">0.019</td>
 <td align="right">0.020</td>
-<td align="right">0.019</td>
+<td align="right">0.020</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.990</td>
-<td align="right">0.978</td>
-<td align="right">0.980</td>
-<td align="right">0.984</td>
-<td align="right">0.984</td>
-<td align="right">0.984</td>
+<td align="right">0.991</td>
+<td align="right">0.981</td>
+<td align="right">0.981</td>
+<td align="right">0.985</td>
+<td align="right">0.985</td>
+<td align="right">0.985</td>
 </tr>
 </tbody>
 </table>
@@ -769,10 +804,10 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.016</td>
-<td align="right">0.018</td>
-<td align="right">0.017</td>
+<td align="right">0.015</td>
 <td align="right">0.019</td>
+<td align="right">0.015</td>
+<td align="right">0.018</td>
 <td align="right">0.020</td>
 <td align="right">0.019</td>
 </tr>
@@ -780,10 +815,10 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <td>95% CI cov</td>
 <td align="right">0.989</td>
 <td align="right">0.979</td>
-<td align="right">0.979</td>
-<td align="right">0.983</td>
-<td align="right">0.983</td>
-<td align="right">0.983</td>
+<td align="right">0.981</td>
+<td align="right">0.985</td>
+<td align="right">0.985</td>
+<td align="right">0.984</td>
 </tr>
 </tbody>
 </table>
@@ -807,21 +842,21 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.018</td>
-<td align="right">0.022</td>
-<td align="right">0.018</td>
+<td align="right">0.017</td>
+<td align="right">0.023</td>
+<td align="right">0.019</td>
 <td align="right">0.020</td>
 <td align="right">0.021</td>
-<td align="right">0.021</td>
+<td align="right">0.020</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.990</td>
-<td align="right">0.978</td>
-<td align="right">0.980</td>
-<td align="right">0.984</td>
-<td align="right">0.984</td>
-<td align="right">0.984</td>
+<td align="right">0.989</td>
+<td align="right">0.975</td>
+<td align="right">0.977</td>
+<td align="right">0.982</td>
+<td align="right">0.982</td>
+<td align="right">0.982</td>
 </tr>
 </tbody>
 </table>
@@ -845,21 +880,21 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.024</td>
+<td align="right">0.023</td>
 <td align="right">0.016</td>
 <td align="right">0.015</td>
 <td align="right">0.017</td>
-<td align="right">0.040</td>
-<td align="right">0.017</td>
+<td align="right">0.035</td>
+<td align="right">0.018</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.976</td>
+<td align="right">0.974</td>
 <td align="right">0.931</td>
-<td align="right">0.933</td>
+<td align="right">0.934</td>
 <td align="right">0.950</td>
-<td align="right">0.965</td>
-<td align="right">0.951</td>
+<td align="right">0.968</td>
+<td align="right">0.950</td>
 </tr>
 </tbody>
 </table>
@@ -884,20 +919,20 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tr class="odd">
 <td>MSE</td>
 <td align="right">0.115</td>
-<td align="right">0.080</td>
-<td align="right">0.075</td>
-<td align="right">0.076</td>
-<td align="right">0.286</td>
-<td align="right">0.194</td>
+<td align="right">0.083</td>
+<td align="right">0.077</td>
+<td align="right">0.077</td>
+<td align="right">0.284</td>
+<td align="right">0.184</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.931</td>
-<td align="right">0.874</td>
-<td align="right">0.887</td>
-<td align="right">0.900</td>
-<td align="right">0.908</td>
-<td align="right">0.877</td>
+<td align="right">0.929</td>
+<td align="right">0.880</td>
+<td align="right">0.894</td>
+<td align="right">0.905</td>
+<td align="right">0.937</td>
+<td align="right">0.876</td>
 </tr>
 </tbody>
 </table>
@@ -921,21 +956,21 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.092</td>
-<td align="right">0.095</td>
-<td align="right">0.090</td>
-<td align="right">0.091</td>
-<td align="right">0.189</td>
-<td align="right">0.108</td>
+<td align="right">0.086</td>
+<td align="right">0.083</td>
+<td align="right">0.080</td>
+<td align="right">0.081</td>
+<td align="right">0.169</td>
+<td align="right">0.101</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.940</td>
-<td align="right">0.863</td>
-<td align="right">0.882</td>
-<td align="right">0.888</td>
-<td align="right">0.930</td>
-<td align="right">0.906</td>
+<td align="right">0.936</td>
+<td align="right">0.878</td>
+<td align="right">0.892</td>
+<td align="right">0.900</td>
+<td align="right">0.950</td>
+<td align="right">0.907</td>
 </tr>
 </tbody>
 </table>
@@ -1062,7 +1097,7 @@ sim_names &lt;- c(&quot;Null simulation&quot;, &quot;All independent effects&quo
 <p>…for fitting MASH and FLASH objects…</p>
 <pre class="r"><code># Fit using FLASH -------------------------------------------------------
 # Methods: 1. Vanilla, 2. Zero, 3. OHL, 4. OHF, 5. OHF+
-fit_flash &lt;- function(Y, Kmax, methods=1:5) {
+fit_flash &lt;- function(Y, Kmax, methods=1:5, ebnm_fn=&quot;ebnm_pn&quot;) {
   n &lt;- nrow(Y)
   fits &lt;- list()
   timing &lt;- list()
@@ -1072,10 +1107,10 @@ fit_flash &lt;- function(Y, Kmax, methods=1:5) {
     timing$Vanilla &lt;- list()
     data &lt;- flash_set_data(Y)
     t0 &lt;- Sys.time()
-    fl &lt;- flash_add_greedy(data, Kmax, var_type=&quot;by_column&quot;)
+    fl &lt;- flash_add_greedy(data, Kmax, var_type=&quot;by_column&quot;, ebnm_fn=ebnm_fn)
     t1 &lt;- Sys.time()
     timing$Vanilla$greedy &lt;- t1 - t0
-    fits$Vanilla &lt;- flash_backfit(data, fl, var_type=&quot;by_column&quot;)
+    fits$Vanilla &lt;- flash_backfit(data, fl, var_type=&quot;by_column&quot;, ebnm_fn=ebnm_fn)
     timing$Vanilla$backfit &lt;- Sys.time() - t1
   }
 
@@ -1084,12 +1119,12 @@ fit_flash &lt;- function(Y, Kmax, methods=1:5) {
   # Zero and OHL
   if (2 %in% methods || 3 %in% methods) {
     t0 &lt;- Sys.time()
-    fl &lt;- flash_add_greedy(data, Kmax, var_type=&quot;zero&quot;)
+    fl &lt;- flash_add_greedy(data, Kmax, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
     t1 &lt;- Sys.time()
     if (2 %in% methods) {
       timing$Zero &lt;- list()
       timing$Zero$greedy &lt;- t1 - t0
-      fits$Zero &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;)
+      fits$Zero &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
       timing$Zero$backfit &lt;- Sys.time() - t1
     }
     if (3 %in% methods) {
@@ -1097,7 +1132,7 @@ fit_flash &lt;- function(Y, Kmax, methods=1:5) {
       timing$OHL$greedy &lt;- t1 - t0
       fl &lt;- flash_add_fixed_l(data, diag(rep(1, n)), fl)
       t2 &lt;- Sys.time()
-      fits$OHL &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;)
+      fits$OHL &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
       timing$OHL$backfit &lt;- Sys.time() - t2
     }
   }
@@ -1106,9 +1141,9 @@ fit_flash &lt;- function(Y, Kmax, methods=1:5) {
   if (4 %in% methods || 5 %in% methods) {
     t0 &lt;- Sys.time()
     fl &lt;- flash_add_fixed_l(data, diag(rep(1, n)))
-    fl &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;)
+    fl &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
     t1 &lt;- Sys.time()
-    fl &lt;- flash_add_greedy(data, Kmax, fl, var_type=&quot;zero&quot;)
+    fl &lt;- flash_add_greedy(data, Kmax, fl, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
     t2 &lt;- Sys.time()
     if (4 %in% methods) {
       fits$OHF &lt;- fl
@@ -1116,7 +1151,7 @@ fit_flash &lt;- function(Y, Kmax, methods=1:5) {
       timing$OHF$greedy &lt;- t2 - t1
     }
     if (5 %in% methods) {
-      fits$OHFp &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;)
+      fits$OHFp &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
       timing$OHFp$backfit &lt;- (t1 - t0) + (Sys.time() - t2)
       timing$OHFp$greedy &lt;- t2 - t1
     }
@@ -1161,7 +1196,7 @@ flash_diagnostics &lt;- function(fl, Y, true_Y, nsamp) {
   MSE &lt;- flash_mse(fl, true_Y)
 
   # Sample from FLASH fit to estimate CI coverage and TPR vs. FPR
-  fl_sampler &lt;- flash_lf_sampler(Y, fl, ebnm_fn=ebnm_pn, fixed=&quot;loadings&quot;)
+  fl_sampler &lt;- flash_sampler(Y, fl, fixed=&quot;loadings&quot;)
   fl_samp &lt;- fl_sampler(nsamp)
 
   CI &lt;- flash_ci(fl_samp, true_Y)
@@ -1183,7 +1218,7 @@ mash_diagnostics &lt;- function(m, true_Y) {
 
 # MSE of posterior means (FLASH) ----------------------------------------
 flash_mse &lt;- function(fl, true_Y) {
-  mean((flash_get_lf(fl) - true_Y)^2)
+  mean((flash_get_fitted_values(fl) - true_Y)^2)
 }
 
 # MSE for MASH ----------------------------------------------------------
@@ -1232,7 +1267,7 @@ flash_lfsr &lt;- function(fl_samp) {
 
 # Quantities for plotting ROC curves -----------------------------------
 flash_roc &lt;- function(fl, fl_samp, true_Y, step=0.01) {
-  roc_data(flash_get_lf(fl), true_Y, flash_lfsr(fl_samp), step)
+  roc_data(flash_get_fitted_values(fl), true_Y, flash_lfsr(fl_samp), step)
 }
 
 mash_roc &lt;- function(m, true_Y, step=0.01) {
@@ -1276,7 +1311,7 @@ roc_data &lt;- function(pm, true_Y, lfsr, step) {
 #   }
 #   efsr_by_lfsr
 # }</code></pre>
-<p>…and some ugly functions that run everything and plot results.</p>
+<p>…for running simulations and plotting results…</p>
 <pre class="r"><code>run_sims &lt;- function(sim_fn, nsims, plot_title, fpath) {
   #suppressMessages(
     #suppressWarnings(
@@ -1409,13 +1444,34 @@ plot_ROC &lt;- function(res, main=&quot;ROC curve&quot;,
   legend(&quot;bottomright&quot;, c(&quot;MASH&quot;, methods), lty=1,
          col=c(&quot;black&quot;, colors[1:idx]))
 }</code></pre>
+<p>…and the main function calls.</p>
+<pre class="r"><code># library(flashr)
+devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
+library(mashr)
+
+source(&quot;./code/sims.R&quot;)
+source(&quot;./code/fits.R&quot;)
+source(&quot;./code/utils.R&quot;)
+source(&quot;./code/mashvflash.R&quot;)
+
+set.seed(1)
+
+# s is sparsity (prop null genes); var parameters define size of effects
+all_sims &lt;- sim_fns(n=25, p=1000, s=0.8,
+                    mashvar=1, fvar=1, lvar=1, UVvar=0.25)
+
+for (i in 1:length(all_sims)) {
+  message(paste(&quot;  Beginning simulation #&quot;, i, sep=&quot;&quot;))
+  res &lt;- run_sims(all_sims[[i]], nsims=10, plot_title=sim_names[[i]],
+                  fpath = paste0(&quot;./output/sim&quot;, i))
+}</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Sierra 10.12.6
+Running under: macOS High Sierra 10.13.1
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
