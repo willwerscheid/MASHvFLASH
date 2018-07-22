@@ -7,8 +7,6 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
-library(mashr)
 ```
 
 Here I analyze some GTEx data. The dataset can be found at https://stephenslab.github.io/gtexresults/. I use the "random.z" dataset, which consists of $z$-scores for 44 tissues and a random subset of 20000 tests.
@@ -22,6 +20,9 @@ The simulation study suggested that the "one-hots last" method typically produce
 First I load the data and the fits.
 
 ```{r load_fits}
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
+library(mashr)
+
 gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
 
 data <- gtex$random.z
@@ -38,7 +39,7 @@ The OHF fit added the 44 fixed one-hot factors, then backfit them, then added on
 
 Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method "FLASH-OHF+" in the simulation study). The final objective was `r format(flash_get_objective(fl_data, gtex_flfit$fits$OHFp), scientific=F)`: better, but still not as good as the OHL fit.
 
-It seems clear that the OHL method is the way to go. However, it does take a long time (over twice as long as MASH):
+It seems clear that the OHL method is the way to go. However, it does take a long time (about 50% longer than MASH):
 
 ```{r plot_timing}
 data <- c(gtex_mfit$timing$ed, gtex_mfit$timing$mash,
