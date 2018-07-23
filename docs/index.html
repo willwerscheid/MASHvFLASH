@@ -222,7 +222,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/302143dc764a71d71a9e561fba1039f5216e3238" target="_blank">302143d</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/30e7d2365049920928a8a1b14bb035ae97a6430e" target="_blank">30e7d23</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -232,12 +232,6 @@ Ignored files:
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    output/.DS_Store
-
-Unstaged changes:
-    Modified:   analysis/MASHvFLASHgtex2.Rmd
-    Deleted:    analysis/license.Rmd
-    Modified:   code/sims2.R
-    Modified:   output/README.md
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -266,6 +260,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/30e7d2365049920928a8a1b14bb035ae97a6430e/analysis/index.Rmd" target="_blank">30e7d23</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/index.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/fce2b775f72b19231fd0119dcfae4556dc70e13b/docs/index.html" target="_blank">fce2b77</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -662,14 +690,11 @@ Start workflowr project.
 </ul>
 <p></details></p>
 <hr />
-<div id="current" class="section level2">
-<h2>Current:</h2>
 <p><a href="intro.html">Introduction.</a> A vignette.</p>
 <p><a href="MASHvFLASHsims.html">MASH v FLASH simulation results.</a> Compares FLASH fits to MASH fits in a number of settings. Uses various methods to fit the FLASH object. The “OHL” method is best.</p>
 <p><a href="MASHvFLASHgtex.html">MASH v FLASH on GTEx.</a> Compares FLASH to MASH using data from the GTEx project. Results are similar, but FLASH is more conservative.</p>
 <p><a href="MASHvFLASHsims2.html">MASH v FLASH detailed simulation study.</a> Using the “OHL” method, compares the performance of FLASH-pn, FLASH-ash, and MASH in a single simulation setting. FLASH and MASH perform differently on different covariance structures. There is little or no advantage to using ash priors rather than point-normals.</p>
 <p><a href="MASHvFLASHgtex2.html">MASH v FLASH detailed GTEx study.</a> Uses an improved workflow to examine differences in MASH and FLASH fits to GTEx data. Particularly strong effects in a single condition might cause MASH to miss smaller effects that are shared among conditions. But FLASH might miss very small effects that are shared across all conditions.</p>
-</div>
 <div id="archived" class="section level2">
 <h2>Archived:</h2>
 <p><a href="mashvflash.html">A first attempt.</a> Stowed and forgotten.</p>
