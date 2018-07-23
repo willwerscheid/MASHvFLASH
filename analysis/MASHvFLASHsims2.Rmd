@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Here I study in detail simulations from a MASH model that extends the "model with independent, unique, and shared effects" from my larger [simulation study](MASHvFLASHsims.html). I run 10 simulations, each of which simulates data for 20 conditions and 1200 tests. I use 17 different covariance structures, each of which are used to simulate 25 tests. The other 775 tests are null across all conditions.
+Here I study in detail simulations from a MASH model that extends the "model with independent, unique, and shared effects" from my larger [simulation study](MASHvFLASHsims.html). I run 10 simulations, each of which simulates data for 20 conditions and 1200 tests. I use 17 different covariance structures, each of which are used to simulate 25 tests. The other 775 tests are null across all conditions. For the code used in this analysis, see [below](#code).
 
 ## Independent effects
 
