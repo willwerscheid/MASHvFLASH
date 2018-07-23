@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Here I return to the GTEx data in order to examine cases where MASH and FLASH lead to different conclusions. While my previous [analysis](MASHvFLASHgtex.html) compared MASH and FLASH fits on a random subset of tests, here I follow a workflow analogous to the one suggested for the GTEx data in this [MASH vignette](https://stephenslab.github.io/mashr/articles/eQTL_outline.html). 
+Here I return to the GTEx data in order to examine cases where MASH and FLASH lead to different conclusions. While my previous [analysis](MASHvFLASHgtex.html) compared MASH and FLASH fits on a random subset of tests, here I follow a workflow analogous to the one suggested for the GTEx data in this [MASH vignette](https://stephenslab.github.io/mashr/articles/eQTL_outline.html). For the code used in this analysis, see [below](#code).
 
 
 ## Fitting Methods
