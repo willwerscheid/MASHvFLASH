@@ -1,6 +1,6 @@
 ## @knitr sims2
 
-devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
 library(mashr)
 
 source("./code/fits.R")

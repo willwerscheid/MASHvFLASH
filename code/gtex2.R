@@ -1,6 +1,6 @@
 ## @knitr gtex2
 
-devtools::load_all("/Users/willwerscheid/GitHub/flashr2/")
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
 library(mashr)
 library(corrplot)
 source("./code/fits.R")
@@ -62,7 +62,7 @@ LL = flash_get_l(fl.strong)
 fl.random <- flash_add_fixed_l(fldata.random, LL)
 start_time <- Sys.time()
 fl.random <- flash_backfit(fldata.random, fl.random, var_type="zero",
-                           ebnm_fn = ebnm_ash, nullcheck=F, verbose=T)
+                           ebnm_fn = "ebnm_ash", nullcheck=F, verbose=T)
 end_time <- Sys.time() - start_time
 flash_fit.random <- list()
 flash_fit.random$fit <- fl.random
@@ -74,17 +74,13 @@ flash_get_pve(fl.random) # now only 21%
 # 3. Compute posterior summaries on the strong tests, using g_f from step 2.
 fl <- flash_add_fixed_l(fldata.strong, LL)
 start_time <- Sys.time()
-fl <- flash_backfit(fldata.strong, fl, var_type="zero", ebnm_fn = ebnm_ash,
-                    gf=flash_get_gf(fl.random), fixgf=T, nullcheck=F, verbose=T)
-# Updated interface:
-# ebnm_param_f = lapply(fl.random$gf, function(g) {list(g=g, fixg=T)})
-# fl <- flash_backfit(fldata.strong, fl, var_type="zero",
-#                     ebnm_fn = "ebnm_ash",
-#                     ebnm_param = list(f = ebnm_param_f, l = list()),
-#                     nullcheck=F, verbose=T)
-
+ebnm_param_f = lapply(fl.random$gf, function(g) {list(g=g, fixg=TRUE)})
+fl <- flash_backfit(fldata.strong, fl, var_type="zero",
+                    ebnm_fn = "ebnm_ash",
+                    ebnm_param = list(f = ebnm_param_f, l = list()),
+                    nullcheck=F, verbose=T)
 end_time <- Sys.time() - start_time
-# likelihood: -1348503
+# likelihood: -1355667
 flash_fit.final <- list()
 flash_fit.final$fit <- fl
 flash_fit.final$timing <- end_time
@@ -96,7 +92,7 @@ set.seed(1)
 fl.samp <- fl.sampler(200)
 fl.lfsr <- flash_lfsr(fl.samp)
 saveRDS(fl.lfsr, "./output/gtex2lfsr.rds")
-sum(fl.lfsr > .05) / length(fl.lfsr) # 0.50
+sum(fl.lfsr > .05) / length(fl.lfsr) # 0.40
 
 fl.pm <- flash_get_fitted_values(fl)
 m.pm <- t(get_pm(m))
