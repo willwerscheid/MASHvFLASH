@@ -1,94 +1,135 @@
 # Fit using FLASH -------------------------------------------------------
-# Methods: 1. Vanilla, 2. Zero, 3. OHL, 4. OHF, 5. OHF+
-fit_flash <- function(Y, Kmax, methods=1:5, ebnm_fn="ebnm_pn") {
+fit_flash_zero <- function(Y, Kmax, ebnm_fn="ebnm_pn",
+                           init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
+                           warmstart=TRUE) {
   n <- nrow(Y)
-  fits <- list()
-  timing <- list()
-
-  # Vanilla FLASH
-  if (1 %in% methods) {
-    timing$Vanilla <- list()
-    data <- flash_set_data(Y)
-    t0 <- Sys.time()
-    fl <- flash_add_greedy(data, Kmax, var_type="by_column", ebnm_fn=ebnm_fn)
-    t1 <- Sys.time()
-    timing$Vanilla$greedy <- t1 - t0
-    fits$Vanilla <- flash_backfit(data, fl, var_type="by_column", ebnm_fn=ebnm_fn)
-    timing$Vanilla$backfit <- Sys.time() - t1
-  }
-
   data <- flash_set_data(Y, S = 1)
 
-  # Zero and OHL
-  if (2 %in% methods || 3 %in% methods) {
-    t0 <- Sys.time()
-    fl <- flash_add_greedy(data, Kmax, var_type="zero", ebnm_fn=ebnm_fn)
-    t1 <- Sys.time()
-    if (2 %in% methods) {
-      timing$Zero <- list()
-      timing$Zero$greedy <- t1 - t0
-      fits$Zero <- flash_backfit(data, fl, nullcheck=F, var_type="zero", ebnm_fn=ebnm_fn)
-      timing$Zero$backfit <- Sys.time() - t1
-    }
-    if (3 %in% methods) {
-      timing$OHL <- list()
-      timing$OHL$greedy <- t1 - t0
-      fl <- flash_add_fixed_l(data, diag(rep(1, n)), fl)
-      t2 <- Sys.time()
-      fits$OHL <- flash_backfit(data, fl, nullcheck=F, var_type="zero", ebnm_fn=ebnm_fn)
-      timing$OHL$backfit <- Sys.time() - t2
-    }
+  t0 <- Sys.time()
+  if (greedy) {
+    res <- flash_add_greedy(data, Kmax, var_type="zero",
+                            ebnm_fn=ebnm_fn, init_fn=init_fn,
+                            warmstart=warmstart)
+    fl <- res$f
+  } else {
+    fl <- flash_add_factors_from_data(data, Kmax, init_fn=init_fn)
   }
-
-  # OHF and OHF+
-  if (4 %in% methods || 5 %in% methods) {
-    t0 <- Sys.time()
-    fl <- flash_add_fixed_l(data, diag(rep(1, n)))
-    fl <- flash_backfit(data, fl, nullcheck=F, var_type="zero", ebnm_fn=ebnm_fn)
-    t1 <- Sys.time()
-    fl <- flash_add_greedy(data, Kmax, fl, var_type="zero", ebnm_fn=ebnm_fn)
-    t2 <- Sys.time()
-    if (4 %in% methods) {
-      fits$OHF <- fl
-      timing$OHF$backfit <- t1 - t0
-      timing$OHF$greedy <- t2 - t1
-    }
-    if (5 %in% methods) {
-      fits$OHFp <- flash_backfit(data, fl, nullcheck=F, var_type="zero", ebnm_fn=ebnm_fn)
-      timing$OHFp$backfit <- (t1 - t0) + (Sys.time() - t2)
-      timing$OHFp$greedy <- t2 - t1
-    }
+  t1 <- Sys.time()
+  if (backfit) {
+    res <- flash_backfit(data, fl, var_type="zero",
+                         ebnm_fn=ebnm_fn)
+    fl <- res$f
   }
+  t2 <- Sys.time()
 
-  # timing$total <- Reduce(`+`, timing)
+  t.greedy <- t1 - t0
+  t.backfit <- t2 - t1
 
-  list(fits = fits, timing = timing)
+  list(f = fl, t.greedy = t.greedy, t.backfit = t.backfit)
+}
+
+
+fit_flash_OHL <- function(Y, Kmax, ebnm_fn="ebnm_pn",
+                          init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
+                          warmstart=TRUE) {
+  n <- nrow(Y)
+  data <- flash_set_data(Y, S = 1)
+  canonical <- cbind(rep(1, n), diag(rep(1, n)))
+
+  zero.res <- fit_flash_zero(Y, Kmax, ebnm_fn, init_fn,
+                             greedy, backfit=FALSE, warmstart)
+
+  fl <- flash_add_fixed_l(data, canonical, zero.res$f, init_fn=init_fn)
+
+  t0 <- Sys.time()
+  if (backfit) {
+    res <- flash_backfit(data, fl,
+                         var_type="zero", ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl <- res$f
+  } else {
+    K <- flashr:::flash_get_k(fl)
+    res <- flash_backfit(data, fl, kset=(K - ncol(canonical) + 1):K,
+                         var_type="zero", ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl <- res$f
+  }
+  t1 <- Sys.time()
+
+  t.backfit <- Sys.time() - t0
+
+  list(f = fl, t.greedy = zero.res$t.greedy, t.backfit = t.backfit)
+}
+
+
+fit_flash_OHF <- function(Y, Kmax, ebnm_fn="ebnm_pn",
+                          init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
+                          warmstart=TRUE) {
+  n <- nrow(Y)
+  data <- flash_set_data(Y, S = 1)
+  canonical <- cbind(rep(1, n), diag(rep(1, n)))
+
+  t0 <- Sys.time()
+  fl <- flash_add_fixed_l(data, canonical)
+  res <- flash_backfit(data, fl, var_type="zero", ebnm_fn=ebnm_fn,
+                       nullcheck=FALSE)
+  fl <- res$f
+  t1 <- Sys.time()
+
+  if (greedy) {
+    res <- flash_add_greedy(data, Kmax, fl, var_type="zero",
+                            ebnm_fn=ebnm_fn, init_fn=init_fn,
+                            warmstart=warmstart)
+    fl <- res$f
+  } else {
+    fl <- flash_add_factors_from_data(data, Kmax, fl, init_fn=init_fn)
+  }
+  t2 <- Sys.time()
+  K = flashr:::flash_get_k(fl)
+  if (backfit && K > ncol(canonical)) {
+    res <- flash_backfit(data, fl,
+                         kset=(ncol(canonical) + 1):K,
+                         var_type="zero", ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl <- res$f
+  }
+  t3 <- Sys.time()
+
+  t.greedy <- t2 - t1
+  t.backfit <- (t1 - t0) + (t3 - t2)
+
+  list(f = fl, t.greedy = t.greedy, t.backfit = t.backfit)
 }
 
 
 # Fit using MASH -------------------------------------------------------
-fit_mash <- function(Y, ed=T) {
+fit_mash <- function(Y) {
   data <- mash_set_data(t(Y))
   timing <- list()
 
   # time to create canonical matrices is negligible
   U = cov_canonical(data)
 
-  if (ed) {
-    t0 <- Sys.time()
-    m.1by1 <- mash_1by1(data)
-    strong <- get_significant_results(m.1by1, 0.05)
+  t0 <- Sys.time()
+  m.1by1 <- mash_1by1(data)
+  lvl <- 0.05
+  strong <- get_significant_results(m.1by1, lvl)
+  while (length(strong) < 5 && lvl < 0.5) {
+    lvl <- lvl + 0.05
+    strong <- get_significant_results(m.1by1, lvl)
+  }
+  if (length(strong) >= 5) {
     U.pca <- cov_pca(data, 5, strong)
     U.ed <- cov_ed(data, U.pca, strong)
     U <- c(U, U.ed)
-    timing$ed <- Sys.time() - t0
+    t.ed <- Sys.time() - t0
+  } else {
+    t.ed <- as.difftime(0, units="secs")
   }
 
   t0 <- Sys.time()
   m <- mash(data, U)
-  timing$mash <- Sys.time() - t0
+  t.mash <- Sys.time() - t0
 
-  # timing$total <- Reduce(`+`, timing)
-
-  list(m = m, timing = timing)
+  list(m = m, t.ed = t.ed, t.mash = t.mash)
 }
