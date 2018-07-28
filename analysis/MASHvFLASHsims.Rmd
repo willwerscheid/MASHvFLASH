@@ -11,123 +11,122 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Here I compare MASH and FLASH fits to data simulated from various MASH and FLASH models. In addition to comparing the performance of the various FLASH fits, I was interested in seeing how FLASH performed on data generated from a MASH model (and vice versa). For the code used in this analysis, see [below](#code).
+Here I compare MASH and FLASH fits to data simulated from various MASH and FLASH models. In addition to comparing different methods for obtaining FLASH fits, I was interested to see how FLASH performed on data generated from a MASH model (and vice versa). For the code used in this analysis, see [below](#code).
+
 
 ## Fitting methods
 
 The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).
 
-Five FLASH fits are produced. The first two serve as baselines. The "Vanilla" FLASH fit uses the default method to fit a flash object, adding up to ten factors greedily and then backfitting. The "Zero" fit does the same, but sets `var_type = "zero"` rather than using the default parameter option `var_type = "by_column"`. That is, the "Vanilla" fit estimates the residual variances, with the constraint that the variances are identical across any given column, while the "Zero" fit fixes the standard errors at their known values (here, `S = 1`).
+Three FLASH fits are produced. The first serves as a baseline. The "Zero" FLASH fit simply adds up to 25 factors greedily, with `var_type` set to `"zero"` to reflect the fact that standard errors are fixed at 1.
 
-The remaining three fits also use parameter option `var_type = "zero"`. FLASH-OHL (for "one-hots last") adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. As described in the [vignette](intro.html), the purpose of the one-hot vectors is to account for certain "canonical" covariance structures.
+The other two fits also use parameter option `var_type = "zero"`. OHL (for "one-hots last") adds up to 25 factors greedily, then adds "canonical" factors (an all-ones vector and a one-hot vector for each row in the data matrix). It backfits the canonical factors, but not the greedily-added ones.
 
-FLASH-OHF (for "one-hots first") adds the one-hot vectors first, then backfits, then greedily adds up to ten factors. These greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL. FLASH-OHF+ begins with the FLASH-OHF fit and then performs a second backfitting.
+OHF (for "one-hots first") adds the canonical factors first, then backfits, then greedily adds up to 25 factors.
+
+I also experimented with doing an additional backfit for each of the three FLASH fits. It increased the time needed to fit (sometimes as much as eightfold), but results were otherwise very similar.
 
 
 ## Simulations
 
-All simulated datasets $Y$ are of dimension 25 x 1000. In each case, $Y = X + E$, where $X$ is the matrix of "true" effects and $E$ is a matrix of $N(0, 1)$ noise. One simulation is from the null model, three are generated according to a MASH model, and three are generated from a FLASH model. See the individual sections below for details. 
+All simulated datasets $Y$ are of dimension 25 x 1000. In each case, $Y = X + E$, where $X$ is the matrix of "true" effects and $E$ is a matrix of $N(0, 1)$ noise. One simulation is from the null model, three are generated according to a MASH model, and two are generated from a FLASH model. See the individual sections below for details. 
 
 The MASH fits are evaluated using built-in functions `get_pm()` to calculate MSE, `get_psd()` to calculate confidence intervals, and `get_lfsr()` to calculate true and false positive rates. 
 
 For the FLASH fits, only MSE is calculated using a built-in function (`flash_get_fitted_values()`). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function `flash_sampler()`. For details, see the code below.
 
 
-## Results overview
-
-Without the one-hot vectors, the Vanilla and Zero FLASH fits perform poorly on the MASH simulations (see the ROC curves below). The other FLASH fits all perform similarly to one another. They are outperformed by MASH, especially at low FPR thresholds, but this is expected since the data are, after all, generated from the MASH model. Of these three FLASH methods, OHF is (as expected) the fastest, and is about twice as fast as the slowest method, OHF+.
-
-The Vanilla and Zero fits do much better on the FLASH simulations (again, as expected, since the data are now generated from the FLASH model). More surprisingly, the MASH fit does nearly as well (and, in some cases, better) than the FLASH fits. OHF is again the fastest of the three FLASH fits that include one-hot vectors, but it performs much more poorly than the other two methods. On the rank-5 model, OHF+ also performs poorly relative to OHL.
-
-Overall, the OHL method consistently performs best among the three FLASH methods that include one-hot vectors. It is slower than OHF, and sometimes even slower than OHF+, but the performance gains on the FLASH data are substantial.
-
-
-## Null model
+## Results: null model
 
 Here the entries of $X$ are all zero.
+
+While FLASH does very well, MASH does poorly here. I'm not sure why this is the case; in runs with different seeds, MASH performed at least as well as FLASH.
 
 ```{r sim1, echo=F}
 #
 # The output for this analysis was produced by running the code in
-#   code/main.R. See below ("Code") for details.
+#   code/MASHvFLASHsims.R. See below ("Code") for details.
 #
-tmp <- readRDS("./output/sim1res.rds")
+fpath <- "./output/MASHvFLASHsims/greedy/"
+tmp <- readRDS(paste0(fpath, "sim1res.rds"))
 knitr::kable(tmp, digits=3)
 ```
 
 ![](images/sim1time.png)
 
-## Model with independent effects
+## Results: MASH models
 
-Now the columns $X_{:, j}$ are either identically zero (with probability 0.8) or identically nonzero. In the latter case, the entries of the $j$th column of $X$ are i.i.d. $N(0, 1)$.
+As expected, MASH outperforms FLASH when the data is generated from a MASH model. The MSE obtained using a MASH fit is about half the MSE obtained using any of the FLASH fits, and the 95% confidence intervals given by MASH contain the "true" values in 98-99% of cases, whereas the FLASH coverage can fall a bit short of 95%. Further, the MASH ROC curves consistently dominate the FLASH ROC curves.
+
+Interestingly, however, there is no clear victor among the FLASH methods. Results for the "Zero" and OHL methods are nearly identical. I suspect that this is because loadings for the "canonical" factors are estimated to be essentially zero, so that there is no substantial difference between the two fits. The OHF method tends to do slightly better in terms of MSE and confidence interval coverage, but the OHL ROC curves dominate the OHF ROC curves for FPR < 0.6. 
+
+The OHF method is consistently faster than both MASH and the other FLASH methods, while the OHL method is the slowest of the four methods.
+
+### Independent effects
+
+Here the columns $X_{:, j}$ are either identically zero (with probability 0.8) or identically nonzero. In the latter case, the entries of the $j$th column of $X$ are i.i.d. $N(0, 2^2)$.
 
 ```{r sim2, echo=F}
-tmp <- readRDS("./output/sim2res.rds")
-knitr::kable(tmp, digits=3)
+tmp <- readRDS(paste0(fpath, "sim2res.rds"))
+knitr::kable(tmp, digits=2)
 ```
 
 ![](images/sim2ROC.png)
 ![](images/sim2time.png)
 
-## Model with independent and shared effects
+### Independent and shared effects
 
-Again 80% of the columns of $X$ are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. $N(0, 1)$. The other half have entries that are identical across rows, with a value that is drawn from the $N(0, 1)$ distribution. (In other words, the covariance matrix for these columns is a matrix of all ones.)
+Again 80% of the columns of $X$ are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. $N(0, 2^2)$. The other half have entries that are identical across rows, with a value that is drawn from a $N(0, 2)$ distribution. (In other words, the covariance matrix for these columns is a matrix whose entries are all equal to 2.)
 
 ```{r sim3, echo=F}
-tmp <- readRDS("./output/sim3res.rds")
-knitr::kable(tmp, digits=3)
+tmp <- readRDS(paste0(fpath, "sim3res.rds"))
+knitr::kable(tmp, digits=2)
 ```
 
 ![](images/sim3ROC.png)
 ![](images/sim3time.png)
 
-## Model with independent, shared, and unique effects
+### Independent, shared, and unique effects
 
-This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows.
+This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows, and are drawn from a $N(0, 10^2)$ distribution.
 
 ```{r sim4, echo=F}
-tmp <- readRDS("./output/sim4res.rds")
-knitr::kable(tmp, digits=3)
+tmp <- readRDS(paste0(fpath, "sim4res.rds"))
+knitr::kable(tmp, digits=2)
 ```
 
 ![](images/sim4ROC.png)
 ![](images/sim4time.png)
 
-## Rank 1 FLASH model
+## Results: FLASH models
 
-This is the FLASH model $X = LF$, where $L$ is an $n$ by $k$ matrix and $F$ is a $k$ by $p$ matrix. In this first simulation, $k = 1$. 80% of the entries in $F$ and 50% of the entries in $L$ are equal to zero. The other entries are i.i.d. $N(0, 1)$.
+Interestingly, MASH is very competitive with FLASH even when the true model is a FLASH model. Indeed, of the four fits, the MASH fit gives the best results for the rank 5 model.
+
+Results for the "Zero" and OHL fits are again very similar, and both do quite a bit better than the OHF method, which does poorly in terms of MSE on the rank 1 model and in terms of FPR/TPR trade-off on the rank 5 model. (However, it outperforms the "Zero" and OHL fits in terms of confidence interval coverage.) Further, the OHF method is much slower here (if not worryingly so). I suspect that this is because the canonical factors are quickly "zeroed out" when the greedily-added "data-driven" factors (which, I assume, are pretty close to the true $F$) have already been added, whereas much more time is spent backfitting them when no data-driven factors have yet been added.
+
+### Rank 1 model
+
+This is the FLASH model $X = LF$, where $L$ is an $n$ by $k$ matrix and $F$ is a $k$ by $p$ matrix. In this first simulation, $k = 1$. 80% of the columns in $F$ and 20% of the entries in $L$ are equal to zero. The other entries of $F$ are i.i.d. $N(0, 1)$; the nonzero entries of $L$ are i.i.d. $N(0, 2^2)$.
 
 ```{r sim5, echo=F}
-tmp <- readRDS("./output/sim5res.rds")
-knitr::kable(tmp, digits=3)
+tmp <- readRDS(paste0(fpath, "sim5res.rds"))
+knitr::kable(tmp, digits=2)
 ```
 
 ![](images/sim5ROC.png)
 ![](images/sim5time.png)
 
-## Rank 5 FLASH model 
+### Rank 5 model 
 
-This is the same as above with $k = 5$ and with only 20% of the entries in $L$ equal to zero.
+This is the same as above with $k = 5$, with only 80% of the entries in $L$ equal to zero, and with the other entries i.i.d. $N(0, 1)$.
 
 ```{r sim6, echo=F}
-tmp <- readRDS("./output/sim6res.rds")
-knitr::kable(tmp, digits=3)
+tmp <- readRDS(paste0(fpath, "sim6res.rds"))
+knitr::kable(tmp, digits=2)
 ```
 
 ![](images/sim6ROC.png)
 ![](images/sim6time.png)
-
-## Rank 3 FLASH model with UV
-
-This is similar to the above with $k = 3$ and with 30% of the rows in $L$ equal to zero. In addition, a dense rank-one matrix $W$ is added to $X$ to mimic the effects of unwanted variation. Here, $W = UV$, with $U$ an $n$ by 1 vector and $V$ a 1 by $p$ vector, both of which have entries distributed $N(0, 0.25)$.
-
-```{r sim7, echo=F}
-tmp <- readRDS("./output/sim7res.rds")
-knitr::kable(tmp, digits=3)
-```
-
-![](images/sim7ROC.png)
-![](images/sim7time.png)
 
 
 ## Code
@@ -149,5 +148,5 @@ for simulating datasets...
 ```
 
 ...and the main function calls.
-```{r main, code=readLines("../code/main.R"), eval=FALSE}
+```{r main, code=readLines("../code/MASHvFLASHsims.R"), eval=FALSE}
 ```
