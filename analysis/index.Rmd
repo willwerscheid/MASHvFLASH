@@ -8,7 +8,7 @@ output:
 
 [Introduction.](intro.html) A vignette.
 
-[MASH v FLASH simulation results.](MASHvFLASHsims.html) Compares FLASH fits to MASH fits in a number of settings. Uses various methods to fit the FLASH object. The "OHL" method is best.
+[MASH v FLASH simulation results.](MASHvFLASHsims.html) Compares FLASH fits to MASH fits to data simulated from both MASH and FLASH models.
 
 [MASH v FLASH on GTEx.](MASHvFLASHgtex.html) Compares FLASH to MASH using data from the GTEx project. Results are similar, but FLASH is more conservative.
 
