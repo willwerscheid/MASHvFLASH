@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-22</p>
+<p><strong>Last updated:</strong> 2018-07-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/3abd505e1c42acd32d1e7c9f8901f8f50efc9335" target="_blank">3abd505</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/72a220238f1121ae1cc6899aef572cd7d10fd9a4" target="_blank">72a2202</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -361,18 +361,22 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
+    Ignored:    docs/images/.Rapp.history
     Ignored:    output/.DS_Store
+    Ignored:    output/.Rapp.history
+
+Untracked files:
+    Untracked:  code/MASHvFLASHsims.R
+    Untracked:  code/gtex3.R
+    Untracked:  output/MASHvFLASHsims/
+    Untracked:  output/gtex3mfit.rds
+    Untracked:  output/gtex3mrandfit.rds
 
 Unstaged changes:
-    Modified:   code/gtex2.R
-    Modified:   code/sims2.R
-    Modified:   output/README.md
-    Modified:   output/gtex2flfit.rds
-    Modified:   output/gtex2lfsr.rds
-    Modified:   output/gtex2mfit.rds
-    Modified:   output/gtex2mrandfit.rds
-    Modified:   output/gtexrandomfit.rds
-    Modified:   output/gtexstrongfit.rds
+    Modified:   code/fits.R
+    Deleted:    code/main.R
+    Modified:   code/mashvflash.R
+    Modified:   code/sims.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -401,6 +405,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/72a220238f1121ae1cc6899aef572cd7d10fd9a4/analysis/MASHvFLASHsims.Rmd" target="_blank">72a2202</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-28
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/860aa52c7988a06c33df007c928bfce326e277fe/docs/MASHvFLASHsims.html" target="_blank">860aa52</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -765,60 +803,50 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Here I compare MASH and FLASH fits to data simulated from various MASH and FLASH models. In addition to comparing the performance of the various FLASH fits, I was interested in seeing how FLASH performed on data generated from a MASH model (and vice versa). For the code used in this analysis, see <a href="#code">below</a>.</p>
+<p>Here I compare MASH and FLASH fits to data simulated from various MASH and FLASH models. In addition to comparing different methods for obtaining FLASH fits, I was interested to see how FLASH performed on data generated from a MASH model (and vice versa). For the code used in this analysis, see <a href="#code">below</a>.</p>
 </div>
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
 <p>The MASH fit is produced following the recommendations in the MASH vignettes (using both canonical matrices and data-driven matrices).</p>
-<p>Five FLASH fits are produced. The first two serve as baselines. The “Vanilla” FLASH fit uses the default method to fit a flash object, adding up to ten factors greedily and then backfitting. The “Zero” fit does the same, but sets <code>var_type = &quot;zero&quot;</code> rather than using the default parameter option <code>var_type = &quot;by_column&quot;</code>. That is, the “Vanilla” fit estimates the residual variances, with the constraint that the variances are identical across any given column, while the “Zero” fit fixes the standard errors at their known values (here, <code>S = 1</code>).</p>
-<p>The remaining three fits also use parameter option <code>var_type = &quot;zero&quot;</code>. FLASH-OHL (for “one-hots last”) adds up to ten factors greedily, then adds a one-hot vector for each row in the data matrix, then backfits the whole thing. As described in the <a href="intro.html">vignette</a>, the purpose of the one-hot vectors is to account for certain “canonical” covariance structures.</p>
-<p>FLASH-OHF (for “one-hots first”) adds the one-hot vectors first, then backfits, then greedily adds up to ten factors. These greedily added factors are not subsequently backfit, so FLASH-OHF can be much faster than FLASH-OHL. FLASH-OHF+ begins with the FLASH-OHF fit and then performs a second backfitting.</p>
+<p>Three FLASH fits are produced. The first serves as a baseline. The “Zero” FLASH fit simply adds up to 25 factors greedily, with <code>var_type</code> set to <code>&quot;zero&quot;</code> to reflect the fact that standard errors are fixed at 1.</p>
+<p>The other two fits also use parameter option <code>var_type = &quot;zero&quot;</code>. OHL (for “one-hots last”) adds up to 25 factors greedily, then adds “canonical” factors (an all-ones vector and a one-hot vector for each row in the data matrix). It backfits the canonical factors, but not the greedily-added ones.</p>
+<p>OHF (for “one-hots first”) adds the canonical factors first, then backfits, then greedily adds up to 25 factors.</p>
+<p>I also experimented with doing an additional backfit for each of the three FLASH fits. It increased the time needed to fit (sometimes as much as eightfold), but results were otherwise very similar.</p>
 </div>
 <div id="simulations" class="section level2">
 <h2>Simulations</h2>
-<p>All simulated datasets <span class="math inline">\(Y\)</span> are of dimension 25 x 1000. In each case, <span class="math inline">\(Y = X + E\)</span>, where <span class="math inline">\(X\)</span> is the matrix of “true” effects and <span class="math inline">\(E\)</span> is a matrix of <span class="math inline">\(N(0, 1)\)</span> noise. One simulation is from the null model, three are generated according to a MASH model, and three are generated from a FLASH model. See the individual sections below for details.</p>
+<p>All simulated datasets <span class="math inline">\(Y\)</span> are of dimension 25 x 1000. In each case, <span class="math inline">\(Y = X + E\)</span>, where <span class="math inline">\(X\)</span> is the matrix of “true” effects and <span class="math inline">\(E\)</span> is a matrix of <span class="math inline">\(N(0, 1)\)</span> noise. One simulation is from the null model, three are generated according to a MASH model, and two are generated from a FLASH model. See the individual sections below for details.</p>
 <p>The MASH fits are evaluated using built-in functions <code>get_pm()</code> to calculate MSE, <code>get_psd()</code> to calculate confidence intervals, and <code>get_lfsr()</code> to calculate true and false positive rates.</p>
 <p>For the FLASH fits, only MSE is calculated using a built-in function (<code>flash_get_fitted_values()</code>). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function <code>flash_sampler()</code>. For details, see the code below.</p>
 </div>
-<div id="results-overview" class="section level2">
-<h2>Results overview</h2>
-<p>Without the one-hot vectors, the Vanilla and Zero FLASH fits perform poorly on the MASH simulations (see the ROC curves below). The other FLASH fits all perform similarly to one another. They are outperformed by MASH, especially at low FPR thresholds, but this is expected since the data are, after all, generated from the MASH model. Of these three FLASH methods, OHF is (as expected) the fastest, and is about twice as fast as the slowest method, OHF+.</p>
-<p>The Vanilla and Zero fits do much better on the FLASH simulations (again, as expected, since the data are now generated from the FLASH model). More surprisingly, the MASH fit does nearly as well (and, in some cases, better) than the FLASH fits. OHF is again the fastest of the three FLASH fits that include one-hot vectors, but it performs much more poorly than the other two methods. On the rank-5 model, OHF+ also performs poorly relative to OHL.</p>
-<p>Overall, the OHL method consistently performs best among the three FLASH methods that include one-hot vectors. It is slower than OHF, and sometimes even slower than OHF+, but the performance gains on the FLASH data are substantial.</p>
-</div>
-<div id="null-model" class="section level2">
-<h2>Null model</h2>
+<div id="results-null-model" class="section level2">
+<h2>Results: null model</h2>
 <p>Here the entries of <span class="math inline">\(X\)</span> are all zero.</p>
+<p>While FLASH does very well, MASH does poorly here. I’m not sure why this is the case; in runs with different seeds, MASH performed at least as well as FLASH.</p>
 <table>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">MASH</th>
-<th align="right">Vanilla</th>
 <th align="right">Zero</th>
 <th align="right">OHL</th>
 <th align="right">OHF</th>
-<th align="right">OHFp</th>
+<th align="right">MASH</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.003</td>
 <td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0.003</td>
-<td align="right">0.003</td>
-<td align="right">0.003</td>
+<td align="right">0.001</td>
+<td align="right">0.001</td>
+<td align="right">0.004</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.864</td>
-<td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1.000</td>
 <td align="right">1.000</td>
-<td align="right">1.000</td>
+<td align="right">0.783</td>
 </tr>
 </tbody>
 </table>
@@ -827,233 +855,176 @@ wflow_publish(“analysis/MASHvFLASHsims.Rmd”)
 
 </div>
 </div>
-<div id="model-with-independent-effects" class="section level2">
-<h2>Model with independent effects</h2>
-<p>Now the columns <span class="math inline">\(X_{:, j}\)</span> are either identically zero (with probability 0.8) or identically nonzero. In the latter case, the entries of the <span class="math inline">\(j\)</span>th column of <span class="math inline">\(X\)</span> are i.i.d. <span class="math inline">\(N(0, 1)\)</span>.</p>
+<div id="results-mash-models" class="section level2">
+<h2>Results: MASH models</h2>
+<p>As expected, MASH outperforms FLASH when the data is generated from a MASH model. The MSE obtained using a MASH fit is about half the MSE obtained using any of the FLASH fits, and the 95% confidence intervals given by MASH contain the “true” values in 98-99% of cases, whereas the FLASH coverage can fall a bit short of 95%. Further, the MASH ROC curves consistently dominate the FLASH ROC curves.</p>
+<p>Interestingly, however, there is no clear victor among the FLASH methods. Results for the “Zero” and OHL methods are nearly identical. I suspect that this is because loadings for the “canonical” factors are estimated to be essentially zero, so that there is no substantial difference between the two fits. The OHF method tends to do slightly better in terms of MSE and confidence interval coverage, but the OHL ROC curves dominate the OHF ROC curves for FPR &lt; 0.6.</p>
+<p>The OHF method is consistently faster than both MASH and the other FLASH methods, while the OHL method is the slowest of the four methods.</p>
+<div id="independent-effects" class="section level3">
+<h3>Independent effects</h3>
+<p>Here the columns <span class="math inline">\(X_{:, j}\)</span> are either identically zero (with probability 0.8) or identically nonzero. In the latter case, the entries of the <span class="math inline">\(j\)</span>th column of <span class="math inline">\(X\)</span> are i.i.d. <span class="math inline">\(N(0, 2^2)\)</span>.</p>
 <table>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">MASH</th>
-<th align="right">Vanilla</th>
 <th align="right">Zero</th>
 <th align="right">OHL</th>
 <th align="right">OHF</th>
-<th align="right">OHFp</th>
+<th align="right">MASH</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.016</td>
-<td align="right">0.019</td>
-<td align="right">0.017</td>
-<td align="right">0.019</td>
-<td align="right">0.020</td>
-<td align="right">0.020</td>
+<td align="right">0.33</td>
+<td align="right">0.33</td>
+<td align="right">0.31</td>
+<td align="right">0.16</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.991</td>
-<td align="right">0.981</td>
-<td align="right">0.981</td>
-<td align="right">0.985</td>
-<td align="right">0.985</td>
-<td align="right">0.985</td>
+<td align="right">0.94</td>
+<td align="right">0.94</td>
+<td align="right">0.95</td>
+<td align="right">0.99</td>
 </tr>
 </tbody>
 </table>
 <p><img src="images/sim2ROC.png" /> <img src="images/sim2time.png" /></p>
 </div>
-<div id="model-with-independent-and-shared-effects" class="section level2">
-<h2>Model with independent and shared effects</h2>
-<p>Again 80% of the columns of <span class="math inline">\(X\)</span> are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. <span class="math inline">\(N(0, 1)\)</span>. The other half have entries that are identical across rows, with a value that is drawn from the <span class="math inline">\(N(0, 1)\)</span> distribution. (In other words, the covariance matrix for these columns is a matrix of all ones.)</p>
+<div id="independent-and-shared-effects" class="section level3">
+<h3>Independent and shared effects</h3>
+<p>Again 80% of the columns of <span class="math inline">\(X\)</span> are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. <span class="math inline">\(N(0, 2^2)\)</span>. The other half have entries that are identical across rows, with a value that is drawn from a <span class="math inline">\(N(0, 2)\)</span> distribution. (In other words, the covariance matrix for these columns is a matrix whose entries are all equal to 2.)</p>
 <table>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">MASH</th>
-<th align="right">Vanilla</th>
 <th align="right">Zero</th>
 <th align="right">OHL</th>
 <th align="right">OHF</th>
-<th align="right">OHFp</th>
+<th align="right">MASH</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.015</td>
-<td align="right">0.019</td>
-<td align="right">0.015</td>
-<td align="right">0.018</td>
-<td align="right">0.020</td>
-<td align="right">0.019</td>
+<td align="right">0.21</td>
+<td align="right">0.20</td>
+<td align="right">0.19</td>
+<td align="right">0.09</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.989</td>
-<td align="right">0.979</td>
-<td align="right">0.981</td>
-<td align="right">0.985</td>
-<td align="right">0.985</td>
-<td align="right">0.984</td>
+<td align="right">0.94</td>
+<td align="right">0.94</td>
+<td align="right">0.95</td>
+<td align="right">0.98</td>
 </tr>
 </tbody>
 </table>
 <p><img src="images/sim3ROC.png" /> <img src="images/sim3time.png" /></p>
 </div>
-<div id="model-with-independent-shared-and-unique-effects" class="section level2">
-<h2>Model with independent, shared, and unique effects</h2>
-<p>This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows.</p>
+<div id="independent-shared-and-unique-effects" class="section level3">
+<h3>Independent, shared, and unique effects</h3>
+<p>This model is similar to the above two, but now only a third of the nonnull columns have independently distributed entries and a third have shared entries. The other third have a unique nonzero entry. (This corresponds, for example, to a gene that is only expressed in a single condition.) The unique effects are distributed uniformly across rows, and are drawn from a <span class="math inline">\(N(0, 10^2)\)</span> distribution.</p>
 <table>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">MASH</th>
-<th align="right">Vanilla</th>
 <th align="right">Zero</th>
 <th align="right">OHL</th>
 <th align="right">OHF</th>
-<th align="right">OHFp</th>
+<th align="right">MASH</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.017</td>
-<td align="right">0.023</td>
-<td align="right">0.019</td>
-<td align="right">0.020</td>
-<td align="right">0.021</td>
-<td align="right">0.020</td>
+<td align="right">0.19</td>
+<td align="right">0.18</td>
+<td align="right">0.14</td>
+<td align="right">0.07</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.989</td>
-<td align="right">0.975</td>
-<td align="right">0.977</td>
-<td align="right">0.982</td>
-<td align="right">0.982</td>
-<td align="right">0.982</td>
+<td align="right">0.94</td>
+<td align="right">0.95</td>
+<td align="right">0.95</td>
+<td align="right">0.99</td>
 </tr>
 </tbody>
 </table>
 <p><img src="images/sim4ROC.png" /> <img src="images/sim4time.png" /></p>
 </div>
-<div id="rank-1-flash-model" class="section level2">
-<h2>Rank 1 FLASH model</h2>
-<p>This is the FLASH model <span class="math inline">\(X = LF\)</span>, where <span class="math inline">\(L\)</span> is an <span class="math inline">\(n\)</span> by <span class="math inline">\(k\)</span> matrix and <span class="math inline">\(F\)</span> is a <span class="math inline">\(k\)</span> by <span class="math inline">\(p\)</span> matrix. In this first simulation, <span class="math inline">\(k = 1\)</span>. 80% of the entries in <span class="math inline">\(F\)</span> and 50% of the entries in <span class="math inline">\(L\)</span> are equal to zero. The other entries are i.i.d. <span class="math inline">\(N(0, 1)\)</span>.</p>
+</div>
+<div id="results-flash-models" class="section level2">
+<h2>Results: FLASH models</h2>
+<p>Interestingly, MASH is very competitive with FLASH even when the true model is a FLASH model. Indeed, of the four fits, the MASH fit gives the best results for the rank 5 model.</p>
+<p>Results for the “Zero” and OHL fits are again very similar, and both do quite a bit better than the OHF method, which does poorly in terms of MSE on the rank 1 model and in terms of FPR/TPR trade-off on the rank 5 model. (However, it outperforms the “Zero” and OHL fits in terms of confidence interval coverage.) Further, the OHF method is much slower here (if not worryingly so). I suspect that this is because the canonical factors are quickly “zeroed out” when the greedily-added “data-driven” factors (which, I assume, are pretty close to the true <span class="math inline">\(F\)</span>) have already been added, whereas much more time is spent backfitting them when no data-driven factors have yet been added.</p>
+<div id="rank-1-model" class="section level3">
+<h3>Rank 1 model</h3>
+<p>This is the FLASH model <span class="math inline">\(X = LF\)</span>, where <span class="math inline">\(L\)</span> is an <span class="math inline">\(n\)</span> by <span class="math inline">\(k\)</span> matrix and <span class="math inline">\(F\)</span> is a <span class="math inline">\(k\)</span> by <span class="math inline">\(p\)</span> matrix. In this first simulation, <span class="math inline">\(k = 1\)</span>. 80% of the columns in <span class="math inline">\(F\)</span> and 20% of the entries in <span class="math inline">\(L\)</span> are equal to zero. The other entries of <span class="math inline">\(F\)</span> are i.i.d. <span class="math inline">\(N(0, 1)\)</span>; the nonzero entries of <span class="math inline">\(L\)</span> are i.i.d. <span class="math inline">\(N(0, 2^2)\)</span>.</p>
 <table>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">MASH</th>
-<th align="right">Vanilla</th>
 <th align="right">Zero</th>
 <th align="right">OHL</th>
 <th align="right">OHF</th>
-<th align="right">OHFp</th>
+<th align="right">MASH</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.023</td>
-<td align="right">0.016</td>
-<td align="right">0.015</td>
-<td align="right">0.017</td>
-<td align="right">0.035</td>
-<td align="right">0.018</td>
+<td align="right">0.01</td>
+<td align="right">0.01</td>
+<td align="right">0.10</td>
+<td align="right">0.02</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.974</td>
-<td align="right">0.931</td>
-<td align="right">0.934</td>
-<td align="right">0.950</td>
-<td align="right">0.968</td>
-<td align="right">0.950</td>
+<td align="right">0.93</td>
+<td align="right">0.95</td>
+<td align="right">0.97</td>
+<td align="right">0.98</td>
 </tr>
 </tbody>
 </table>
 <p><img src="images/sim5ROC.png" /> <img src="images/sim5time.png" /></p>
 </div>
-<div id="rank-5-flash-model" class="section level2">
-<h2>Rank 5 FLASH model</h2>
-<p>This is the same as above with <span class="math inline">\(k = 5\)</span> and with only 20% of the entries in <span class="math inline">\(L\)</span> equal to zero.</p>
+<div id="rank-5-model" class="section level3">
+<h3>Rank 5 model</h3>
+<p>This is the same as above with <span class="math inline">\(k = 5\)</span>, with only 80% of the entries in <span class="math inline">\(L\)</span> equal to zero, and with the other entries i.i.d. <span class="math inline">\(N(0, 1)\)</span>.</p>
 <table>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">MASH</th>
-<th align="right">Vanilla</th>
 <th align="right">Zero</th>
 <th align="right">OHL</th>
 <th align="right">OHF</th>
-<th align="right">OHFp</th>
+<th align="right">MASH</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>MSE</td>
-<td align="right">0.115</td>
-<td align="right">0.083</td>
-<td align="right">0.077</td>
-<td align="right">0.077</td>
-<td align="right">0.284</td>
-<td align="right">0.184</td>
+<td align="right">0.06</td>
+<td align="right">0.06</td>
+<td align="right">0.10</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="even">
 <td>95% CI cov</td>
-<td align="right">0.929</td>
-<td align="right">0.880</td>
-<td align="right">0.894</td>
-<td align="right">0.905</td>
-<td align="right">0.937</td>
-<td align="right">0.876</td>
+<td align="right">0.92</td>
+<td align="right">0.94</td>
+<td align="right">0.95</td>
+<td align="right">0.96</td>
 </tr>
 </tbody>
 </table>
 <p><img src="images/sim6ROC.png" /> <img src="images/sim6time.png" /></p>
 </div>
-<div id="rank-3-flash-model-with-uv" class="section level2">
-<h2>Rank 3 FLASH model with UV</h2>
-<p>This is similar to the above with <span class="math inline">\(k = 3\)</span> and with 30% of the rows in <span class="math inline">\(L\)</span> equal to zero. In addition, a dense rank-one matrix <span class="math inline">\(W\)</span> is added to <span class="math inline">\(X\)</span> to mimic the effects of unwanted variation. Here, <span class="math inline">\(W = UV\)</span>, with <span class="math inline">\(U\)</span> an <span class="math inline">\(n\)</span> by 1 vector and <span class="math inline">\(V\)</span> a 1 by <span class="math inline">\(p\)</span> vector, both of which have entries distributed <span class="math inline">\(N(0, 0.25)\)</span>.</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">MASH</th>
-<th align="right">Vanilla</th>
-<th align="right">Zero</th>
-<th align="right">OHL</th>
-<th align="right">OHF</th>
-<th align="right">OHFp</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>MSE</td>
-<td align="right">0.086</td>
-<td align="right">0.083</td>
-<td align="right">0.080</td>
-<td align="right">0.081</td>
-<td align="right">0.169</td>
-<td align="right">0.101</td>
-</tr>
-<tr class="even">
-<td>95% CI cov</td>
-<td align="right">0.936</td>
-<td align="right">0.878</td>
-<td align="right">0.892</td>
-<td align="right">0.900</td>
-<td align="right">0.950</td>
-<td align="right">0.907</td>
-</tr>
-</tbody>
-</table>
-<p><img src="images/sim7ROC.png" /> <img src="images/sim7time.png" /></p>
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
@@ -1067,6 +1038,7 @@ get_E &lt;- function(n, p, sd = 1) {
   matrix(rnorm(n * p, 0, sd), n, p)
 }
 
+
 # Simulate from null model ----------------------------------------------
 
 null_sim &lt;- function(n, p, seed = NULL) {
@@ -1076,6 +1048,7 @@ null_sim &lt;- function(n, p, seed = NULL) {
 
   list(Y = Y, true_Y = true_Y)
 }
+
 
 # Simulate from MASH model ----------------------------------------------
 
@@ -1117,10 +1090,11 @@ flash_sim &lt;- function(n, p, k, fs, fvar, ls, lvar, UVvar = 0, seed = NULL) {
   set.seed(seed)
 
   nonnull_ll &lt;- matrix(sample(c(0, 1), n*k, TRUE, c(ls, 1 - ls)), n, k)
-  LL &lt;- nonnull_ll * matrix(rnorm(n*k, 0, sqrt(lvar)), n, k)
+  LL &lt;- nonnull_ll * matrix(rnorm(n*k, 0, sqrt(lvar)), nrow=n, ncol=k)
 
-  nonnull_ff &lt;- matrix(sample(c(0, 1), k*p, TRUE, c(fs, 1 - fs)), k, p)
-  FF &lt;- nonnull_ff * matrix(rnorm(k*p, 0, sqrt(fvar)), k, p)
+  nonnull_ff &lt;- matrix(sample(c(0, 1), p, TRUE, c(fs, 1 - fs)),
+                       nrow=k, ncol=p, byrow=TRUE)
+  FF &lt;- nonnull_ff * matrix(rnorm(k*p, 0, sqrt(fvar)), nrow=k, ncol=p)
 
   X &lt;- LL %*% FF
   Y &lt;- X + get_E(n, p)
@@ -1132,141 +1106,189 @@ flash_sim &lt;- function(n, p, k, fs, fvar, ls, lvar, UVvar = 0, seed = NULL) {
 
 ## SIMULATIONS ----------------------------------------------------------
 
-# Functions to generate seven types of datasets. One is null; three are
-# from the MASH model; three are from the FLASH model.
+# Functions to generate six types of datasets. One is null; three are
+# from the MASH model; two are from the FLASH model.
 
-sim_fns &lt;- function(n, p, s, mashvar, fvar, lvar, UVvar) {
+sim_fns &lt;- function(n, p, s,
+                    indvar, shvar, uniqvar,
+                    r1var, r5var) {
 
   # 1. Everything is null
   sim_null &lt;- function(){ null_sim(n, p) }
 
   Sigma &lt;- list()
-  Sigma[[1]] &lt;- diag(rep(mashvar, n))
+
   # 2. Effects are independent across conditions
-  sim_ind &lt;- function(){ mash_sim(n, p, Sigma) }
+  Sigma[[1]] &lt;- diag(rep(indvar, n))
+  Sigma_ind &lt;- Sigma
+  sim_ind &lt;- function(){ mash_sim(n, p, Sigma_ind, s=s) }
 
-  Sigma[[2]] &lt;- matrix(mashvar, n, n)
   # 3. Effects are either independent or shared
-  sim_indsh &lt;- function(){ mash_sim(n, p, Sigma) }
+  Sigma[[2]] &lt;- matrix(shvar, n, n)
+  Sigma_indsh &lt;- Sigma
+  sim_indsh &lt;- function(){ mash_sim(n, p, Sigma_indsh, s=s) }
 
+  # 4. Effects are independent, shared, or unique to a single condition
   for (j in 1:n) {
     Sigma[[2 + j]] &lt;- matrix(0, n, n)
-    Sigma[[2 + j]][j, j] &lt;- mashvar
+    Sigma[[2 + j]][j, j] &lt;- uniqvar
   }
   pi &lt;- c(n, n, rep(1, n))
-  # 4. Effects are independent, shared, or unique to a single condition
-  sim_mash &lt;- function(){ mash_sim(n, p, Sigma) }
+  sim_mash &lt;- function(){ mash_sim(n, p, Sigma, pi, s=s) }
 
   # 5. Rank one model
-  sim_rank1 &lt;- function(){ flash_sim(n, p, 1, s, fvar, 0.5, lvar) }
+  sim_rank1 &lt;- function(){ flash_sim(n, p, 1, s, r1var, 0.2, 1) }
 
   # 6. Rank 5 model
-  sim_rank5 &lt;- function(){ flash_sim(n, p, 5, s, fvar, 0.2, lvar) }
+  sim_rank5 &lt;- function(){ flash_sim(n, p, 5, s, r5var, 0.8, 1) }
 
   # 7. Rank 3 model with unwanted variation
-  sim_UV &lt;- function(){ flash_sim(n, p, 3, s, fvar, 0.3, lvar, UVvar) }
+  # sim_UV &lt;- function(){ flash_sim(n, p, 3, s, r3var, 0.5, 1, UVvar) }
 
-  c(sim_null, sim_ind, sim_indsh, sim_mash, sim_rank1, sim_rank5, sim_UV)
+  c(sim_null, sim_ind, sim_indsh, sim_mash, sim_rank1, sim_rank5)
 }
 
-sim_names &lt;- c(&quot;Null simulation&quot;, &quot;All independent effects&quot;,
-               &quot;Independent and shared&quot;, &quot;Independent, shared, and unique&quot;,
-               &quot;Rank 1 FLASH model&quot;, &quot;Rank 5 FLASH model&quot;,
-               &quot;Rank 3 FLASH with UV&quot;)</code></pre>
+sim_names &lt;- c(&quot;Null simulation&quot;,
+               &quot;All independent effects&quot;,
+               &quot;Independent and shared&quot;,
+               &quot;Independent, shared, and unique&quot;,
+               &quot;Rank 1 FLASH model&quot;,
+               &quot;Rank 5 FLASH model&quot;)</code></pre>
 <p>…for fitting MASH and FLASH objects…</p>
 <pre class="r"><code># Fit using FLASH -------------------------------------------------------
-# Methods: 1. Vanilla, 2. Zero, 3. OHL, 4. OHF, 5. OHF+
-fit_flash &lt;- function(Y, Kmax, methods=1:5, ebnm_fn=&quot;ebnm_pn&quot;) {
+fit_flash_zero &lt;- function(Y, Kmax, ebnm_fn=&quot;ebnm_pn&quot;,
+                           init_fn=&quot;udv_svd&quot;, greedy=TRUE, backfit=TRUE,
+                           warmstart=TRUE) {
   n &lt;- nrow(Y)
-  fits &lt;- list()
-  timing &lt;- list()
-
-  # Vanilla FLASH
-  if (1 %in% methods) {
-    timing$Vanilla &lt;- list()
-    data &lt;- flash_set_data(Y)
-    t0 &lt;- Sys.time()
-    fl &lt;- flash_add_greedy(data, Kmax, var_type=&quot;by_column&quot;, ebnm_fn=ebnm_fn)
-    t1 &lt;- Sys.time()
-    timing$Vanilla$greedy &lt;- t1 - t0
-    fits$Vanilla &lt;- flash_backfit(data, fl, var_type=&quot;by_column&quot;, ebnm_fn=ebnm_fn)
-    timing$Vanilla$backfit &lt;- Sys.time() - t1
-  }
-
   data &lt;- flash_set_data(Y, S = 1)
 
-  # Zero and OHL
-  if (2 %in% methods || 3 %in% methods) {
-    t0 &lt;- Sys.time()
-    fl &lt;- flash_add_greedy(data, Kmax, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
-    t1 &lt;- Sys.time()
-    if (2 %in% methods) {
-      timing$Zero &lt;- list()
-      timing$Zero$greedy &lt;- t1 - t0
-      fits$Zero &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
-      timing$Zero$backfit &lt;- Sys.time() - t1
-    }
-    if (3 %in% methods) {
-      timing$OHL &lt;- list()
-      timing$OHL$greedy &lt;- t1 - t0
-      fl &lt;- flash_add_fixed_l(data, diag(rep(1, n)), fl)
-      t2 &lt;- Sys.time()
-      fits$OHL &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
-      timing$OHL$backfit &lt;- Sys.time() - t2
-    }
+  t0 &lt;- Sys.time()
+  if (greedy) {
+    res &lt;- flash_add_greedy(data, Kmax, var_type=&quot;zero&quot;,
+                            ebnm_fn=ebnm_fn, init_fn=init_fn,
+                            warmstart=warmstart)
+    fl &lt;- res$f
+  } else {
+    fl &lt;- flash_add_factors_from_data(data, Kmax, init_fn=init_fn)
   }
-
-  # OHF and OHF+
-  if (4 %in% methods || 5 %in% methods) {
-    t0 &lt;- Sys.time()
-    fl &lt;- flash_add_fixed_l(data, diag(rep(1, n)))
-    fl &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
-    t1 &lt;- Sys.time()
-    fl &lt;- flash_add_greedy(data, Kmax, fl, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
-    t2 &lt;- Sys.time()
-    if (4 %in% methods) {
-      fits$OHF &lt;- fl
-      timing$OHF$backfit &lt;- t1 - t0
-      timing$OHF$greedy &lt;- t2 - t1
-    }
-    if (5 %in% methods) {
-      fits$OHFp &lt;- flash_backfit(data, fl, nullcheck=F, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn)
-      timing$OHFp$backfit &lt;- (t1 - t0) + (Sys.time() - t2)
-      timing$OHFp$greedy &lt;- t2 - t1
-    }
+  t1 &lt;- Sys.time()
+  if (backfit) {
+    res &lt;- flash_backfit(data, fl, var_type=&quot;zero&quot;,
+                         ebnm_fn=ebnm_fn)
+    fl &lt;- res$f
   }
+  t2 &lt;- Sys.time()
 
-  # timing$total &lt;- Reduce(`+`, timing)
+  t.greedy &lt;- t1 - t0
+  t.backfit &lt;- t2 - t1
 
-  list(fits = fits, timing = timing)
+  list(f = fl, t.greedy = t.greedy, t.backfit = t.backfit)
+}
+
+
+fit_flash_OHL &lt;- function(Y, Kmax, ebnm_fn=&quot;ebnm_pn&quot;,
+                          init_fn=&quot;udv_svd&quot;, greedy=TRUE, backfit=TRUE,
+                          warmstart=TRUE) {
+  n &lt;- nrow(Y)
+  data &lt;- flash_set_data(Y, S = 1)
+  canonical &lt;- cbind(rep(1, n), diag(rep(1, n)))
+
+  zero.res &lt;- fit_flash_zero(Y, Kmax, ebnm_fn, init_fn,
+                             greedy, backfit=FALSE, warmstart)
+
+  fl &lt;- flash_add_fixed_l(data, canonical, zero.res$f, init_fn=init_fn)
+
+  t0 &lt;- Sys.time()
+  if (backfit) {
+    res &lt;- flash_backfit(data, fl,
+                         var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl &lt;- res$f
+  } else {
+    K &lt;- flashr:::flash_get_k(fl)
+    res &lt;- flash_backfit(data, fl, kset=(K - ncol(canonical) + 1):K,
+                         var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl &lt;- res$f
+  }
+  t1 &lt;- Sys.time()
+
+  t.backfit &lt;- Sys.time() - t0
+
+  list(f = fl, t.greedy = zero.res$t.greedy, t.backfit = t.backfit)
+}
+
+
+fit_flash_OHF &lt;- function(Y, Kmax, ebnm_fn=&quot;ebnm_pn&quot;,
+                          init_fn=&quot;udv_svd&quot;, greedy=TRUE, backfit=TRUE,
+                          warmstart=TRUE) {
+  n &lt;- nrow(Y)
+  data &lt;- flash_set_data(Y, S = 1)
+  canonical &lt;- cbind(rep(1, n), diag(rep(1, n)))
+
+  t0 &lt;- Sys.time()
+  fl &lt;- flash_add_fixed_l(data, canonical)
+  res &lt;- flash_backfit(data, fl, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                       nullcheck=FALSE)
+  fl &lt;- res$f
+  t1 &lt;- Sys.time()
+
+  if (greedy) {
+    res &lt;- flash_add_greedy(data, Kmax, fl, var_type=&quot;zero&quot;,
+                            ebnm_fn=ebnm_fn, init_fn=init_fn,
+                            warmstart=warmstart)
+    fl &lt;- res$f
+  } else {
+    fl &lt;- flash_add_factors_from_data(data, Kmax, fl, init_fn=init_fn)
+  }
+  t2 &lt;- Sys.time()
+  K = flashr:::flash_get_k(fl)
+  if (backfit &amp;&amp; K &gt; ncol(canonical)) {
+    res &lt;- flash_backfit(data, fl,
+                         kset=(ncol(canonical) + 1):K,
+                         var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl &lt;- res$f
+  }
+  t3 &lt;- Sys.time()
+
+  t.greedy &lt;- t2 - t1
+  t.backfit &lt;- (t1 - t0) + (t3 - t2)
+
+  list(f = fl, t.greedy = t.greedy, t.backfit = t.backfit)
 }
 
 
 # Fit using MASH -------------------------------------------------------
-fit_mash &lt;- function(Y, ed=T) {
+fit_mash &lt;- function(Y) {
   data &lt;- mash_set_data(t(Y))
   timing &lt;- list()
 
   # time to create canonical matrices is negligible
   U = cov_canonical(data)
 
-  if (ed) {
-    t0 &lt;- Sys.time()
-    m.1by1 &lt;- mash_1by1(data)
-    strong &lt;- get_significant_results(m.1by1, 0.05)
+  t0 &lt;- Sys.time()
+  m.1by1 &lt;- mash_1by1(data)
+  lvl &lt;- 0.05
+  strong &lt;- get_significant_results(m.1by1, lvl)
+  while (length(strong) &lt; 5 &amp;&amp; lvl &lt; 0.5) {
+    lvl &lt;- lvl + 0.05
+    strong &lt;- get_significant_results(m.1by1, lvl)
+  }
+  if (length(strong) &gt;= 5) {
     U.pca &lt;- cov_pca(data, 5, strong)
     U.ed &lt;- cov_ed(data, U.pca, strong)
     U &lt;- c(U, U.ed)
-    timing$ed &lt;- Sys.time() - t0
+    t.ed &lt;- Sys.time() - t0
+  } else {
+    t.ed &lt;- as.difftime(0, units=&quot;secs&quot;)
   }
 
   t0 &lt;- Sys.time()
   m &lt;- mash(data, U)
-  timing$mash &lt;- Sys.time() - t0
+  t.mash &lt;- Sys.time() - t0
 
-  # timing$total &lt;- Reduce(`+`, timing)
-
-  list(m = m, timing = timing)
+  list(m = m, t.ed = t.ed, t.mash = t.mash)
 }</code></pre>
 <p>…for evaluating performance…</p>
 <pre class="r"><code># Evaluate methods based on MSE, CI coverage, and TPR vs. FPR -----------
@@ -1391,35 +1413,74 @@ roc_data &lt;- function(pm, true_Y, lfsr, step) {
 #   efsr_by_lfsr
 # }</code></pre>
 <p>…for running simulations and plotting results…</p>
-<pre class="r"><code>run_sims &lt;- function(sim_fn, nsims, plot_title, fpath) {
-  #suppressMessages(
-    #suppressWarnings(
-      #capture.output(
-        if (nsims == 1) {
-          res = run_one_sim(sim_fn)
-        } else {
-          res = run_many_sims(sim_fn, nsims)
-        }
-      #)
-    #)
-  #)
-  saveRDS(output_res_mat(res), paste0(fpath, &quot;res.rds&quot;))
+<pre class="r"><code># Functions for running simulations and combining results ---------------
+
+run_sims &lt;- function(sim_fn, nsims, plot_title, fpath, Kmax=50,
+                     backfit=FALSE) {
+  if (nsims == 1) {
+    res = run_one_sim(sim_fn, Kmax, backfit)
+  } else {
+    res = run_many_sims(sim_fn, nsims, Kmax, backfit)
+  }
+
+  saveRDS(output_res_mat(res$res), paste0(fpath, &quot;res.rds&quot;))
   if (!(plot_title == &quot;Null simulation&quot;)) {
     png(paste0(fpath, &quot;ROC.png&quot;))
-    plot_ROC(res, plot_title)
+    plot_ROC(res$res, plot_title)
     dev.off()
   }
   png(paste0(fpath, &quot;time.png&quot;))
-  plot_timing(res)
+  plot_timing(res$timing)
   dev.off()
+
+  return(res)
 }
 
-run_many_sims &lt;- function(sim_fn, nsims) {
+run_one_sim &lt;- function(sim_fn, Kmax, nsamp=200, backfit) {
+  data &lt;- do.call(sim_fn, list())
+
+  # If there are no strong signals, trying to run ED throws an error, so
+  #   we need to do some error handling to fit the MASH object
+  mfit &lt;- fit_mash(data$Y)
+
+  flfits &lt;- list()
+  flfits$Zero &lt;- fit_flash_zero(data$Y, Kmax, backfit=backfit)
+  flfits$OHL &lt;- fit_flash_OHL(data$Y, Kmax, backfit=backfit)
+  flfits$OHF &lt;- fit_flash_OHF(data$Y, Kmax, backfit=backfit)
+
+  message(&quot;Running MASH diagnostics&quot;)
+  mres &lt;- mash_diagnostics(mfit$m, data$true_Y)
+
+  message(&quot;Running FLASH diagnostics&quot;)
+  methods &lt;- names(flfits)
+  flres &lt;- list()
+  for (method in methods) {
+    flres[[method]] &lt;- flash_diagnostics(flfits[[method]]$f, data$Y,
+                                         data$true_Y, nsamp)
+  }
+
+  # Combine results:
+  timing = lapply(flfits,
+                  function(method) {
+                    list(ed.or.greedy = method$t.greedy,
+                         mash.or.backfit = method$t.backfit)
+                  })
+  timing$MASH &lt;- list(ed.or.greedy = mfit$t.ed,
+                      mash.or.backfit = mfit$t.mash)
+
+  all_res &lt;- flres
+  all_res$MASH &lt;- mres
+
+  list(timing = timing, res = all_res)
+}
+
+run_many_sims &lt;- function(sim_fn, nsims, Kmax, backfit) {
   res &lt;- list()
   combined_res &lt;- list()
 
   for (i in 1:nsims) {
-    res[[i]] &lt;- run_one_sim(sim_fn)
+    message(paste(&quot;  Simulating dataset&quot;, i))
+    res[[i]] &lt;- run_one_sim(sim_fn, Kmax, backfit=backfit)
   }
   elems &lt;- names(res[[1]])
   for (elem in elems) {
@@ -1434,115 +1495,86 @@ run_many_sims &lt;- function(sim_fn, nsims) {
       }
     }
   }
-  combined_res
+  return(combined_res)
 }
 
-run_one_sim &lt;- function(sim_fn, Kmax = 10, nsamp=200) {
-  data &lt;- do.call(sim_fn, list())
 
-  # If there are no strong signals, trying to run ED throws an error, so
-  #   we need to do some error handling to fit the MASH object
-  try(mfit &lt;- fit_mash(data$Y))
-  if (!exists(&quot;mfit&quot;)) {
-    mfit &lt;- fit_mash(data$Y, ed=F)
-    mfit$timing$ed = as.difftime(0, units=&quot;secs&quot;)
-  }
+# Plotting and output functions -----------------------------------------
 
-  flfits &lt;- fit_flash(data$Y, Kmax)
-
-  message(&quot;Running MASH diagnostics&quot;)
-  mres &lt;- mash_diagnostics(mfit$m, data$true_Y)
-
-  message(&quot;Running FLASH diagnostics&quot;)
-  flres &lt;- list()
-  methods &lt;- names(flfits$fits)
-  for (method in methods) {
-    flres[[method]] &lt;- flash_diagnostics(flfits$fits[[method]], data$Y,
-                                         data$true_Y, nsamp)
-  }
-
-  # Give mash and flash the same structure so we can combine multiple sims
-  mash_timing = list()
-  mash_timing$mash &lt;- mfit$timing
-  mash_res = list()
-  mash_res$mash &lt;- mres
-  list(mash_timing = mash_timing, mash_res = mash_res,
-       flash_timing = flfits$timing, flash_res = flres)
-}
-
-output_res_mat &lt;- function(res) {
-  mat &lt;- c(res$mash_res$mash$MSE, res$mash_res$mash$CI)
-  methods &lt;- names(res$flash_res)
-  for (method in methods) {
-    mat &lt;- cbind(mat, c(res$flash_res[[method]]$MSE,
-                        res$flash_res[[method]]$CI))
-  }
-  rownames(mat) = c(&quot;MSE&quot;, &quot;95% CI cov&quot;)
-  colnames(mat) = c(&quot;MASH&quot;, methods)
-  mat
-}
-
-plot_timing &lt;- function(res, units=&quot;secs&quot;) {
-  data &lt;- as.numeric(c(res$mash_timing$mash$ed,
-                       res$mash_timing$mash$mash),
-                     units=units)
-  methods &lt;- names(res$flash_timing)
-  for (method in methods) {
-    data &lt;- cbind(data,
-                  as.numeric(c(res$flash_timing[[method]]$greedy,
-                               res$flash_timing[[method]]$backfit),
-                             units=units))
-  }
-  barplot(data, axes=T,
+plot_timing &lt;- function(timing, units=&quot;secs&quot;) {
+  data &lt;- sapply(timing, unlist)
+  data &lt;- data[, c(4, 1, 2, 3)]
+  barplot(colSums(data), axes=T,
           main=paste(&quot;Average time to fit in&quot;, units),
-          names.arg = c(&quot;MASH&quot;, methods),
-          legend.text = c(&quot;ED/Greedy&quot;, &quot;MASH/Backfit&quot;),
-          ylim = c(0, max(colSums(data))*2))
+          names.arg = colnames(data),
+          #legend.text = c(&quot;ED/Greedy&quot;, &quot;MASH/Backfit&quot;),
+          ylim = c(0, max(colSums(data))*2),
+          cex.names = 0.8)
   # (increasing ylim is easiest way to deal with legend getting in way)
 }
 
-plot_ROC &lt;- function(res, main=&quot;ROC curve&quot;,
-                     colors=c(&quot;gold&quot;, &quot;pink&quot;, &quot;red&quot;, &quot;green&quot;, &quot;blue&quot;)) {
+plot_ROC &lt;- function(res, main=&quot;ROC curve&quot;) {
   # Number of nulls and nonnulls are identical across methods
-  n_nonnulls &lt;- res$mash_res$mash$n_nonnulls
-  n_nulls &lt;- res$mash_res$mash$n_nulls
+  n_nonnulls &lt;- res[[1]]$n_nonnulls
+  n_nulls &lt;- res[[1]]$n_nulls
 
-  m_y &lt;- res$mash_res$mash$TP / n_nonnulls
-  m_x &lt;- res$mash_res$mash$FP / n_nulls
+  m_y &lt;- res$MASH$TP / n_nonnulls
+  m_x &lt;- res$MASH$FP / n_nulls
   plot(m_x, m_y, xlim=c(0, 1), ylim=c(0, 1), type=&#39;l&#39;,
-       xlab=&#39;FPR&#39;, ylab=&#39;TPR&#39;, main=main)
+       xlab=&#39;FPR&#39;, ylab=&#39;TPR&#39;, main=main, col=&quot;orange&quot;)
 
-  methods &lt;- names(res$flash_res)
-  idx &lt;- 0
-  for (method in methods) {
-    idx &lt;- idx + 1
-    y &lt;- res$flash_res[[method]]$TP / n_nonnulls
-    x &lt;- res$flash_res[[method]]$FP / n_nulls
-    lines(x, y, col=colors[idx])
+  idx &lt;- 1:3
+  colors &lt;- c(&quot;skyblue&quot;, &quot;seagreen&quot;, &quot;yellow2&quot;)
+  for (i in idx) {
+    y &lt;- res[[i]]$TP / n_nonnulls
+    x &lt;- res[[i]]$FP / n_nulls
+    lines(x, y, col=colors[i])
   }
-  legend(&quot;bottomright&quot;, c(&quot;MASH&quot;, methods), lty=1,
-         col=c(&quot;black&quot;, colors[1:idx]))
+  legend(&quot;bottomright&quot;, c(&quot;MASH&quot;, names(res)[idx]), lty=1,
+         col=c(&quot;orange&quot;, colors[idx]), cex=0.8)
+}
+
+output_res_mat &lt;- function(res) {
+  mat &lt;- rbind(sapply(res, function(method) {method$MSE}),
+               sapply(res, function(method) {method$CI}))
+
+  rownames(mat) = c(&quot;MSE&quot;, &quot;95% CI cov&quot;)
+  return(mat)
 }</code></pre>
 <p>…and the main function calls.</p>
-<pre class="r"><code># library(flashr)
+<pre class="r"><code># Make sure to use branch &quot;trackObj&quot; when loading flashr.
+
+# devtools::install_github(&quot;stephenslab/flashr&quot;, ref=&quot;trackObj&quot;)
 devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
+# devtools::install_github(&quot;stephenslab/ebnm&quot;)
+devtools::load_all(&quot;/Users/willwerscheid/GitHub/ebnm/&quot;)
 library(mashr)
 
 source(&quot;./code/sims.R&quot;)
 source(&quot;./code/fits.R&quot;)
 source(&quot;./code/utils.R&quot;)
+
 source(&quot;./code/mashvflash.R&quot;)
 
 set.seed(1)
 
-# s is sparsity (prop null genes); var parameters define size of effects
+# s is sparsity (prop null genes); var parameters define sizes of effects
 all_sims &lt;- sim_fns(n=25, p=1000, s=0.8,
-                    mashvar=1, fvar=1, lvar=1, UVvar=0.25)
+                    indvar=4, shvar=2, uniqvar=100,
+                    r1var=4, r5var=1)
 
 for (i in 1:length(all_sims)) {
   message(paste(&quot;  Beginning simulation #&quot;, i, sep=&quot;&quot;))
   res &lt;- run_sims(all_sims[[i]], nsims=10, plot_title=sim_names[[i]],
-                  fpath = paste0(&quot;./output/sim&quot;, i))
+                  fpath = paste0(&quot;./output/MASHvFLASHsims/greedy/sim&quot;, i),
+                  Kmax=25, backfit=FALSE)
+}
+
+for (i in 1:length(all_sims)) {
+  message(paste(&quot;  Beginning simulation #&quot;, i, sep=&quot;&quot;))
+  res &lt;- run_sims(all_sims[[i]], nsims=10, plot_title=sim_names[[i]],
+                  fpath = paste0(&quot;./output/MASHvFLASHsims/backfit/sim&quot;, i),
+                  Kmax=25, backfit=TRUE)
 }</code></pre>
 </div>
 <div id="session-information" class="section level2">
@@ -1550,7 +1582,7 @@ for (i in 1:length(all_sims)) {
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS High Sierra 10.13.1
+Running under: macOS High Sierra 10.13.6
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
