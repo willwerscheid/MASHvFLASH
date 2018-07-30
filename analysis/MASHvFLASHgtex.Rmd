@@ -1,5 +1,5 @@
 ---
-title: "MASH v FLASH analysis of GTEx data"
+title: "MASH v FLASH analysis of GTEx data (strong tests)"
 output: 
   workflowr::wflow_html:
     code_folding: hide
@@ -11,95 +11,84 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Here I analyze some GTEx data. The dataset can be found at https://stephenslab.github.io/gtexresults/. I use the "random.z" dataset, which consists of $z$-scores for 44 tissues and a random subset of 20000 tests. For the code used in this analysis, see [below](#code).
+Here I compare MASH and FLASH fits to some GTEx data. The dataset is comprised of $z$-scores across 44 tissues for approximately 16000 tests, which correspond to the "top" eQTL for each gene (that is, the eQTL with the largest (absolute) raw $z$-score). 
+
+To evaluate the fits, I randomly delete entries from the dataset, then I fit MASH and FLASH objects and use the fitted objects to impute the missing data. I run four experiments in which I delete 1%, 5%, 10%, and 25% of entries, and I compute the mean-squared error for the imputed values and the percentage of 95% confidence intervals that contain the "true" values. 
+
+Of course, the deleted entries are observed values rather than true values, so results here should be taken with a grain of salt!
+ 
+For the code used in this analysis, see [below](#code).
 
 ## Fitting methods
 
-I used the same methods to fit the data that I used in my [simulation study](MASHvFLASHsims.html). These methods assume that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset. 
+In addition to a MASH fit, I used the "OHF" and "Zero" methods described in my [simulation study](MASHvFLASHsims.html) to fit FLASH objects. (Since the "Zero" and "OHL" methods give very similar results, I did not use the latter here.) For each of the FLASH methods, I produce one fit using point-normal priors (`ebnm_fn = "ebnm_pn"`) and another fit using a more flexible class of `ash` priors (`ebnm_fn = "ebnm_ash"`). In sum, I generated a total of five fits for each experiment, which I denote as `mash`, `pn.OHF`, `ash.OHF`, `pn.zero`, and `ash.zero`.
 
-The simulation study suggested that the "one-hots last" method typically produces a better fit than the "one-hots first" method, even though it can take quite a bit longer. Here I enter into some more detail.
+Each of these methods assumes that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset. 
 
-First I load the data and the fits.
+## Results
+
+Since the experiments take a long time to run, I pre-run them and load the results from file.
 
 ```{r load_fits}
-devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
-library(mashr)
-
-gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
-
-data <- gtex$random.z
-data <- t(data)
-fl_data <- flash_set_data(data, S = 1)
-
-gtex_mfit <- readRDS("./output/gtexmfit.rds")
-gtex_flfit <- readRDS("./output/gtexflfit.rds")
+fl_diag <- readRDS("./output/MASHvFLASHgtex/fldiag.rds")
+fl_t <- readRDS("./output/MASHvFLASHgtex/flt.rds")
+m_diag <- readRDS("./output/MASHvFLASHgtex/mdiag.rds")
+m_t <- readRDS("./output/MASHvFLASHgtex/mt.rds")
 ```
 
-The OHL fit was produced by greedily adding a total of 17 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was `r format(flash_get_objective(fl_data, gtex_flfit$fits$OHL), scientific=F)`.
+Comparisons of mean-squared error and confidence interval coverage are as follows. FLASH consistently outperforms MASH, with the "OHF" method outperforming the "Zero" method. Using `ash` priors gives slightly better results than using point-normal priors.
 
-The OHF fit added the 44 fixed one-hot factors, then backfit them, then added only 4 (!) more factors greedily. The resulting objective was much worse than that of the OHL fit, at `r format(flash_get_objective(fl_data, gtex_flfit$fits$OHF), scientific=F)`.
+```{r res1}
+fl_fit_names <- c("pn.zero", "pn.OHF", "ash.zero", "ash.OHF")
+method.names <- c(fl_fit_names, "mash")
 
-Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method "FLASH-OHF+" in the simulation study). The final objective was `r format(flash_get_objective(fl_data, gtex_flfit$fits$OHFp), scientific=F)`: better, but still not as good as the OHL fit.
+all_t <- rbind(sapply(fl_t, unlist), unlist(m_t))
+rownames(all_t) <- method.names
 
-It seems clear that the OHL method is the way to go. However, it does take a long time (about 50% longer than MASH):
+fl_mse <- sapply(fl_diag, function(x) {sapply(x, function(y) {y$mse})})
+all_mse <- rbind(fl_mse, sapply(m_diag, function(x) {x$mse}))
+rownames(all_mse) <- method.names
 
-```{r plot_timing}
-data <- c(gtex_mfit$timing$ed, gtex_mfit$timing$mash,
-          gtex_flfit$timing$OHL$greedy, gtex_flfit$timing$OHL$backfit,
-          gtex_flfit$timing$OHF$greedy, gtex_flfit$timing$OHF$backfit,
-          gtex_flfit$timing$OHFp$greedy, gtex_flfit$timing$OHFp$backfit)
-time_units <- units(data)
-data <- matrix(as.numeric(data), 2, 4)
-barplot(data, axes=T,
-        main=paste("Average time to fit in", time_units),
-        names.arg = c("MASH", "FL-OHL", "FL-OHF", "FL-OHF+"),
-        legend.text = c("ED/Greedy", "MASH/Backfit"),
-        ylim = c(0, max(colSums(data))*1.5))
+fl_ci <- sapply(fl_diag, function(x) {sapply(x, function(y) {y$ci})})
+all_ci <- rbind(fl_ci, sapply(m_diag, function(x) {x$ci}))
+rownames(all_ci) <- method.names
+
+plot.order <- c(2, 4, 1, 3, 5)
+
+boxplot(t(all_mse[plot.order, ]), ylim=c(0, 1), ylab = "MSE",
+        main = "Mean-squared error")
+
+boxplot(t(all_ci[plot.order, ]), ylim=c(0, 1), ylab = "coverage",
+        main = "Proportion of 95% CIs containing true value")
 ```
 
-## MASH v FLASH posterior means
+The total time required by each method (including both the time needed to produce a fit and the time needed to compute posterior summaries) is as follows. While `ash` priors give slightly better results than point-normal priors, they take approximately twice as long to fit. 
 
-The posterior means are quite similar (correlation coefficient = 0.95). The dashed line plots $y = x$:
-
-![](images/gtexcompare.png)
-
-## MASH v FLASH LFSR 
-
-Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. As in the [simulation study](MASHvFLASHsims.html), I used a built-in function to evaluate LFSR for the MASH fit and I sampled from the posterior for the FLASH fit. In general, FLASH appears be more conservative than MASH.
-
-```{r lfsr}
-m_lfsr <- t(get_lfsr(gtex_mfit$m))
-fl_lfsr <- readRDS("./output/gtexfllfsr.rds")
-
-confusion_matrix <- function(t) {
-  mash_signif <- m_lfsr <= t
-  flash_signif <- fl_lfsr <= t
-  round(table(mash_signif, flash_signif)
-        / length(mash_signif), digits=3)
-}
+```{r res2}
+boxplot(t(all_t[plot.order, ]), ylim=c(0, 60), ylab="minutes",
+        main="Time needed for fit and MSE and CI calculations")
 ```
 
-At 5%:
-```{r cm05}
-confusion_matrix(.05)
-```
 
-At 1%:
-```{r cm01}
-confusion_matrix(.01)
-```
+## Conclusions
 
-<!-- Note: we cannot do 0.1% if we only have 200 samples from the posterior! -->
-<!-- At 0.1%: -->
-<!-- ```{r cm001} -->
-<!-- confusion_matrix(.001) -->
-<!-- ``` -->
+Of all methods, only the "OHF" methods give satisfactory results for confidence interval coverage. They also do very well in terms of mean-squared error. Indeed, I am surprised that their MSE is so much smaller than 1. The observational error is supposed to be equal to 1, so I would expect it to be very difficult for any method to achieve an MSE smaller than 1. Indeed, if the errors were uncorrelated, then this would be true, but as I mentioned above, observational errors are almost certainly correlated across tissues. Thus, much of the reason for FLASH's success here could be due to its ability to account for such correlations. Still, the results are very encouraging.
+
 
 ## Code
 
-Click "Code" to view the code used to obtain the above results.
-```{r gtexcode, echo=F, include=F}
-knitr::read_chunk("./code/gtex.R")
+for fitting MASH and FLASH objects...
+```{r fits, code=readLines("../code/fits.R")}
 ```
-```{r gtex, eval=F}
+
+...for evaluating performance...
+```{r utils, code=readLines("../code/utils.R")}
+```
+
+...for evaluating peformance on data imputation tasks...
+```{r mashvflash, code=readLines("../code/gtexutils.R")}
+```
+
+...and the main function calls.
+```{r main, code=readLines("../code/MASHvFLASHgtex.R"), eval=FALSE}
 ```

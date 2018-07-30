@@ -10,13 +10,8 @@ output:
 
 [MASH v FLASH simulation results.](MASHvFLASHsims.html) Compares MASH and FLASH fits to data simulated from both MASH and FLASH models.
 
-[MASH v FLASH on GTEx.](MASHvFLASHgtex.html) Compares FLASH to MASH using data from the GTEx project. Results are similar, but FLASH is more conservative.
+[MASH v FLASH on GTEx.](MASHvFLASHgtex.html) Compares MASH and FLASH fits to data from the GTEx project. FLASH does better imputing missing data.
 
 [MASH v FLASH detailed simulation study.](MASHvFLASHsims2.html) Using the "OHL" method, compares the performance of FLASH-pn, FLASH-ash, and MASH in a single simulation setting. FLASH and MASH perform differently on different covariance structures. There is little or no advantage to using ash priors rather than point-normals.
 
 [MASH v FLASH detailed GTEx study.](MASHvFLASHgtex2.html) Uses an improved workflow to examine differences in MASH and FLASH fits to GTEx data. Particularly strong effects in a single condition might cause MASH to miss smaller effects that are shared among conditions. But FLASH might miss very small effects that are shared across all conditions.
-
-
-## Archived:
-
-[A first attempt.](mashvflash.html) Stowed and forgotten.
