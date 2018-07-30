@@ -213,7 +213,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-28</p>
+<p><strong>Last updated:</strong> 2018-07-30</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -222,25 +222,31 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/aee26f0de9632661ac56bc09546ff12279e8b0d7" target="_blank">aee26f0</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/ed4cb94ce9da30015ab0b1e518b3de23491f1545" target="_blank">ed4cb94</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    docs/images/.Rapp.history
     Ignored:    output/.DS_Store
     Ignored:    output/.Rapp.history
+    Ignored:    output/MASHvFLASHgtex/.DS_Store
+    Ignored:    output/MASHvFLASHrandom/
     Ignored:    output/MASHvFLASHsims/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
 
 Untracked files:
+    Untracked:  code/MASHvFLASHgtex2.R
     Untracked:  code/gtex3.R
-    Untracked:  output/gtex3mfit.rds
-    Untracked:  output/gtex3mrandfit.rds
+
+Unstaged changes:
+    Deleted:    analysis/mashvflash.Rmd
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -269,6 +275,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/ed4cb94ce9da30015ab0b1e518b3de23491f1545/analysis/index.Rmd" target="_blank">ed4cb94</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/MASHvFLASHgtex.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/0c59b6bb9572c7f5de2ba60fcbcf0a1f1cd2d2df/docs/index.html" target="_blank">0c59b6b</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-28
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -769,13 +809,9 @@ Start workflowr project.
 <hr />
 <p><a href="intro.html">Introduction.</a> A vignette.</p>
 <p><a href="MASHvFLASHsims.html">MASH v FLASH simulation results.</a> Compares MASH and FLASH fits to data simulated from both MASH and FLASH models.</p>
-<p><a href="MASHvFLASHgtex.html">MASH v FLASH on GTEx.</a> Compares FLASH to MASH using data from the GTEx project. Results are similar, but FLASH is more conservative.</p>
+<p><a href="MASHvFLASHgtex.html">MASH v FLASH on GTEx.</a> Compares MASH and FLASH fits to data from the GTEx project. FLASH does better imputing missing data.</p>
 <p><a href="MASHvFLASHsims2.html">MASH v FLASH detailed simulation study.</a> Using the “OHL” method, compares the performance of FLASH-pn, FLASH-ash, and MASH in a single simulation setting. FLASH and MASH perform differently on different covariance structures. There is little or no advantage to using ash priors rather than point-normals.</p>
 <p><a href="MASHvFLASHgtex2.html">MASH v FLASH detailed GTEx study.</a> Uses an improved workflow to examine differences in MASH and FLASH fits to GTEx data. Particularly strong effects in a single condition might cause MASH to miss smaller effects that are shared among conditions. But FLASH might miss very small effects that are shared across all conditions.</p>
-<div id="archived" class="section level2">
-<h2>Archived:</h2>
-<p><a href="mashvflash.html">A first attempt.</a> Stowed and forgotten.</p>
-</div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see

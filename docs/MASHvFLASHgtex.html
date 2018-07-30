@@ -11,7 +11,7 @@
 
 
 
-<title>MASH v FLASH analysis of GTEx data</title>
+<title>MASH v FLASH analysis of GTEx data (strong tests)</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -323,12 +323,12 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">MASH v FLASH analysis of GTEx data</h1>
+<h1 class="title toc-ignore">MASH v FLASH analysis of GTEx data (strong tests)</h1>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-22</p>
+<p><strong>Last updated:</strong> 2018-07-30</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,27 +352,31 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/3abd505e1c42acd32d1e7c9f8901f8f50efc9335" target="_blank">3abd505</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/ed4cb94ce9da30015ab0b1e518b3de23491f1545" target="_blank">ed4cb94</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
+    Ignored:    docs/images/.Rapp.history
     Ignored:    output/.DS_Store
+    Ignored:    output/.Rapp.history
+    Ignored:    output/MASHvFLASHgtex/.DS_Store
+    Ignored:    output/MASHvFLASHrandom/
+    Ignored:    output/MASHvFLASHsims/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
+
+Untracked files:
+    Untracked:  code/MASHvFLASHgtex2.R
+    Untracked:  code/gtex3.R
 
 Unstaged changes:
-    Modified:   code/gtex2.R
-    Modified:   code/sims2.R
-    Modified:   output/README.md
-    Modified:   output/gtex2flfit.rds
-    Modified:   output/gtex2lfsr.rds
-    Modified:   output/gtex2mfit.rds
-    Modified:   output/gtex2mrandfit.rds
-    Modified:   output/gtexrandomfit.rds
-    Modified:   output/gtexstrongfit.rds
+    Deleted:    analysis/mashvflash.Rmd
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -401,6 +405,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/ed4cb94ce9da30015ab0b1e518b3de23491f1545/analysis/MASHvFLASHgtex.Rmd" target="_blank">ed4cb94</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/MASHvFLASHgtex.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/860aa52c7988a06c33df007c928bfce326e277fe/docs/MASHvFLASHgtex.html" target="_blank">860aa52</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -697,203 +735,472 @@ analysis/index.Rmd
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Here I analyze some GTEx data. The dataset can be found at <a href="https://stephenslab.github.io/gtexresults/" class="uri">https://stephenslab.github.io/gtexresults/</a>. I use the “random.z” dataset, which consists of <span class="math inline">\(z\)</span>-scores for 44 tissues and a random subset of 20000 tests. For the code used in this analysis, see <a href="#code">below</a>.</p>
+<p>Here I compare MASH and FLASH fits to some GTEx data. The dataset is comprised of <span class="math inline">\(z\)</span>-scores across 44 tissues for approximately 16000 tests, which correspond to the “top” eQTL for each gene (that is, the eQTL with the largest (absolute) raw <span class="math inline">\(z\)</span>-score).</p>
+<p>To evaluate the fits, I randomly delete entries from the dataset, then I fit MASH and FLASH objects and use the fitted objects to impute the missing data. I run four experiments in which I delete 1%, 5%, 10%, and 25% of entries, and I compute the mean-squared error for the imputed values and the percentage of 95% confidence intervals that contain the “true” values.</p>
+<p>Of course, the deleted entries are observed values rather than true values, so results here should be taken with a grain of salt!</p>
+<p>For the code used in this analysis, see <a href="#code">below</a>.</p>
 </div>
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
-<p>I used the same methods to fit the data that I used in my <a href="MASHvFLASHsims.html">simulation study</a>. These methods assume that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset.</p>
-<p>The simulation study suggested that the “one-hots last” method typically produces a better fit than the “one-hots first” method, even though it can take quite a bit longer. Here I enter into some more detail.</p>
-<p>First I load the data and the fits.</p>
-<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)</code></pre>
-<pre><code>Loading flashr</code></pre>
-<pre class="r"><code>library(mashr)</code></pre>
-<pre><code>Loading required package: ashr</code></pre>
-<pre class="r"><code>gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
-
-data &lt;- gtex$random.z
-data &lt;- t(data)
-fl_data &lt;- flash_set_data(data, S = 1)
-
-gtex_mfit &lt;- readRDS(&quot;./output/gtexmfit.rds&quot;)
-gtex_flfit &lt;- readRDS(&quot;./output/gtexflfit.rds&quot;)</code></pre>
-<p>The OHL fit was produced by greedily adding a total of 17 factors, then adding 44 fixed one-hot factors (one per condition), then backfitting the whole thing. The objective attained was -1277727.</p>
-<p>The OHF fit added the 44 fixed one-hot factors, then backfit them, then added only 4 (!) more factors greedily. The resulting objective was much worse than that of the OHL fit, at -1315285.</p>
-<p>Finally, I tried applying an additional backfitting step to the OHF fit to see how much the objective improved (I call this method “FLASH-OHF+” in the simulation study). The final objective was -1279011: better, but still not as good as the OHL fit.</p>
-<p>It seems clear that the OHL method is the way to go. However, it does take a long time (about 50% longer than MASH):</p>
-<pre class="r"><code>data &lt;- c(gtex_mfit$timing$ed, gtex_mfit$timing$mash,
-          gtex_flfit$timing$OHL$greedy, gtex_flfit$timing$OHL$backfit,
-          gtex_flfit$timing$OHF$greedy, gtex_flfit$timing$OHF$backfit,
-          gtex_flfit$timing$OHFp$greedy, gtex_flfit$timing$OHFp$backfit)
-time_units &lt;- units(data)
-data &lt;- matrix(as.numeric(data), 2, 4)
-barplot(data, axes=T,
-        main=paste(&quot;Average time to fit in&quot;, time_units),
-        names.arg = c(&quot;MASH&quot;, &quot;FL-OHL&quot;, &quot;FL-OHF&quot;, &quot;FL-OHF+&quot;),
-        legend.text = c(&quot;ED/Greedy&quot;, &quot;MASH/Backfit&quot;),
-        ylim = c(0, max(colSums(data))*1.5))</code></pre>
-<p><img src="figure/MASHvFLASHgtex.Rmd/plot_timing-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of plot_timing-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/b0585338798be5e57e71b9f1fcf5ff8db3503fc3/docs/figure/MASHvFLASHgtex.Rmd/plot_timing-1.png" target="_blank">b058533</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-07-22
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/c599bfae88712b62380a918708c87c437dd2c067/docs/figure/MASHvFLASHgtex.Rmd/plot_timing-1.png" target="_blank">c599bfa</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-06-20
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/0aa5cc6cae8fe4ab3a0b500de260d2696d8f800e/docs/figure/MASHvFLASHgtex.Rmd/plot_timing-1.png" target="_blank">0aa5cc6</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-06-16
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p>In addition to a MASH fit, I used the “OHF” and “Zero” methods described in my <a href="MASHvFLASHsims.html">simulation study</a> to fit FLASH objects. (Since the “Zero” and “OHL” methods give very similar results, I did not use the latter here.) For each of the FLASH methods, I produce one fit using point-normal priors (<code>ebnm_fn = &quot;ebnm_pn&quot;</code>) and another fit using a more flexible class of <code>ash</code> priors (<code>ebnm_fn = &quot;ebnm_ash&quot;</code>). In sum, I generated a total of five fits for each experiment, which I denote as <code>mash</code>, <code>pn.OHF</code>, <code>ash.OHF</code>, <code>pn.zero</code>, and <code>ash.zero</code>.</p>
+<p>Each of these methods assumes that noise is independent among conditions. It is not, but it is still useful to see how the methods compare when applied to a real dataset.</p>
 </div>
-<div id="mash-v-flash-posterior-means" class="section level2">
-<h2>MASH v FLASH posterior means</h2>
-<p>The posterior means are quite similar (correlation coefficient = 0.95). The dashed line plots <span class="math inline">\(y = x\)</span>:</p>
-<div class="figure">
-<img src="images/gtexcompare.png" />
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p>Since the experiments take a long time to run, I pre-run them and load the results from file.</p>
+<pre class="r"><code>fl_diag &lt;- readRDS(&quot;./output/MASHvFLASHgtex/fldiag.rds&quot;)
+fl_t &lt;- readRDS(&quot;./output/MASHvFLASHgtex/flt.rds&quot;)
+m_diag &lt;- readRDS(&quot;./output/MASHvFLASHgtex/mdiag.rds&quot;)
+m_t &lt;- readRDS(&quot;./output/MASHvFLASHgtex/mt.rds&quot;)</code></pre>
+<p>Comparisons of mean-squared error and confidence interval coverage are as follows. FLASH consistently outperforms MASH, with the “OHF” method outperforming the “Zero” method. Using <code>ash</code> priors gives slightly better results than using point-normal priors.</p>
+<pre class="r"><code>fl_fit_names &lt;- c(&quot;pn.zero&quot;, &quot;pn.OHF&quot;, &quot;ash.zero&quot;, &quot;ash.OHF&quot;)
+method.names &lt;- c(fl_fit_names, &quot;mash&quot;)
 
-</div>
-</div>
-<div id="mash-v-flash-lfsr" class="section level2">
-<h2>MASH v FLASH LFSR</h2>
-<p>Next I look at confusion matrices for gene-condition pairs that are declared significant at a given LFSR threshold. As in the <a href="MASHvFLASHsims.html">simulation study</a>, I used a built-in function to evaluate LFSR for the MASH fit and I sampled from the posterior for the FLASH fit. In general, FLASH appears be more conservative than MASH.</p>
-<pre class="r"><code>m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
-fl_lfsr &lt;- readRDS(&quot;./output/gtexfllfsr.rds&quot;)
+all_t &lt;- rbind(sapply(fl_t, unlist), unlist(m_t))
+rownames(all_t) &lt;- method.names
 
-confusion_matrix &lt;- function(t) {
-  mash_signif &lt;- m_lfsr &lt;= t
-  flash_signif &lt;- fl_lfsr &lt;= t
-  round(table(mash_signif, flash_signif)
-        / length(mash_signif), digits=3)
-}</code></pre>
-<p>At 5%:</p>
-<pre class="r"><code>confusion_matrix(.05)</code></pre>
-<pre><code>           flash_signif
-mash_signif FALSE  TRUE
-      FALSE 0.746 0.023
-      TRUE  0.086 0.145</code></pre>
-<p>At 1%:</p>
-<pre class="r"><code>confusion_matrix(.01)</code></pre>
-<pre><code>           flash_signif
-mash_signif FALSE  TRUE
-      FALSE 0.863 0.016
-      TRUE  0.040 0.081</code></pre>
-<!-- Note: we cannot do 0.1% if we only have 200 samples from the posterior! -->
-<!-- At 0.1%: -->
-<!-- ```{r cm001} -->
-<!-- confusion_matrix(.001) -->
-<!-- ``` -->
+fl_mse &lt;- sapply(fl_diag, function(x) {sapply(x, function(y) {y$mse})})
+all_mse &lt;- rbind(fl_mse, sapply(m_diag, function(x) {x$mse}))
+rownames(all_mse) &lt;- method.names
+
+fl_ci &lt;- sapply(fl_diag, function(x) {sapply(x, function(y) {y$ci})})
+all_ci &lt;- rbind(fl_ci, sapply(m_diag, function(x) {x$ci}))
+rownames(all_ci) &lt;- method.names
+
+plot.order &lt;- c(2, 4, 1, 3, 5)
+
+boxplot(t(all_mse[plot.order, ]), ylim=c(0, 1), ylab = &quot;MSE&quot;,
+        main = &quot;Mean-squared error&quot;)</code></pre>
+<p><img src="figure/MASHvFLASHgtex.Rmd/res1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>boxplot(t(all_ci[plot.order, ]), ylim=c(0, 1), ylab = &quot;coverage&quot;,
+        main = &quot;Proportion of 95% CIs containing true value&quot;)</code></pre>
+<p><img src="figure/MASHvFLASHgtex.Rmd/res1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The total time required by each method (including both the time needed to produce a fit and the time needed to compute posterior summaries) is as follows. While <code>ash</code> priors give slightly better results than point-normal priors, they take approximately twice as long to fit.</p>
+<pre class="r"><code>boxplot(t(all_t[plot.order, ]), ylim=c(0, 60), ylab=&quot;minutes&quot;,
+        main=&quot;Time needed for fit and MSE and CI calculations&quot;)</code></pre>
+<p><img src="figure/MASHvFLASHgtex.Rmd/res2-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<p>Of all methods, only the “OHF” methods give satisfactory results for confidence interval coverage. They also do very well in terms of mean-squared error. Indeed, I am surprised that their MSE is so much smaller than 1. The observational error is supposed to be equal to 1, so I would expect it to be very difficult for any method to achieve an MSE smaller than 1. Indeed, if the errors were uncorrelated, then this would be true, but as I mentioned above, observational errors are almost certainly correlated across tissues. Thus, much of the reason for FLASH’s success here could be due to its ability to account for such correlations. Still, the results are very encouraging.</p>
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
-<p>Click “Code” to view the code used to obtain the above results.</p>
-<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
+<p>for fitting MASH and FLASH objects…</p>
+<pre class="r"><code># Fit using FLASH -------------------------------------------------------
+fit_flash_zero &lt;- function(data, Kmax, ebnm_fn=&quot;ebnm_pn&quot;,
+                           init_fn=&quot;udv_svd&quot;, greedy=TRUE, backfit=TRUE,
+                           warmstart=TRUE) {
+  if (is.matrix(data)) {
+    data &lt;- flash_set_data(Y, S = 1)
+  }
+  n &lt;- nrow(data$Y)
+
+  t0 &lt;- Sys.time()
+  if (greedy) {
+    res &lt;- flash_add_greedy(data, Kmax, var_type=&quot;zero&quot;,
+                            ebnm_fn=ebnm_fn, init_fn=init_fn,
+                            warmstart=warmstart)
+    fl &lt;- res$f
+  } else {
+    fl &lt;- flash_add_factors_from_data(data, Kmax, init_fn=init_fn)
+  }
+  t1 &lt;- Sys.time()
+  if (backfit) {
+    res &lt;- flash_backfit(data, fl, var_type=&quot;zero&quot;,
+                         ebnm_fn=ebnm_fn)
+    fl &lt;- res$f
+  }
+  t2 &lt;- Sys.time()
+
+  t.greedy &lt;- t1 - t0
+  t.backfit &lt;- t2 - t1
+
+  list(f = fl, t.greedy = t.greedy, t.backfit = t.backfit)
+}
+
+
+fit_flash_OHL &lt;- function(data, Kmax, ebnm_fn=&quot;ebnm_pn&quot;,
+                          init_fn=&quot;udv_svd&quot;, greedy=TRUE, backfit=TRUE,
+                          warmstart=TRUE) {
+  if (is.matrix(data)) {
+    data &lt;- flash_set_data(Y, S = 1)
+  }
+  n &lt;- nrow(data$Y)
+  canonical &lt;- cbind(rep(1, n), diag(rep(1, n)))
+
+  zero.res &lt;- fit_flash_zero(Y, Kmax, ebnm_fn, init_fn,
+                             greedy, backfit=FALSE, warmstart)
+
+  fl &lt;- flash_add_fixed_l(data, canonical, zero.res$f, init_fn=init_fn)
+
+  t0 &lt;- Sys.time()
+  if (backfit) {
+    res &lt;- flash_backfit(data, fl,
+                         var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl &lt;- res$f
+  } else {
+    K &lt;- flashr:::flash_get_k(fl)
+    res &lt;- flash_backfit(data, fl, kset=(K - ncol(canonical) + 1):K,
+                         var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl &lt;- res$f
+  }
+  t1 &lt;- Sys.time()
+
+  t.backfit &lt;- Sys.time() - t0
+
+  list(f = fl, t.greedy = zero.res$t.greedy, t.backfit = t.backfit)
+}
+
+
+fit_flash_OHF &lt;- function(data, Kmax, ebnm_fn=&quot;ebnm_pn&quot;,
+                          init_fn=&quot;udv_svd&quot;, greedy=TRUE, backfit=TRUE,
+                          warmstart=TRUE) {
+  if (is.matrix(data)) {
+    data &lt;- flash_set_data(Y, S = 1)
+  }
+  n &lt;- nrow(data$Y)
+  canonical &lt;- cbind(rep(1, n), diag(rep(1, n)))
+
+  t0 &lt;- Sys.time()
+  fl &lt;- flash_add_fixed_l(data, canonical)
+  res &lt;- flash_backfit(data, fl, var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                       nullcheck=FALSE)
+  fl &lt;- res$f
+  t1 &lt;- Sys.time()
+
+  if (greedy) {
+    res &lt;- flash_add_greedy(data, Kmax, fl, var_type=&quot;zero&quot;,
+                            ebnm_fn=ebnm_fn, init_fn=init_fn,
+                            warmstart=warmstart)
+    fl &lt;- res$f
+  } else {
+    fl &lt;- flash_add_factors_from_data(data, Kmax, fl, init_fn=init_fn)
+  }
+  t2 &lt;- Sys.time()
+  K = flashr:::flash_get_k(fl)
+  if (backfit &amp;&amp; K &gt; ncol(canonical)) {
+    res &lt;- flash_backfit(data, fl,
+                         kset=(ncol(canonical) + 1):K,
+                         var_type=&quot;zero&quot;, ebnm_fn=ebnm_fn,
+                         nullcheck=FALSE)
+    fl &lt;- res$f
+  }
+  t3 &lt;- Sys.time()
+
+  t.greedy &lt;- t2 - t1
+  t.backfit &lt;- (t1 - t0) + (t3 - t2)
+
+  list(f = fl, t.greedy = t.greedy, t.backfit = t.backfit)
+}
+
+
+# Fit using MASH -------------------------------------------------------
+fit_mash &lt;- function(data) {
+  if (is.matrix(data)) {
+    data &lt;- mash_set_data(t(Y))
+  }
+  timing &lt;- list()
+
+  # time to create canonical matrices is negligible
+  U = cov_canonical(data)
+
+  t0 &lt;- Sys.time()
+  m.1by1 &lt;- mash_1by1(data)
+  lvl &lt;- 0.05
+  strong &lt;- get_significant_results(m.1by1, lvl)
+  while (length(strong) &lt; 5 &amp;&amp; lvl &lt; 0.5) {
+    lvl &lt;- lvl + 0.05
+    strong &lt;- get_significant_results(m.1by1, lvl)
+  }
+  if (length(strong) &gt;= 5) {
+    U.pca &lt;- cov_pca(data, 5, strong)
+    U.ed &lt;- cov_ed(data, U.pca, strong)
+    U &lt;- c(U, U.ed)
+    t.ed &lt;- Sys.time() - t0
+  } else {
+    t.ed &lt;- as.difftime(0, units=&quot;secs&quot;)
+  }
+
+  t0 &lt;- Sys.time()
+  m &lt;- mash(data, U)
+  t.mash &lt;- Sys.time() - t0
+
+  list(m = m, t.ed = t.ed, t.mash = t.mash)
+}</code></pre>
+<p>…for evaluating performance…</p>
+<pre class="r"><code># Evaluate methods based on MSE, CI coverage, and TPR vs. FPR -----------
+
+flash_diagnostics &lt;- function(fl, Y, true_Y, nsamp) {
+  MSE &lt;- flash_mse(fl, true_Y)
+
+  # Sample from FLASH fit to estimate CI coverage and TPR vs. FPR
+  fl_sampler &lt;- flash_sampler(Y, fl, fixed=&quot;loadings&quot;)
+  fl_samp &lt;- fl_sampler(nsamp)
+
+  CI &lt;- flash_ci(fl_samp, true_Y)
+  ROC &lt;- flash_roc(fl, fl_samp, true_Y)
+
+  list(MSE = MSE, CI = CI, TP = ROC$TP, FP = ROC$FP,
+       n_nulls = ROC$n_nulls, n_nonnulls = ROC$n_nonnulls)
+}
+
+mash_diagnostics &lt;- function(m, true_Y) {
+  MSE &lt;- mash_mse(m, true_Y)
+  CI &lt;- mash_ci(m, true_Y)
+  ROC &lt;- mash_roc(m, true_Y)
+
+  list(MSE = MSE, CI = CI, TP = ROC$TP, FP = ROC$FP,
+       n_nulls = ROC$n_nulls, n_nonnulls = ROC$n_nonnulls)
+}
+
+
+# MSE of posterior means (FLASH) ----------------------------------------
+flash_mse &lt;- function(fl, true_Y) {
+  mean((flash_get_fitted_values(fl) - true_Y)^2)
+}
+
+# MSE for MASH ----------------------------------------------------------
+mash_mse &lt;- function(m, true_Y) {
+  mean((get_pm(m) - t(true_Y))^2)
+}
+
+
+# 95% CI coverage for FLASH ---------------------------------------------
+flash_ci &lt;- function(fl_samp, true_Y) {
+  n &lt;- nrow(true_Y)
+  p &lt;- ncol(true_Y)
+  nsamp &lt;- length(fl_samp)
+
+  flat_samp &lt;- matrix(0, nrow=n*p, ncol=nsamp)
+  for (i in 1:nsamp) {
+    flat_samp[, i] &lt;- as.vector(fl_samp[[i]])
+  }
+  CI &lt;- t(apply(flat_samp, 1, function(x) {quantile(x, c(0.025, 0.975))}))
+  mean((as.vector(true_Y) &gt;= CI[, 1]) &amp; (as.vector(true_Y) &lt;= CI[, 2]))
+}
+
+# 95% CI coverage for MASH ----------------------------------------------
+mash_ci &lt;- function(m, true_Y) {
+  Y &lt;- t(true_Y)
+  mean((Y &gt; get_pm(m) - 1.96 * get_psd(m))
+      &amp; (Y &lt; get_pm(m) + 1.96 * get_psd(m)))
+}
+
+
+# LFSR for FLASH --------------------------------------------------------
+flash_lfsr &lt;- function(fl_samp) {
+  nsamp &lt;- length(fl_samp)
+  n &lt;- nrow(fl_samp[[1]])
+  p &lt;- ncol(fl_samp[[1]])
+
+  pp &lt;- matrix(0, nrow=n, ncol=p)
+  pn &lt;- matrix(0, nrow=n, ncol=p)
+  for (i in 1:nsamp) {
+    pp &lt;- pp + (fl_samp[[i]] &gt; 0)
+    pn &lt;- pn + (fl_samp[[i]] &lt; 0)
+  }
+  1 - pmax(pp, pn) / nsamp
+}
+
+
+# Quantities for plotting ROC curves -----------------------------------
+flash_roc &lt;- function(fl, fl_samp, true_Y, step=0.01) {
+  roc_data(flash_get_fitted_values(fl), true_Y, flash_lfsr(fl_samp), step)
+}
+
+mash_roc &lt;- function(m, true_Y, step=0.01) {
+  roc_data(get_pm(m), t(true_Y), get_lfsr(m), step)
+}
+
+roc_data &lt;- function(pm, true_Y, lfsr, step) {
+  correct_sign &lt;- pm * true_Y &gt; 0
+  is_null &lt;- true_Y == 0
+  n_nulls &lt;- sum(is_null)
+  n_nonnulls &lt;- length(true_Y) - n_nulls
+
+  ts &lt;- seq(0, 1, by=step)
+  tp &lt;- rep(0, length(ts))
+  fp &lt;- rep(0, length(ts))
+
+  for (t in 1:length(ts)) {
+    signif &lt;- lfsr &lt;= ts[t]
+    tp[t] &lt;- sum(signif &amp; correct_sign)
+    fp[t] &lt;- sum(signif &amp; is_null)
+  }
+
+  list(ts = ts, TP = tp, FP = fp, n_nulls = n_nulls, n_nonnulls = n_nonnulls)
+}
+
+
+# empirical false sign rate vs. local false sign rate
+# efsr_by_lfsr &lt;- function(pm, true_Y, lfsr, step) {
+#   pred_signs &lt;- sign(pm)
+#   pred_zeros &lt;- pred_signs == 0
+#   pred_signs[pred_zeros] &lt;- sample(c(0, 1), length(pred_zeros), replace=T)
+#
+#   gotitright &lt;- (pred_signs == sign(true_Y))
+#
+#   nsteps &lt;- floor(.5 / step)
+#   efsr_by_lfsr &lt;- rep(0, nsteps)
+#   for (k in 1:nsteps) {
+#     idx &lt;- (lfsr &gt;= (step * (k - 1)) &amp; lfsr &lt; (step * k))
+#     efsr_by_lfsr[k] &lt;- ifelse(sum(idx) == 0, NA,
+#                               1 - sum(gotitright[idx]) / sum(idx))
+#   }
+#   efsr_by_lfsr
+# }</code></pre>
+<p>…for evaluating peformance on data imputation tasks…</p>
+<pre class="r"><code>get_missing &lt;- function(data, seed, pct_missing = 0.05) {
+  set.seed(seed)
+  missing &lt;- rbinom(length(data), 1, prob = pct_missing)
+  return(matrix(missing, nrow=nrow(data), ncol=ncol(data)))
+}
+
+set_fl_data_with_missing &lt;- function(data, missing) {
+  data[missing] &lt;- NA
+  return(flash_set_data(data, S = 1))
+}
+
+set_m_data_with_missing &lt;- function(data, missing) {
+  data[missing] &lt;- 0
+  Shat &lt;- matrix(1, nrow=nrow(data), ncol=ncol(data))
+  Shat[missing] &lt;- 1e6
+  return(mash_set_data(data, Shat))
+}
+
+imputation_mse &lt;- function(fitted, true_Y, missing) {
+  sq_error &lt;- (fitted - true_Y)^2
+  sq_error &lt;- sq_error[missing == 1]
+  return(mean(sq_error))
+}
+
+flash_imputation_ci &lt;- function(data, fl, true_Y, missing, nsamp = 200) {
+  true_Y &lt;- as.matrix(true_Y[missing == 1])
+
+  fl_sampler &lt;- flash_sampler(data, fl, fixed=&quot;loadings&quot;)
+  fl_samp &lt;- fl_sampler(nsamp)
+  fl_samp &lt;- lapply(fl_samp, function(samp){as.matrix(samp[missing == 1])})
+  return(flash_ci(fl_samp, true_Y))
+}
+
+mash_imputation_ci &lt;- function(m, true_Y, missing) {
+  pm &lt;- get_pm(m)[missing == 1]
+  psd &lt;- get_psd(m)[missing == 1]
+  Y &lt;- true_Y[missing == 1]
+  mean((Y &gt; pm - 1.96 * psd)
+       &amp; (Y &lt; pm + 1.96 * psd))
+}</code></pre>
+<p>…and the main function calls.</p>
+<pre class="r"><code># Make sure to use branch &quot;trackObj&quot; when loading flashr.
+
+# devtools::install_github(&quot;stephenslab/flashr&quot;, ref=&quot;trackObj&quot;)
+devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
+# devtools::install_github(&quot;stephenslab/ebnm&quot;)
+devtools::load_all(&quot;/Users/willwerscheid/GitHub/ebnm/&quot;)
+
 library(mashr)
+
+source(&quot;./code/fits.R&quot;)
+source(&quot;./code/utils.R&quot;)
+source(&quot;./code/gtexutils.R&quot;)
+
+fpath &lt;- &quot;./output/MASHvFLASHgtex/&quot;
+# fpath &lt;- &quot;./output/MASHvFLASHrandom/&quot;
 
 gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
 
-data &lt;- gtex$random.z
-data &lt;- t(data)
-fl_data &lt;- flash_set_data(data, S = 1)
+data &lt;- t(gtex$strong.z)
+# data &lt;- t(gtex$random.z)
 
-source(&quot;./code/fits.R&quot;)
-source(&quot;./code/sims.R&quot;)
-source(&quot;./code/utils.R&quot;)
+seeds &lt;- 1:4
+pcts &lt;- c(0.01, 0.05, 0.1, 0.25)
 
-set.seed(1)
-gtex_mfit &lt;- fit_mash(data)
-saveRDS(gtex_mfit, &quot;./output/gtexmfit.rds&quot;)
+fl_fits &lt;- c(function(fl_data) {fit_flash_zero(fl_data, Kmax = 50,
+                                               ebnm_fn = &quot;ebnm_pn&quot;,
+                                               init_fn = &quot;udv_si_svd&quot;,
+                                               backfit = FALSE,
+                                               warmstart = TRUE)},
+             function(fl_data) {fit_flash_OHF(fl_data, Kmax = 50,
+                                              ebnm_fn = &quot;ebnm_pn&quot;,
+                                              init_fn = &quot;udv_si_svd&quot;,
+                                              backfit = FALSE,
+                                              warmstart = TRUE)},
+             function(fl_data) {fit_flash_zero(fl_data, Kmax = 50,
+                                               ebnm_fn = &quot;ebnm_ash&quot;,
+                                               init_fn = &quot;udv_si_svd&quot;,
+                                               backfit = FALSE,
+                                               warmstart = TRUE)},
+             function(fl_data) {fit_flash_OHF(fl_data, Kmax = 50,
+                                              ebnm_fn = &quot;ebnm_ash&quot;,
+                                              init_fn = &quot;udv_si_svd&quot;,
+                                              backfit = FALSE,
+                                              warmstart = TRUE)})
+fl_fit_names &lt;- c(&quot;pn.zero&quot;, &quot;pn.OHF&quot;, &quot;ash.zero&quot;, &quot;ash.OHF&quot;)
 
-gtex_flfit &lt;- fit_flash(data, Kmax = 40, methods=2:5)
-saveRDS(gtex_flfit, &quot;./output/gtexflfit.rds&quot;)
+fl_res &lt;- list()
+fl_diag &lt;- list()
+fl_t &lt;- list()
 
-flash_get_objective(fl_data, gtex_flfit$fits$Zero) # -1277881
-flash_get_objective(fl_data, gtex_flfit$fits$OHL) # -1277145
-flash_get_objective(fl_data, gtex_flfit$fits$OHF) # -1315285
-flash_get_objective(fl_data, gtex_flfit$fits$OHFp) # -1278991
+for (i in 1:length(seeds)) {
+  message(paste0(&quot;Running experiment #&quot;, i))
+  missing &lt;- get_missing(data, seed = seeds[i], pct_missing = pcts[i])
+  fl_data &lt;- set_fl_data_with_missing(data, missing)
 
+  fl_res[[i]] &lt;- list()
+  fl_diag[[i]] &lt;- list()
+  fl_t[[i]] &lt;- list()
 
-# Use PM from each method as &quot;true Y&quot; and do diagnostics
-# fl_pm &lt;- flash_get_fitted_values(gtex_flfit$fl)
-# gtex_mres &lt;- mash_diagnostics(gtex_mfit$m, fl_pm)
-# saveRDS(gtex_mres, &quot;./output/gtexmres.rds&quot;)
-#
-# m_pm &lt;- t(get_pm(gtex_mfit$m))
-# gtex_flres &lt;- flash_diagnostics(gtex_flfit$fl, data, m_pm, nsamp = 200)
-# saveRDS(gtex_flres, &quot;./output/gtexflres.rds&quot;)
+  for (j in 1:length(fl_fits)) {
+    message(paste(&quot;Fitting&quot;, fl_fit_names[j]))
+    t0 &lt;- Sys.time()
+    fl_fit &lt;- fl_fits[[j]](fl_data)
+    fl_res[[i]][[fl_fit_names[j]]] &lt;- fl_fit$f
+    diagnostics &lt;- list(mse = imputation_mse(flash_get_fitted_values(fl_fit$f),
+                                             data, missing),
+                        ci = flash_imputation_ci(fl_data, fl_fit$f,
+                                                 data, missing))
+    fl_diag[[i]][[fl_fit_names[j]]] &lt;- diagnostics
+    fl_t[[i]][[fl_fit_names[j]]] &lt;- Sys.time() - t0
+  }
 
-
-# Plot FLASH PM vs. MASH PM
-fl_pm &lt;- flash_get_fitted_values(gtex_flfit$fits$OHL)
-m_pm &lt;- t(get_pm(gtex_mfit$m))
-png(&quot;./output/gtexcompare.png&quot;)
-plot(as.vector(fl_pm), as.vector(m_pm), xlab=&quot;FLASH PM&quot;, ylab=&quot;MASH PM&quot;,
-     main=&quot;Posterior means on GTEx data&quot;, pch=&#39;.&#39;)
-abline(0, 1, lty=2)
-dev.off()
-cor(as.vector(fl_pm), as.vector(m_pm)) # 0.952
-
-# Use LFSR to get &quot;significant&quot; effects and get confusion matrices
-m_lfsr &lt;- t(get_lfsr(gtex_mfit$m))
-
-fl_sampler &lt;- flash_sampler(data, gtex_flfit$fits$OHL, fixed=&quot;loadings&quot;)
-fl_lfsr &lt;- flash_lfsr(fl_sampler(200))
-saveRDS(fl_lfsr, &quot;./output/gtexfllfsr.rds&quot;)
-
-confusion_matrix &lt;- function(t) {
-  mash_signif &lt;- m_lfsr &lt;= t
-  flash_signif &lt;- fl_lfsr &lt;= t
-  round(table(mash_signif, flash_signif)
-        / length(mash_signif), digits=3)
+  saveRDS(fl_res, paste0(fpath, &quot;res.rds&quot;))
+  saveRDS(fl_diag, paste0(fpath, &quot;fldiag.rds&quot;))
+  saveRDS(fl_t, paste0(fpath, &quot;flt.rds&quot;))
 }
-confusion_matrix(.05)
-confusion_matrix(.01)</code></pre>
+
+m_res &lt;- list()
+m_diag &lt;- list()
+m_t &lt;- list()
+
+for (i in 1:length(seeds)) {
+  message(paste0(&quot;Running experiment #&quot;, i))
+  missing &lt;- get_missing(data, seed = seeds[i], pct_missing = pcts[i])
+  m_data &lt;- set_m_data_with_missing(t(data), t(missing))
+
+  message(&quot;Fitting mash&quot;)
+  t0 &lt;- Sys.time()
+  m_fit &lt;- fit_mash(m_data)
+  m_res[[i]] &lt;- m_fit$m
+  diagnostics &lt;- list(mse = imputation_mse(get_pm(m_fit$m),
+                                           t(data), t(missing)),
+                      ci = mash_imputation_ci(m_fit$m, t(data),
+                                              t(missing)))
+  m_diag[[i]] &lt;- diagnostics
+  m_t[[i]] &lt;- Sys.time() - t0
+  saveRDS(m_res, paste0(fpath, &quot;mres.rds&quot;))
+  saveRDS(m_diag, paste0(fpath, &quot;mdiag.rds&quot;))
+  saveRDS(m_t, paste0(fpath, &quot;mt.rds&quot;))
+}</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS High Sierra 10.13.1
+Running under: macOS High Sierra 10.13.6
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
@@ -905,29 +1212,14 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
-[1] mashr_0.2-7   ashr_2.2-10   flashr_0.5-12
-
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.17        pillar_1.2.1        plyr_1.8.4         
- [4] compiler_3.4.3      git2r_0.21.0        workflowr_1.0.1    
- [7] R.methodsS3_1.7.1   R.utils_2.6.0       iterators_1.0.9    
-[10] tools_3.4.3         testthat_2.0.0      digest_0.6.15      
-[13] tibble_1.4.2        evaluate_0.10.1     memoise_1.1.0      
-[16] gtable_0.2.0        lattice_0.20-35     rlang_0.2.0        
-[19] Matrix_1.2-12       foreach_1.4.4       commonmark_1.4     
-[22] yaml_2.1.17         parallel_3.4.3      mvtnorm_1.0-7      
-[25] ebnm_0.1-12         withr_2.1.1.9000    stringr_1.3.0      
-[28] roxygen2_6.0.1.9000 xml2_1.2.0          knitr_1.20         
-[31] devtools_1.13.4     rprojroot_1.3-2     grid_3.4.3         
-[34] R6_2.2.2            rmarkdown_1.8       rmeta_3.0          
-[37] ggplot2_2.2.1       magrittr_1.5        whisker_0.3-2      
-[40] backports_1.1.2     scales_0.5.0        codetools_0.2-15   
-[43] htmltools_0.3.6     MASS_7.3-48         assertthat_0.2.0   
-[46] softImpute_1.4      colorspace_1.3-2    stringi_1.1.6      
-[49] lazyeval_0.2.1      munsell_0.4.3       doParallel_1.0.11  
-[52] pscl_1.5.2          truncnorm_1.0-8     SQUAREM_2017.10-1  
-[55] R.oo_1.21.0        </code></pre>
+ [1] workflowr_1.0.1   Rcpp_0.12.17      digest_0.6.15    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
+[10] stringi_1.1.6     whisker_0.3-2     R.oo_1.21.0      
+[13] R.utils_2.6.0     rmarkdown_1.8     tools_3.4.3      
+[16] stringr_1.3.0     yaml_2.1.17       compiler_3.4.3   
+[19] htmltools_0.3.6   knitr_1.20       </code></pre>
 </div>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
