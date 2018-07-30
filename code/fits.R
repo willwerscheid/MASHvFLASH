@@ -1,9 +1,11 @@
 # Fit using FLASH -------------------------------------------------------
-fit_flash_zero <- function(Y, Kmax, ebnm_fn="ebnm_pn",
+fit_flash_zero <- function(data, Kmax, ebnm_fn="ebnm_pn",
                            init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
                            warmstart=TRUE) {
-  n <- nrow(Y)
-  data <- flash_set_data(Y, S = 1)
+  if (is.matrix(data)) {
+    data <- flash_set_data(Y, S = 1)
+  }
+  n <- nrow(data$Y)
 
   t0 <- Sys.time()
   if (greedy) {
@@ -29,11 +31,13 @@ fit_flash_zero <- function(Y, Kmax, ebnm_fn="ebnm_pn",
 }
 
 
-fit_flash_OHL <- function(Y, Kmax, ebnm_fn="ebnm_pn",
+fit_flash_OHL <- function(data, Kmax, ebnm_fn="ebnm_pn",
                           init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
                           warmstart=TRUE) {
-  n <- nrow(Y)
-  data <- flash_set_data(Y, S = 1)
+  if (is.matrix(data)) {
+    data <- flash_set_data(Y, S = 1)
+  }
+  n <- nrow(data$Y)
   canonical <- cbind(rep(1, n), diag(rep(1, n)))
 
   zero.res <- fit_flash_zero(Y, Kmax, ebnm_fn, init_fn,
@@ -62,11 +66,13 @@ fit_flash_OHL <- function(Y, Kmax, ebnm_fn="ebnm_pn",
 }
 
 
-fit_flash_OHF <- function(Y, Kmax, ebnm_fn="ebnm_pn",
+fit_flash_OHF <- function(data, Kmax, ebnm_fn="ebnm_pn",
                           init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
                           warmstart=TRUE) {
-  n <- nrow(Y)
-  data <- flash_set_data(Y, S = 1)
+  if (is.matrix(data)) {
+    data <- flash_set_data(Y, S = 1)
+  }
+  n <- nrow(data$Y)
   canonical <- cbind(rep(1, n), diag(rep(1, n)))
 
   t0 <- Sys.time()
@@ -103,8 +109,10 @@ fit_flash_OHF <- function(Y, Kmax, ebnm_fn="ebnm_pn",
 
 
 # Fit using MASH -------------------------------------------------------
-fit_mash <- function(Y) {
-  data <- mash_set_data(t(Y))
+fit_mash <- function(data) {
+  if (is.matrix(data)) {
+    data <- mash_set_data(t(Y))
+  }
   timing <- list()
 
   # time to create canonical matrices is negligible
