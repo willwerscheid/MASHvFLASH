@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-22</p>
+<p><strong>Last updated:</strong> 2018-07-30</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,27 +352,34 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/3abd505e1c42acd32d1e7c9f8901f8f50efc9335" target="_blank">3abd505</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/3d07af8c891b93cb224098857e523ba83e5cf564" target="_blank">3d07af8</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
+    Ignored:    docs/images/.Rapp.history
     Ignored:    output/.DS_Store
+    Ignored:    output/.Rapp.history
+    Ignored:    output/MASHvFLASHgtex/.DS_Store
+    Ignored:    output/MASHvFLASHrandom/
+    Ignored:    output/MASHvFLASHsims/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
+
+Untracked files:
+    Untracked:  code/MASHvFLASHgtex2.R
+    Untracked:  code/MASHvFLASHsims2.R
+    Untracked:  code/gtex3.R
+    Untracked:  output/MASHvFLASHsims2/
 
 Unstaged changes:
-    Modified:   code/gtex2.R
-    Modified:   code/sims2.R
-    Modified:   output/README.md
-    Modified:   output/gtex2flfit.rds
-    Modified:   output/gtex2lfsr.rds
-    Modified:   output/gtex2mfit.rds
-    Modified:   output/gtex2mrandfit.rds
-    Modified:   output/gtexrandomfit.rds
-    Modified:   output/gtexstrongfit.rds
+    Modified:   analysis/index.Rmd
+    Deleted:    code/sims2.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -401,6 +408,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/3d07af8c891b93cb224098857e523ba83e5cf564/analysis/MASHvFLASHsims2.Rmd" target="_blank">3d07af8</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/860aa52c7988a06c33df007c928bfce326e277fe/docs/MASHvFLASHsims2.html" target="_blank">860aa52</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-22
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -663,81 +704,83 @@ wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Here I study in detail simulations from a MASH model that extends the “model with independent, unique, and shared effects” from my larger <a href="MASHvFLASHsims.html">simulation study</a>. I run 10 simulations, each of which simulates data for 20 conditions and 1200 tests. I use 17 different covariance structures, each of which are used to simulate 25 tests. The other 775 tests are null across all conditions. For the code used in this analysis, see <a href="#code">below</a>.</p>
+<p>Here I study simulations from a MASH model that extends the “model with independent, unique, and shared effects” from my larger <a href="MASHvFLASHsims.html">simulation study</a>. For the code used in this analysis, see <a href="#code">below</a>.</p>
 </div>
-<div id="independent-effects" class="section level2">
-<h2>Independent effects</h2>
+<div id="simulations" class="section level2">
+<h2>Simulations</h2>
+<p>I run 10 simulations, each of which simulates data for 20 conditions and 1200 tests. I use 17 different covariance structures, each of which are used to simulate 25 tests. The other 775 tests are null across all conditions.</p>
+<div id="independent-effects" class="section level3">
+<h3>Independent effects</h3>
 <p>Effects were nonnull for all conditions and generated independently from a <span class="math inline">\(N(0, \sigma^2)\)</span> distribution. I simulated <span class="math inline">\((1)\)</span> small independent effects (<span class="math inline">\(\sigma^2 = 2^2\)</span>), <span class="math inline">\((2)\)</span> large independent effects (<span class="math inline">\(\sigma^2 = 5^2\)</span>), and <span class="math inline">\((3)\)</span> independent effects of varying sizes (with <span class="math inline">\(\sigma^2\)</span> ranging from <span class="math inline">\(1^2\)</span> to <span class="math inline">\(5^2\)</span>).</p>
 <p>Notice that cases 1 and 2 are covered by “canonical” covariance matrices in MASH, but 3 is not.</p>
 </div>
-<div id="identical-effects" class="section level2">
-<h2>Identical effects</h2>
+<div id="identical-effects" class="section level3">
+<h3>Identical effects</h3>
 <p>Effects were nonnull for all conditions, with an effect size that was identical across conditions. The unique effect size was generated from a <span class="math inline">\(N(0, \sigma^2)\)</span> distribution. Similar to the above, I simulated <span class="math inline">\((4)\)</span> small identical effects (<span class="math inline">\(\sigma^2 = 2^2\)</span>) and <span class="math inline">\((5)\)</span> large identical effects (<span class="math inline">\(\sigma^2 = 5^2\)</span>).</p>
 <p>Both of these cases are covered by canonical covariance matrices in MASH.</p>
 </div>
-<div id="rank-one-effects" class="section level2">
-<h2>Rank-one effects</h2>
+<div id="rank-one-effects" class="section level3">
+<h3>Rank-one effects</h3>
 <p>These are similar to “identical effects” in that the covariance matrix has rank one (so that conditions 2-20 are always fixed multiples of condition 1), but here, the effect sizes vary.</p>
 <p><span class="math inline">\((6)\)</span> The effect size for condition 1 was generated from a <span class="math inline">\(N(0, 1)\)</span> distribution, and conditions 1-20 were multiples evenly spaced between 1 and 5.</p>
 <p>Unlike identical effects, rank-one effects are not directly modeled by canonical covariance matrices.</p>
 </div>
-<div id="unique-effects" class="section level2">
-<h2>Unique effects</h2>
+<div id="unique-effects" class="section level3">
+<h3>Unique effects</h3>
 <p>Effects were nonnull in one condition only, with the nonnull effect simulated from a <span class="math inline">\(N(0, \sigma^2)\)</span> distribution. I simulated <span class="math inline">\((7)\)</span> small effects (<span class="math inline">\(\sigma^2 = 3^2\)</span>) unique to condition 1 and <span class="math inline">\((8)\)</span> large effects (<span class="math inline">\(\sigma^2 = 8^2\)</span>) unique to condition 2.</p>
 <p>These effects are directly modeled by canonical covariance matrices.</p>
 </div>
-<div id="shared-effects" class="section level2">
-<h2>Shared effects</h2>
+<div id="shared-effects" class="section level3">
+<h3>Shared effects</h3>
 <p>Effects were nonnull in several conditions. The nonnull effects were either identical across conditions or fixed multiples of one another. I included <span class="math inline">\((9)\)</span> medium effects (<span class="math inline">\(\sigma^2 = 3^2\)</span>) identical across 3 conditions (3-5), <span class="math inline">\((10)\)</span> small effects (<span class="math inline">\(\sigma^2 = 2^2\)</span>) identical across 10 conditions (1-10), and <span class="math inline">\((11)\)</span> effects of differing sizes over 5 conditions (6-10), with variances ranging from <span class="math inline">\(2^2\)</span> to <span class="math inline">\(4^2\)</span>.</p>
 <p>None of these types of effects are modeled by canonical covariance matrices.</p>
 </div>
-<div id="random-covariance" class="section level2">
-<h2>Random covariance</h2>
+<div id="random-covariance" class="section level3">
+<h3>Random covariance</h3>
 <p>I included three random covariance structures in which effects were nonnull across all conditions. In each case the random covariance matrix <span class="math inline">\(A^T A\)</span> was generated by sampling the entries of <span class="math inline">\(A\)</span> independently from a <span class="math inline">\(N(0, 2^2)\)</span> distribution. I included <span class="math inline">\((12)\)</span> a rank-5 random covariance matrix (with <span class="math inline">\(A \in \mathbb{R}^{5 \times 44}\)</span>), <span class="math inline">\((13)\)</span> a rank-10 random covariance matrix <span class="math inline">\((A \in \mathbb{R}^{10 \times 44})\)</span>, and <span class="math inline">\((14)\)</span> a full-rank random covariance matrix <span class="math inline">\((A \in \mathbb{R}^{44 \times 44})\)</span>.</p>
 </div>
-<div id="combinations-of-independent-identical-and-unique-effects" class="section level2">
-<h2>Combinations of independent, identical, and unique effects</h2>
+<div id="combinations-of-independent-identical-and-unique-effects" class="section level3">
+<h3>Combinations of independent, identical, and unique effects</h3>
 <p>Finally, I included several combinations of the above types of effects. In particular, I simulated <span class="math inline">\((15)\)</span> small identical effects (covariance type 4) plus large independent effects (type 2), <span class="math inline">\((16)\)</span> small independent effects (type 1) plus a large unique effect (type 8), and <span class="math inline">\((17)\)</span> small identical effects (type 4) plus a large unique effect (type 8).</p>
+</div>
 </div>
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
-<p>For each simulation, I fitted a MASH model and two FLASH models using the “one-hots last” method described in my larger <a href="MASHvFLASHsims.html">simulation study</a>. One FLASH model used the point-normal approach to solve the ebnm problem (<code>ebnm_fn = ebnm_pn</code>); the other used <code>ashr</code> (<code>ebnm_fn = ebnm_ash</code>).</p>
-<p>First I load results.</p>
-<pre class="r"><code>all.rrmses &lt;- sqrt(readRDS(&quot;./output/sims2mse.rds&quot;))
-pr.pn &lt;- readRDS(&quot;./output/sims2prpn.rds&quot;)
-pr.ash &lt;- readRDS(&quot;./output/sims2prash.rds&quot;)
-pr.m &lt;- readRDS(&quot;./output/sims2prm.rds&quot;)
-
-# Nulls
-nullidx &lt;- c(7, 9, 11, 13, 15, 23)
-null.names &lt;- c(&quot;UnSm(7)&quot;, &quot;UnLg(8)&quot;, &quot;Sh3(9)&quot;, &quot;Sh10(10)&quot;, &quot;Sh5(11)&quot;, &quot;Null&quot;)
-
-# Effects that are independent or identical across conditions
-indididx &lt;- 1:6
-indid.names &lt;- c(&quot;IndSm(1)&quot;, &quot;IndLg(2)&quot;, &quot;IndDif(3)&quot;, &quot;IdSm(4)&quot;, &quot;IdLg(5)&quot;, &quot;Rnk1(6)&quot;)
-
-# Effects that are unique to one or several conditions
-unshidx &lt;- c(8, 10, 12, 14, 16)
-unsh.names &lt;- c(&quot;UnSm(7)&quot;, &quot;UnLg(8)&quot;, &quot;Sh3(9)&quot;, &quot;Sh10(10)&quot;, &quot;Sh5(11)&quot;)
-
-# Other
-otheridx &lt;- c(17:22)
-other.names &lt;- c(&quot;Rn5(12)&quot;, &quot;Rn10(13)&quot;, &quot;Rnd(14)&quot;, &quot;IdIn(15)&quot;, &quot;InUn(16)&quot;, &quot;IdUn(17)&quot;)</code></pre>
+<p>The fitting methods are identical to those described in my previous <a href="MASHvFLASHgtex.html">study of GTEx data</a>.</p>
 </div>
-<div id="results-rrmse" class="section level2">
-<h2>Results: RRMSE</h2>
-<p>Here I give a detailed breakdown of the relative root mean-squared errors (that is, the RMSE for each fit object, divided by the RMSE that would be obtained by simply using the observed data <span class="math inline">\(Y\)</span> to estimate the “true effects” <span class="math inline">\(X\)</span>). In addition to calculating the RRMSE separately for each covariance type, I also separately consider null effects and nonnull effects.</p>
-<p>MASH does much better in shrinking null effects towards zero, particularly for tests that are null across all conditions or that are unique to a single condition (covariance types 7-8). MASH also does consistently better in estimating nonnull effects when effects are independent across conditions (types 1-3). (In such cases, FLASH does worse than the naive estimate <span class="math inline">\(\hat{X} = Y\)</span>.)</p>
-<p>Results for other covariance types are more varied: MASH appears to do better on identical effects (types 4-5, whose covariance structures are included as “canonical”), but slightly worse on rank-one effects (type 6, which is not accounted for by canonical covariance matrices). FLASH seems to outperform MASH on shared effects (types 9-11), but (somewhat surprisingly) MASH does better on random covariance matrices and on combinations involving independent effects (types 12-16), with an RRMSE near 1 (whereas FLASH is again outperformed by the naive estimate <span class="math inline">\(\hat{X} = Y\)</span>). Finally, FLASH does much better on a combination of identical and unique effects (type 17).</p>
-<p>In general, the ash fits perform very similarly to the point-normal fits.</p>
-<p>RRMSE for null effects is as follows (where “null” below refers to tests that are null across <em>all</em> conditions):</p>
-<pre class="r"><code>par(mar = c(5,4,4,6))
-
-legend.names &lt;- c(&quot;FL-pn&quot;, &quot;FL-ash&quot;, &quot;MASH&quot;)
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p>I pre-run the script below and load the results from file.</p>
+<pre class="r"><code>rrmses &lt;- sqrt(readRDS(&quot;./output/MASHvFLASHsims2/mses.rds&quot;))
+pr &lt;- readRDS(&quot;./output/MASHvFLASHsims2/pr.rds&quot;)</code></pre>
+<div id="rrmse-nulls" class="section level3">
+<h3>RRMSE (nulls)</h3>
+<p>First I give a breakdown of the relative root mean-squared errors (that is, the RMSE for each fit object, divided by the RMSE that would be obtained by simply using the observed data <span class="math inline">\(Y\)</span> to estimate the “true effects” <span class="math inline">\(X\)</span>). In addition to calculating the RRMSE separately for each covariance type, I also separately consider null effects and nonnull effects.</p>
+<p>MASH does much better in shrinking null effects towards zero for tests that are null across all conditions or that are unique to a single condition (covariance types 7-8). However, the OHF method much better on nulls when nonnull effects are of medium size and are shared across several conditions (types 9 and 11). Here, it is possibly relevant to recall that cases 7 and 8 are covered by canonical covariance matrices in MASH but cases 9 and 11 are not.</p>
+<pre class="r"><code>method.names &lt;- c(&quot;pn.zero&quot;, &quot;pn.OHF&quot;, &quot;ash.zero&quot;, &quot;ash.OHF&quot;, &quot;mash&quot;)
+plot.order &lt;- c(5, 2, 4, 1, 3)
 legend.args &lt;- list(x=&quot;right&quot;, bty=&quot;n&quot;, inset=c(-0.25,0), xpd=T)
-barplot(all.rrmses[,nullidx], names.arg = null.names, beside=T,
-        ylim=c(0, 1), ylab=&quot;RRMSE&quot;, main=&quot;RRMSE for null effects&quot;,
-        legend.text=legend.names, args.legend=legend.args)</code></pre>
+
+main.null &lt;- list()
+idx.null &lt;- list()
+names.null &lt;- list()
+
+main.null[[1]] &lt;- &quot;RRMSE for nulls (null/unique effects)&quot;
+idx.null[[1]] &lt;- c(23, 7, 9)
+names.null[[1]] &lt;- c(&quot;null&quot;, &quot;small (7)&quot;, &quot;large (8)&quot;)
+
+main.null[[2]] &lt;- &quot;RRMSE for nulls (shared effects)&quot;
+idx.null[[2]] &lt;- c(11, 13, 15)
+names.null[[2]] &lt;- c(&quot;3 cond. (9)&quot;, &quot;10 cond. (10)&quot;, &quot;5 cond. (11)&quot;)
+
+par(mar = c(5,4,4,6))
+for (i in 1:length(main.null)) {
+  barplot(rrmses[plot.order, idx.null[[i]]], 
+          names.arg = names.null[[i]], beside=T, 
+          ylim=c(0, 1), ylab=&quot;RRMSE&quot;, 
+          main=main.null[[i]], legend.text=method.names[plot.order],
+          args.legend=legend.args)
+}</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/mse_null-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of mse_null-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -790,12 +833,47 @@ Jason Willwerscheid
 </tr>
 </tbody>
 </table>
-<p></details></p>
-<p>And RRMSE for nonnull effects is as follows.</p>
-<pre class="r"><code>par(mar = c(5,4,4,6))
-barplot(all.rrmses[,indididx], names.arg = indid.names, beside=T,
-        ylim=c(0, 2), ylab=&quot;RRMSE&quot;, main=&quot;RRMSE for nonnull effects&quot;,
-        legend.text=legend.names, args.legend=legend.args)</code></pre>
+<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_null-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="rrmse-nonnulls" class="section level3">
+<h3>RRMSE (nonnulls)</h3>
+<p>Results for nonnull effects are more even. MASH generally does a bit better than FLASH, with the notable exception of type 17 (a combination of identical and unique effects) and the possible exception of unique effects (types 7-8).</p>
+<pre class="r"><code>main.nonnull &lt;- list()
+idx.nonnull &lt;- list()
+names.nonnull &lt;- list()
+
+main.nonnull[[1]] &lt;- &quot;RRMSE for independent effects&quot;
+idx.nonnull[[1]] &lt;- 1:3
+names.nonnull[[1]] &lt;- c(&quot;small (1)&quot;, &quot;large (2)&quot;, &quot;various (3)&quot;)
+
+main.nonnull[[2]] &lt;- &quot;RRMSE for identical and rank-1 effects&quot;
+idx.nonnull[[2]] &lt;- 4:6
+names.nonnull[[2]] &lt;- c(&quot;sm. ident. (4)&quot;, &quot;lg. ident. (5)&quot;, &quot;rank-1 (6)&quot;)
+
+main.nonnull[[3]] &lt;- &quot;RRMSE for unique effects&quot;
+idx.nonnull[[3]] &lt;- c(8, 10)
+names.nonnull[[3]] &lt;- c(&quot;small (7)&quot;, &quot;large (8)&quot;)
+
+main.nonnull[[4]] &lt;- &quot;RRMSE for shared effects&quot;
+idx.nonnull[[4]] &lt;- c(12, 14, 16)
+names.nonnull[[4]] &lt;- c(&quot;3 cond. (9)&quot;, &quot;10 cond. (10)&quot;, &quot;5 cond. (11)&quot;)
+
+main.nonnull[[5]] &lt;- &quot;RRMSE for random covariance&quot;
+idx.nonnull[[5]] &lt;- 17:19
+names.nonnull[[5]] &lt;- c(&quot;rank-5 (12)&quot;, &quot;rank-10 (13)&quot;, &quot;full-rank (14)&quot;)
+
+main.nonnull[[6]] &lt;- &quot;RRMSE for combinations of effects&quot;
+idx.nonnull[[6]] &lt;- 20:22
+names.nonnull[[6]] &lt;- c(&quot;ident. + ind.&quot;, &quot;ind. + uniq.&quot;, &quot;ident. + uniq.&quot;)
+
+par(mar = c(5,4,4,6))
+for (i in 1:length(main.nonnull)) {
+  barplot(rrmses[plot.order, idx.nonnull[[i]]], 
+          names.arg = names.nonnull[[i]], beside=T, 
+          ylim=c(0, 2), ylab=&quot;RRMSE&quot;, 
+          main=main.nonnull[[i]], legend.text=method.names[plot.order],
+          args.legend=legend.args)
+}</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of mse_nonnull-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -848,11 +926,7 @@ Jason Willwerscheid
 </tr>
 </tbody>
 </table>
-<p></details></p>
-<pre class="r"><code>barplot(all.rrmses[,unshidx], names.arg = unsh.names, beside=T,
-        ylim=c(0, 2), ylab=&quot;RRMSE&quot;, main=&quot;&quot;,
-        legend.text=legend.names, args.legend=legend.args)</code></pre>
-<p><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-2.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of mse_nonnull-2.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
 <thead>
@@ -904,11 +978,7 @@ Jason Willwerscheid
 </tr>
 </tbody>
 </table>
-<p></details></p>
-<pre class="r"><code>barplot(all.rrmses[,otheridx], names.arg = other.names, beside=T,
-        ylim=c(0, 2), ylab=&quot;RRMSE&quot;, main=&quot;&quot;,
-        legend.text=legend.names, args.legend=legend.args)</code></pre>
-<p><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-3.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of mse_nonnull-3.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
 <thead>
@@ -960,32 +1030,34 @@ Jason Willwerscheid
 </tr>
 </tbody>
 </table>
-<p></details></p>
+<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-6.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="results-fprtpr" class="section level2">
-<h2>Results: FPR/TPR</h2>
-<p>As in the larger <a href="MASHvFLASHsims.html">simulation study</a>, I evaluate true and false positive rates using the built-in function <code>get_lfsr()</code> for MASH and by simulating from the posterior for FLASH. For each covariance structure, I plot the true positive rate for a given covariance structure against the <em>overall</em> false positive rate.</p>
-<p>An examination of the ROC curves leads to somewhat different conclusions to the above. As above, MASH does much better with respect to independent effects (types 1-3), random covariance matrices (types 12-14), and a combination of identical and independent effects (type 15), while FLASH outperforms MASH on a combination of identical and unique effects (type 17). Interestingly, point-normal priors outperform ash priors in all of these cases.</p>
-<p>MASH does slightly better with respect to both identical effects (types 4-5) and rank-one effects (type 6), even though FLASH did better on the latter in terms of RRMSE. All methods perform similarly for both unique and shared effects (types 7-11), with ash priors doing somewhat better than point-normal priors for unique effects. Both MASH and FLASH-pn do well on a combination of independent and unique effects, while FLASH-ash performs poorly.</p>
-<p>In general, it appears that one can safely opt for the faster point-normal priors over the slower but more flexible ash priors.</p>
+<div id="fprtpr" class="section level3">
+<h3>FPR/TPR</h3>
+<p>As in my previous <a href="MASHvFLASHsims.html">simulation study</a>, I evaluate true and false positive rates using the built-in function <code>get_lfsr()</code> for MASH and by simulating from the posterior for FLASH. For each covariance structure, I plot the true positive rate for a given covariance structure against the <em>overall</em> false positive rate.</p>
+<p>Results are again fairly even, with a few exceptions where MASH clearly dominates FLASH. In particular, FLASH does relatively poorly on independent effects (types 1-3) and randomly generated covariance structures (types 12-14)</p>
 <pre class="r"><code>get_fpr &lt;- function(pr) {
   nullidx &lt;- c(7, 9, 11, 13, 15)
   fp &lt;- 25 * rowSums(pr[, nullidx]) + 775 * (pr[, 23])
   fp / (25 * length(nullidx) + 775)
 }
 plot_fprvtpr &lt;- function(idx, typename) {
-  plot(get_fpr(pr.pn), pr.pn[, idx], type=&#39;l&#39;, col=&quot;red1&quot;, lty=2,
+  colors &lt;- c(&quot;orangered&quot;, &quot;blue&quot;, &quot;orange&quot;, &quot;sky blue&quot;, &quot;seagreen&quot;)
+  plot.order &lt;- c(5, 1, 3, 2, 4)
+  plot(get_fpr(pr$mash), pr$mash[, idx], type=&#39;l&#39;, 
+       col=colors[length(method.names)], lty=1, 
        xlab=&quot;FPR&quot;, ylab=&quot;TPR&quot;, ylim=c(0, 1), main=typename)
-  lines(get_fpr(pr.ash), pr.ash[, idx], col=&quot;red4&quot;, lty=2)
-  lines(get_fpr(pr.m), pr.m[, idx], col=&quot;blue&quot;)
-  legend(&quot;bottomright&quot;, legend=c(&quot;Fl-pn&quot;, &quot;Fl-ash&quot;, &quot;MASH&quot;),
-         col=c(&quot;red1&quot;, &quot;red4&quot;, &quot;blue&quot;), lty=c(2, 2, 1))
+  for (i in 1:(length(method.names) - 1)) {
+    next.pr &lt;- pr[[method.names[i]]]
+    lines(get_fpr(next.pr), next.pr[, idx], col=colors[i], lty=1)
+  }
+  legend(&quot;bottomright&quot;, legend=method.names[plot.order],
+         col=colors[plot.order], lty=1)
 }
 
-par(mfrow=c(1, 3))
+par(mfrow=c(1, 2))
 plot_fprvtpr(1, &quot;Small independent (1)&quot;)
-plot_fprvtpr(2, &quot;Large independent (2)&quot;)
-plot_fprvtpr(3, &quot;Independent of varying size (3)&quot;)</code></pre>
+plot_fprvtpr(2, &quot;Large independent (2)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-1.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of tpr-1.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1039,8 +1111,7 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>plot_fprvtpr(4, &quot;Small identical (4)&quot;)
-plot_fprvtpr(5, &quot;Large identical (5)&quot;)
+<pre class="r"><code>plot_fprvtpr(3, &quot;Independent of varying size (3)&quot;)
 plot_fprvtpr(6, &quot;Rank-one (6)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-2.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of tpr-2.png:</em></summary>
@@ -1095,9 +1166,8 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>par(mfrow=c(1, 2))
-plot_fprvtpr(8, &quot;Small unique (7)&quot;)
-plot_fprvtpr(10, &quot;Large unique (8)&quot;)</code></pre>
+<pre class="r"><code>plot_fprvtpr(4, &quot;Small identical (4)&quot;)
+plot_fprvtpr(5, &quot;Large identical (5)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-3.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of tpr-3.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1151,10 +1221,8 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>par(mfrow=c(1, 3))
-plot_fprvtpr(12, &quot;Shared (3 conditions) (9)&quot;)
-plot_fprvtpr(14, &quot;Shared (10 conditions) (10)&quot;)
-plot_fprvtpr(16, &quot;Shared (varying sizes) (11)&quot;)</code></pre>
+<pre class="r"><code>plot_fprvtpr(8, &quot;Small unique (7)&quot;)
+plot_fprvtpr(10, &quot;Large unique (8)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-4.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of tpr-4.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1197,9 +1265,8 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>plot_fprvtpr(17, &quot;Random rank-5 (12)&quot;)
-plot_fprvtpr(18, &quot;Random rank-10 (13)&quot;)
-plot_fprvtpr(19, &quot;Random full-rank (14)&quot;)</code></pre>
+<pre class="r"><code>plot_fprvtpr(12, &quot;Shared (3 conditions) (9)&quot;)
+plot_fprvtpr(14, &quot;Shared (10 conditions) (10)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-5.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of tpr-5.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1242,9 +1309,8 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
-<pre class="r"><code>plot_fprvtpr(20, &quot;Identical plus independent (15)&quot;)
-plot_fprvtpr(21, &quot;Independent plus unique (16)&quot;)
-plot_fprvtpr(22, &quot;Identical plus unique (17)&quot;)</code></pre>
+<pre class="r"><code>plot_fprvtpr(16, &quot;Shared (varying sizes) (11)&quot;)
+plot_fprvtpr(17, &quot;Random rank-5 (12)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-6.png" width="672" style="display: block; margin: auto;" /></p>
 <details> <summary><em>Expand here to see past versions of tpr-6.png:</em></summary>
 <table style="border-collapse:separate; border-spacing:5px;">
@@ -1287,6 +1353,15 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details></p>
+<pre class="r"><code>plot_fprvtpr(18, &quot;Random rank-10 (13)&quot;)
+plot_fprvtpr(19, &quot;Random full-rank (14)&quot;)</code></pre>
+<p><img src="figure/MASHvFLASHsims2.Rmd/tpr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_fprvtpr(20, &quot;Identical plus independent (15)&quot;)
+plot_fprvtpr(21, &quot;Independent plus unique (16)&quot;)</code></pre>
+<p><img src="figure/MASHvFLASHsims2.Rmd/tpr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_fprvtpr(22, &quot;Identical plus unique (17)&quot;)</code></pre>
+<p><img src="figure/MASHvFLASHsims2.Rmd/tpr-9.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="code" class="section level2">
 <h2>Code</h2>
@@ -1298,7 +1373,7 @@ source(&quot;./code/fits.R&quot;)
 source(&quot;./code/sims.R&quot;)
 source(&quot;./code/utils.R&quot;)
 
-set.seed(1)
+# Global parameters -----------------------------------------------------
 
 n &lt;- 20
 p &lt;- 1200
@@ -1306,6 +1381,33 @@ nsims &lt;- 10
 nsamp &lt;- 200 # for sampling lfsr (FLASH fits)
 ncol &lt;- 25 # number of columns that exhibit each variance type
 t &lt;- 0.05 # &quot;significance&quot; threshold
+
+# FLASH methods ---------------------------------------------------------
+
+fl_fits &lt;- c(function(fl_data) {fit_flash_zero(fl_data, Kmax = 50,
+                                               ebnm_fn = &quot;ebnm_pn&quot;,
+                                               init_fn = &quot;udv_si_svd&quot;,
+                                               backfit = FALSE,
+                                               warmstart = TRUE)},
+             function(fl_data) {fit_flash_OHF(fl_data, Kmax = 50,
+                                              ebnm_fn = &quot;ebnm_pn&quot;,
+                                              init_fn = &quot;udv_si_svd&quot;,
+                                              backfit = FALSE,
+                                              warmstart = TRUE)},
+             function(fl_data) {fit_flash_zero(fl_data, Kmax = 50,
+                                               ebnm_fn = &quot;ebnm_ash&quot;,
+                                               init_fn = &quot;udv_si_svd&quot;,
+                                               backfit = FALSE,
+                                               warmstart = TRUE)},
+             function(fl_data) {fit_flash_OHF(fl_data, Kmax = 50,
+                                              ebnm_fn = &quot;ebnm_ash&quot;,
+                                              init_fn = &quot;udv_si_svd&quot;,
+                                              backfit = FALSE,
+                                              warmstart = TRUE)})
+fl_fit_names &lt;- c(&quot;pn.zero&quot;, &quot;pn.OHF&quot;, &quot;ash.zero&quot;, &quot;ash.OHF&quot;)
+n_flmethods &lt;- length(fl_fit_names)
+
+# Covariance structures -------------------------------------------------
 
 Sigma &lt;- list()
 
@@ -1362,6 +1464,8 @@ Sigma[[16]] &lt;- Sigma[[1]] + Sigma[[8]]
 Sigma[[17]] &lt;- Sigma[[4]] + Sigma[[8]]
 ntypes &lt;- 17
 
+# Variables for splitting up results by covariance structures -----------
+
 partnames &lt;- c(&quot;IndSm&quot;, &quot;IndLg&quot;, &quot;IndDiff&quot;,
                &quot;IdentSm&quot;, &quot;IdentLg&quot;, &quot;Rank1&quot;,
                &quot;UniqSmNull&quot;, &quot;UniqSmNonnull&quot;,
@@ -1392,6 +1496,7 @@ partyidx &lt;- list(1:ncol, ncol + 1:ncol, 2*ncol + 1:ncol,
                  (17*ncol + 1):p)
 nparts &lt;- length(partnames)
 partition_by_type &lt;- function(X) {
+  # Splits up results by covariance type:
   ret &lt;- rep(0, nparts)
   for (i in 1:nparts) {
     ret[i] &lt;- mean(X[partxidx[[i]], partyidx[[i]]])
@@ -1400,14 +1505,23 @@ partition_by_type &lt;- function(X) {
   ret
 }
 
-mses &lt;- matrix(0, nrow=3, ncol=nparts)
-ts &lt;- c(seq(.005, .05, by=.005), seq(.06, .1, by=.01), seq(.2, 1.0, by=.1))
+# Variables for storing results -----------------------------------------
 
-pr.pn &lt;- matrix(0, nrow=length(ts), ncol=nparts)
-pr.ash &lt;- matrix(0, nrow=length(ts), ncol=nparts)
-pr.m &lt;- matrix(0, nrow=length(ts), ncol=nparts)
+mses &lt;- matrix(0, nrow = n_flmethods + 1, ncol = nparts)
+ts &lt;- c(seq(.005, .05, by=.005), seq(.06, .1, by=.01),
+        seq(.2, 1.0, by=.1))
+
+pr &lt;- list()
+for (fl_fit in fl_fit_names) {
+  pr[[fl_fit]] &lt;- matrix(0, nrow=length(ts), ncol=nparts)
+}
+pr$mash &lt;- matrix(0, nrow=length(ts), ncol=nparts)
+
+# Run simulations -------------------------------------------------------
 
 for (i in 1:nsims) {
+  # Simulate dataset:
+  message(paste0(&quot;Simulating dataset #&quot;, i))
   X &lt;- matrix(0, nrow=n, ncol=p)
   for (j in 1:ntypes) {
     start_col = 1 + ncol*(j-1)
@@ -1416,70 +1530,66 @@ for (i in 1:nsims) {
   }
   Y &lt;- X + rnorm(n*p)
 
-  fl.pn &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=&quot;ebnm_pn&quot;) # OHL
-  fl.ash &lt;- fit_flash(Y, Kmax=30, methods=3, ebnm_fn=&quot;ebnm_ash&quot;)
+  # Generate fits:
+  fl &lt;- list()
+  for (j in 1:n_flmethods) {
+    method &lt;- fl_fit_names[j]
+
+    message(paste(&quot;Fitting&quot;, method))
+    fit &lt;- fl_fits[[j]](Y)
+    fl[[method]] &lt;- fit$f
+  }
   m &lt;- fit_mash(Y)
 
+  # Do diagnostics:
   base.se &lt;- (Y - X)^2
   base.mse &lt;- partition_by_type(base.se)
 
-  fl.pn.se &lt;- (flash_get_fitted_values(fl.pn$fits$OHL) - X)^2
-  fl.pn.mse &lt;- partition_by_type(fl.pn.se) / base.mse
+  for (j in 1:n_flmethods) {
+    method &lt;- fl_fit_names[j]
 
-  fl.ash.se &lt;- (flash_get_fitted_values(fl.ash$fits$OHL) - X)^2
-  fl.ash.mse &lt;- partition_by_type(fl.ash.se) / base.mse
+    fl.se &lt;- (flash_get_fitted_values(fl[[method]]) - X)^2
+    fl.mse &lt;- partition_by_type(fl.se) / base.mse
+    mses[j, ] &lt;- mses[j, ] + fl.mse
+
+    message(paste(&quot;Sampling from&quot;, method))
+    fl.sampler &lt;- flash_sampler(Y, fl[[method]], fixed=&quot;loadings&quot;)
+    fl.samp &lt;- fl.sampler(nsamp)
+    fl.lfsr &lt;- flash_lfsr(fl.samp)
+    for (k in 1:length(ts)) {
+      fl.signif &lt;- fl.lfsr &lt;= ts[k]
+      fl.pr &lt;- partition_by_type(fl.signif)
+      pr[[method]][k, ] &lt;- pr[[method]][k, ] + fl.pr
+    }
+  }
 
   m.se &lt;- (t(get_pm(m$m)) - X)^2
   m.mse &lt;- partition_by_type(m.se) / base.mse
-
-  mses[1,] &lt;- mses[1,] + fl.pn.mse
-  mses[2,] &lt;- mses[2,] + fl.ash.mse
-  mses[3,] &lt;- mses[3,] + m.mse
-
-
-  fl.pn.sampler &lt;- flash_sampler(Y, fl.pn$fits$OHL, fixed=&quot;loadings&quot;)
-  fl.pn.samp &lt;- fl.pn.sampler(nsamp)
-  fl.pn.lfsr &lt;- flash_lfsr(fl.pn.samp)
-
-  fl.ash.sampler &lt;- flash_sampler(Y, fl.ash$fits$OHL, fixed=&quot;loadings&quot;)
-  fl.ash.samp &lt;- fl.ash.sampler(nsamp)
-  fl.ash.lfsr &lt;- flash_lfsr(fl.ash.samp)
+  mses[n_flmethods + 1, ] &lt;- mses[n_flmethods + 1, ] + m.mse
 
   m.lfsr &lt;- t(get_lfsr(m$m))
 
-  for (j in 1:length(ts)) {
-    fl.pn.signif &lt;- fl.pn.lfsr &lt;= ts[j]
-    fl.pn.pr &lt;- partition_by_type(fl.pn.signif)
-
-    fl.ash.signif &lt;- fl.ash.lfsr &lt;= ts[j]
-    fl.ash.pr &lt;- partition_by_type(fl.ash.signif)
-
-    m.signif &lt;- m.lfsr &lt;= ts[j]
+  for (k in 1:length(ts)) {
+    m.signif &lt;- m.lfsr &lt;= ts[k]
     m.pr &lt;- partition_by_type(m.signif)
-
-    pr.pn[j,] &lt;- pr.pn[j,] + fl.pn.pr
-    pr.ash[j,] &lt;- pr.ash[j,] + fl.ash.pr
-    pr.m[j,] &lt;- pr.m[j,] + m.pr
+    pr$mash[k,] &lt;- pr$mash[k,] + m.pr
   }
-
 }
 
-mses &lt;- mses / nsims
-pr.pn &lt;- pr.pn / nsims
-pr.ash &lt;- pr.ash / nsims
-pr.m &lt;- pr.m / nsims
+# Average results over simulations --------------------------------------
 
-saveRDS(mses, &quot;./output/sims2mse.rds&quot;)
-saveRDS(pr.pn, &quot;./output/sims2prpn.rds&quot;)
-saveRDS(pr.ash, &quot;./output/sims2prash.rds&quot;)
-saveRDS(pr.m, &quot;./output/sims2prm.rds&quot;)</code></pre>
+mses &lt;- mses / nsims
+pr &lt;- lapply(pr, function(method) {method / nsims})
+
+saveRDS(mses, &quot;./output/MASHvFLASHsims2/mses.rds&quot;)
+saveRDS(pr, &quot;./output/MASHvFLASHsims2/pr.rds&quot;)</code></pre>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.4.3 (2017-11-30)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS High Sierra 10.13.1
+Running under: macOS High Sierra 10.13.6
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
