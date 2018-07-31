@@ -6,12 +6,14 @@ output:
     toc: false
 ---
 
-[Introduction.](intro.html) A vignette.
+[Introduction.](intro.html) An introductory vignette.
 
 [MASH v FLASH simulation results.](MASHvFLASHsims.html) Compares MASH and FLASH fits to data simulated from MASH and FLASH models.
 
-[MASH v FLASH on GTEx (strong tests).](MASHvFLASHgtex.html) Compares MASH and FLASH fits to data from the GTEx project. FLASH does better imputing missing data.
+[MASH v FLASH on GTEx (strong tests).](MASHvFLASHgtex.html) Compares MASH and FLASH fits to "strong" tests from the GTEx dataset.
 
-[MASH v FLASH detailed simulation study.](MASHvFLASHsims2.html) Compares the performance of MASH and FLASH in a single simulation setting. MASH and FLASH perform differently on different covariance structures.
+[MASH v FLASH on GTEx (random tests).](MASHvFLASHrandom.html) Same, but uses random tests from the GTEx dataset.
 
-[MASH v FLASH detailed GTEx study.](MASHvFLASHgtex2.html) Uses an improved workflow to examine differences in MASH and FLASH fits to GTEx data. Particularly strong effects in a single condition might cause MASH to miss smaller effects that are shared among conditions. But FLASH might miss very small effects that are shared across all conditions.
+[MASH v FLASH detailed simulation study.](MASHvFLASHsims2.html) Compares the performance of MASH and FLASH on different covariance structures in a single simulation setting.
+
+[MASH v FLASH detailed GTEx study.](MASHvFLASHgtex2.html) Uses an improved workflow to examine differences in MASH and FLASH fits to GTEx data.
