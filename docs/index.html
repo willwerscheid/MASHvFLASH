@@ -222,7 +222,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/ed4cb94ce9da30015ab0b1e518b3de23491f1545" target="_blank">ed4cb94</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/7691a27a7b1a3960d77c555684aec80a15371095" target="_blank">7691a27</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -244,9 +244,6 @@ Ignored files:
 Untracked files:
     Untracked:  code/MASHvFLASHgtex2.R
     Untracked:  code/gtex3.R
-
-Unstaged changes:
-    Deleted:    analysis/mashvflash.Rmd
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -275,6 +272,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/7691a27a7b1a3960d77c555684aec80a15371095/analysis/index.Rmd" target="_blank">7691a27</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/index.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/13b3a417b0fc550ded3ea3505df88e2aa4bb0701/docs/index.html" target="_blank">13b3a41</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -809,8 +840,8 @@ Start workflowr project.
 <hr />
 <p><a href="intro.html">Introduction.</a> A vignette.</p>
 <p><a href="MASHvFLASHsims.html">MASH v FLASH simulation results.</a> Compares MASH and FLASH fits to data simulated from both MASH and FLASH models.</p>
-<p><a href="MASHvFLASHgtex.html">MASH v FLASH on GTEx.</a> Compares MASH and FLASH fits to data from the GTEx project. FLASH does better imputing missing data.</p>
-<p><a href="MASHvFLASHsims2.html">MASH v FLASH detailed simulation study.</a> Using the “OHL” method, compares the performance of FLASH-pn, FLASH-ash, and MASH in a single simulation setting. FLASH and MASH perform differently on different covariance structures. There is little or no advantage to using ash priors rather than point-normals.</p>
+<p><a href="MASHvFLASHgtex.html">MASH v FLASH on GTEx (strong tests).</a> Compares MASH and FLASH fits to data from the GTEx project. FLASH does better imputing missing data.</p>
+<p><a href="MASHvFLASHsims2.html">MASH v FLASH detailed simulation study.</a> Compares the performance of MASH and FLASH in a single simulation setting. MASH and FLASH perform differently on different covariance structures.</p>
 <p><a href="MASHvFLASHgtex2.html">MASH v FLASH detailed GTEx study.</a> Uses an improved workflow to examine differences in MASH and FLASH fits to GTEx data. Particularly strong effects in a single condition might cause MASH to miss smaller effects that are shared among conditions. But FLASH might miss very small effects that are shared across all conditions.</p>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
