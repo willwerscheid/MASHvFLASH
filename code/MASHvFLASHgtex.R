@@ -70,7 +70,7 @@ for (i in 1:length(seeds)) {
     fl_t[[i]][[fl_fit_names[j]]] <- Sys.time() - t0
   }
 
-  saveRDS(fl_res, paste0(fpath, "res.rds"))
+  saveRDS(fl_res, paste0(fpath, "flres.rds"))
   saveRDS(fl_diag, paste0(fpath, "fldiag.rds"))
   saveRDS(fl_t, paste0(fpath, "flt.rds"))
 }
