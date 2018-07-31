@@ -1,0 +1,69 @@
+---
+title: "MASH v FLASH analysis of GTEx data (random tests)"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+I repeat the [previous experiment](MASHvFLASHgtex.html), this time using 20000 random tests from the GTEx dataset. An important difference from the "strong" dataset is that many more of these tests will be null.
+
+
+## Results
+
+I again pre-run the experiments and load the results from file.
+
+```{r load_fits}
+fl_diag <- readRDS("./output/MASHvFLASHrandom/fldiag.rds")
+fl_t <- readRDS("./output/MASHvFLASHrandom/flt.rds")
+m_diag <- readRDS("./output/MASHvFLASHrandom/mdiag.rds")
+m_t <- readRDS("./output/MASHvFLASHrandom/mt.rds")
+```
+
+Comparisons of mean-squared error and confidence interval coverage are as follows. FLASH again outperforms MASH, but not quite so drastically it did on the "strong" tests.
+
+```{r res1}
+fl_fit_names <- c("pn.zero", "pn.OHF", "ash.zero", "ash.OHF")
+method.names <- c(fl_fit_names, "mash")
+
+all_t <- rbind(sapply(fl_t, unlist), unlist(m_t))
+rownames(all_t) <- method.names
+
+fl_mse <- sapply(fl_diag, function(x) {sapply(x, function(y) {y$mse})})
+all_mse <- rbind(fl_mse, sapply(m_diag, function(x) {x$mse}))
+rownames(all_mse) <- method.names
+
+fl_ci <- sapply(fl_diag, function(x) {sapply(x, function(y) {y$ci})})
+all_ci <- rbind(fl_ci, sapply(m_diag, function(x) {x$ci}))
+rownames(all_ci) <- method.names
+
+plot.order <- c(2, 4, 1, 3, 5)
+
+boxplot(t(all_mse[plot.order, ]), ylim=c(0, 1), ylab = "MSE",
+        main = "Mean-squared error")
+
+boxplot(t(all_ci[plot.order, ]), ylim=c(0, 1), ylab = "coverage",
+        main = "Proportion of 95% CIs containing true value")
+```
+
+The total time required by each method is as follows. 
+
+```{r res2}
+boxplot(t(all_t[plot.order, ]), ylim=c(0, 60), ylab="minutes",
+        main="Time needed for fit and MSE and CI calculations")
+```
+
+
+## Conclusions
+
+The "OHF" method again gives the best results, but not as convincingly as it did when fitting the "strong" dataset. And point-normal priors again give results that are only slightly worse than ash priors, but take about half of the time to fit.
+
+
+## Code
+
+The code is the same as in the [previous experiment](MASHvFLASHgtex.html#code) (to reproduce the above results,  uncomment the commented-out lines).
