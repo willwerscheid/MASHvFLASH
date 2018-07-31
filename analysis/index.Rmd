@@ -8,7 +8,7 @@ output:
 
 [Introduction.](intro.html) A vignette.
 
-[MASH v FLASH simulation results.](MASHvFLASHsims.html) Compares MASH and FLASH fits to data simulated from both MASH and FLASH models.
+[MASH v FLASH simulation results.](MASHvFLASHsims.html) Compares MASH and FLASH fits to data simulated from MASH and FLASH models.
 
 [MASH v FLASH on GTEx (strong tests).](MASHvFLASHgtex.html) Compares MASH and FLASH fits to data from the GTEx project. FLASH does better imputing missing data.
 
