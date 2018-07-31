@@ -7,7 +7,7 @@ source("./code/fits.R")
 source("./code/sims.R")
 source("./code/utils.R")
 
-set.seed(1)
+# Global parameters -----------------------------------------------------
 
 n <- 20
 p <- 1200
@@ -15,6 +15,33 @@ nsims <- 10
 nsamp <- 200 # for sampling lfsr (FLASH fits)
 ncol <- 25 # number of columns that exhibit each variance type
 t <- 0.05 # "significance" threshold
+
+# FLASH methods ---------------------------------------------------------
+
+fl_fits <- c(function(fl_data) {fit_flash_zero(fl_data, Kmax = 50,
+                                               ebnm_fn = "ebnm_pn",
+                                               init_fn = "udv_si_svd",
+                                               backfit = FALSE,
+                                               warmstart = TRUE)},
+             function(fl_data) {fit_flash_OHF(fl_data, Kmax = 50,
+                                              ebnm_fn = "ebnm_pn",
+                                              init_fn = "udv_si_svd",
+                                              backfit = FALSE,
+                                              warmstart = TRUE)},
+             function(fl_data) {fit_flash_zero(fl_data, Kmax = 50,
+                                               ebnm_fn = "ebnm_ash",
+                                               init_fn = "udv_si_svd",
+                                               backfit = FALSE,
+                                               warmstart = TRUE)},
+             function(fl_data) {fit_flash_OHF(fl_data, Kmax = 50,
+                                              ebnm_fn = "ebnm_ash",
+                                              init_fn = "udv_si_svd",
+                                              backfit = FALSE,
+                                              warmstart = TRUE)})
+fl_fit_names <- c("pn.zero", "pn.OHF", "ash.zero", "ash.OHF")
+n_flmethods <- length(fl_fit_names)
+
+# Covariance structures -------------------------------------------------
 
 Sigma <- list()
 
@@ -71,6 +98,8 @@ Sigma[[16]] <- Sigma[[1]] + Sigma[[8]]
 Sigma[[17]] <- Sigma[[4]] + Sigma[[8]]
 ntypes <- 17
 
+# Variables for splitting up results by covariance structures -----------
+
 partnames <- c("IndSm", "IndLg", "IndDiff",
                "IdentSm", "IdentLg", "Rank1",
                "UniqSmNull", "UniqSmNonnull",
@@ -101,6 +130,7 @@ partyidx <- list(1:ncol, ncol + 1:ncol, 2*ncol + 1:ncol,
                  (17*ncol + 1):p)
 nparts <- length(partnames)
 partition_by_type <- function(X) {
+  # Splits up results by covariance type:
   ret <- rep(0, nparts)
   for (i in 1:nparts) {
     ret[i] <- mean(X[partxidx[[i]], partyidx[[i]]])
@@ -109,14 +139,23 @@ partition_by_type <- function(X) {
   ret
 }
 
-mses <- matrix(0, nrow=3, ncol=nparts)
-ts <- c(seq(.005, .05, by=.005), seq(.06, .1, by=.01), seq(.2, 1.0, by=.1))
+# Variables for storing results -----------------------------------------
 
-pr.pn <- matrix(0, nrow=length(ts), ncol=nparts)
-pr.ash <- matrix(0, nrow=length(ts), ncol=nparts)
-pr.m <- matrix(0, nrow=length(ts), ncol=nparts)
+mses <- matrix(0, nrow = n_flmethods + 1, ncol = nparts)
+ts <- c(seq(.005, .05, by=.005), seq(.06, .1, by=.01),
+        seq(.2, 1.0, by=.1))
+
+pr <- list()
+for (fl_fit in fl_fit_names) {
+  pr[[fl_fit]] <- matrix(0, nrow=length(ts), ncol=nparts)
+}
+pr$mash <- matrix(0, nrow=length(ts), ncol=nparts)
+
+# Run simulations -------------------------------------------------------
 
 for (i in 1:nsims) {
+  # Simulate dataset:
+  message(paste0("Simulating dataset #", i))
   X <- matrix(0, nrow=n, ncol=p)
   for (j in 1:ntypes) {
     start_col = 1 + ncol*(j-1)
@@ -125,60 +164,56 @@ for (i in 1:nsims) {
   }
   Y <- X + rnorm(n*p)
 
-  fl.pn <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn="ebnm_pn") # OHL
-  fl.ash <- fit_flash(Y, Kmax=30, methods=3, ebnm_fn="ebnm_ash")
+  # Generate fits:
+  fl <- list()
+  for (j in 1:n_flmethods) {
+    method <- fl_fit_names[j]
+
+    message(paste("Fitting", method))
+    fit <- fl_fits[[j]](Y)
+    fl[[method]] <- fit$f
+  }
   m <- fit_mash(Y)
 
+  # Do diagnostics:
   base.se <- (Y - X)^2
   base.mse <- partition_by_type(base.se)
 
-  fl.pn.se <- (flash_get_fitted_values(fl.pn$fits$OHL) - X)^2
-  fl.pn.mse <- partition_by_type(fl.pn.se) / base.mse
+  for (j in 1:n_flmethods) {
+    method <- fl_fit_names[j]
 
-  fl.ash.se <- (flash_get_fitted_values(fl.ash$fits$OHL) - X)^2
-  fl.ash.mse <- partition_by_type(fl.ash.se) / base.mse
+    fl.se <- (flash_get_fitted_values(fl[[method]]) - X)^2
+    fl.mse <- partition_by_type(fl.se) / base.mse
+    mses[j, ] <- mses[j, ] + fl.mse
+
+    message(paste("Sampling from", method))
+    fl.sampler <- flash_sampler(Y, fl[[method]], fixed="loadings")
+    fl.samp <- fl.sampler(nsamp)
+    fl.lfsr <- flash_lfsr(fl.samp)
+    for (k in 1:length(ts)) {
+      fl.signif <- fl.lfsr <= ts[k]
+      fl.pr <- partition_by_type(fl.signif)
+      pr[[method]][k, ] <- pr[[method]][k, ] + fl.pr
+    }
+  }
 
   m.se <- (t(get_pm(m$m)) - X)^2
   m.mse <- partition_by_type(m.se) / base.mse
-
-  mses[1,] <- mses[1,] + fl.pn.mse
-  mses[2,] <- mses[2,] + fl.ash.mse
-  mses[3,] <- mses[3,] + m.mse
-
-
-  fl.pn.sampler <- flash_sampler(Y, fl.pn$fits$OHL, fixed="loadings")
-  fl.pn.samp <- fl.pn.sampler(nsamp)
-  fl.pn.lfsr <- flash_lfsr(fl.pn.samp)
-
-  fl.ash.sampler <- flash_sampler(Y, fl.ash$fits$OHL, fixed="loadings")
-  fl.ash.samp <- fl.ash.sampler(nsamp)
-  fl.ash.lfsr <- flash_lfsr(fl.ash.samp)
+  mses[n_flmethods + 1, ] <- mses[n_flmethods + 1, ] + m.mse
 
   m.lfsr <- t(get_lfsr(m$m))
 
-  for (j in 1:length(ts)) {
-    fl.pn.signif <- fl.pn.lfsr <= ts[j]
-    fl.pn.pr <- partition_by_type(fl.pn.signif)
-
-    fl.ash.signif <- fl.ash.lfsr <= ts[j]
-    fl.ash.pr <- partition_by_type(fl.ash.signif)
-
-    m.signif <- m.lfsr <= ts[j]
+  for (k in 1:length(ts)) {
+    m.signif <- m.lfsr <= ts[k]
     m.pr <- partition_by_type(m.signif)
-
-    pr.pn[j,] <- pr.pn[j,] + fl.pn.pr
-    pr.ash[j,] <- pr.ash[j,] + fl.ash.pr
-    pr.m[j,] <- pr.m[j,] + m.pr
+    pr$mash[k,] <- pr$mash[k,] + m.pr
   }
-
 }
 
-mses <- mses / nsims
-pr.pn <- pr.pn / nsims
-pr.ash <- pr.ash / nsims
-pr.m <- pr.m / nsims
+# Average results over simulations --------------------------------------
 
-saveRDS(mses, "./output/sims2mse.rds")
-saveRDS(pr.pn, "./output/sims2prpn.rds")
-saveRDS(pr.ash, "./output/sims2prash.rds")
-saveRDS(pr.m, "./output/sims2prm.rds")
+mses <- mses / nsims
+pr <- lapply(pr, function(method) {method / nsims})
+
+saveRDS(mses, "./output/MASHvFLASHsims2/mses.rds")
+saveRDS(pr, "./output/MASHvFLASHsims2/pr.rds")
