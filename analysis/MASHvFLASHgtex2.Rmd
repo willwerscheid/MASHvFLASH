@@ -70,7 +70,7 @@ corrplot(m_final$fitted_g$Ulist[["ED_PCA_2"]], tl.cex=0.5)
 ```
 
 
-## Comments on FLASH fit
+## Comments on FLASH fits
 
 ```{r load_flash}
 devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
@@ -224,7 +224,7 @@ fl_t <- (t_random$minutes.to.fit + t_final$minutes.to.fit
          + c(t$strong$OHF, t$strong$zero * c(5, 10, 20, 37) / 37))
 total_time <- data.frame(method = c("OHF", "Top 5", "Top 10", 
                                     "Top 20", "Zero", "MASH"),
-                         total.minutes.to.fit = c(fl_t, 5.3))
+                         total.time.to.fit = c(fl_t, 5.3))
 knitr::kable(total_time, digits=1)
 ```
 
