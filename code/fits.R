@@ -3,7 +3,7 @@ fit_flash_zero <- function(data, Kmax, ebnm_fn="ebnm_pn",
                            init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
                            warmstart=TRUE) {
   if (is.matrix(data)) {
-    data <- flash_set_data(Y, S = 1)
+    data <- flash_set_data(data, S = 1)
   }
   n <- nrow(data$Y)
 
@@ -35,12 +35,12 @@ fit_flash_OHL <- function(data, Kmax, ebnm_fn="ebnm_pn",
                           init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
                           warmstart=TRUE) {
   if (is.matrix(data)) {
-    data <- flash_set_data(Y, S = 1)
+    data <- flash_set_data(data, S = 1)
   }
   n <- nrow(data$Y)
   canonical <- cbind(rep(1, n), diag(rep(1, n)))
 
-  zero.res <- fit_flash_zero(Y, Kmax, ebnm_fn, init_fn,
+  zero.res <- fit_flash_zero(data, Kmax, ebnm_fn, init_fn,
                              greedy, backfit=FALSE, warmstart)
 
   fl <- flash_add_fixed_l(data, canonical, zero.res$f, init_fn=init_fn)
@@ -70,7 +70,7 @@ fit_flash_OHF <- function(data, Kmax, ebnm_fn="ebnm_pn",
                           init_fn="udv_svd", greedy=TRUE, backfit=TRUE,
                           warmstart=TRUE) {
   if (is.matrix(data)) {
-    data <- flash_set_data(Y, S = 1)
+    data <- flash_set_data(data, S = 1)
   }
   n <- nrow(data$Y)
   canonical <- cbind(rep(1, n), diag(rep(1, n)))
@@ -111,7 +111,7 @@ fit_flash_OHF <- function(data, Kmax, ebnm_fn="ebnm_pn",
 # Fit using MASH -------------------------------------------------------
 fit_mash <- function(data) {
   if (is.matrix(data)) {
-    data <- mash_set_data(t(Y))
+    data <- mash_set_data(t(data))
   }
   timing <- list()
 
