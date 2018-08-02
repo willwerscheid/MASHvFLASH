@@ -16,4 +16,5 @@ output:
 
 [MASH v FLASH on GTEx (random tests).](MASHvFLASHrandom.html) Same, but uses random tests from the GTEx dataset.
 
-[MASH v FLASH workflows for GTEx.](MASHvFLASHgtex2.html) Proposes improved workflows to examine differences in MASH and FLASH fits to GTEx data.
+[MASH v FLASH workflows for GTEx.](MASHvFLASHgtex2.html) Proposes improved workflows to obtain MASH and FLASH fits to GTEx data.
+
