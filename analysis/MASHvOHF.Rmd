@@ -1,0 +1,83 @@
+---
+title: "MASH v FLASH GTEx analysis: MASH v OHF"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+In the [previous analysis](MASHvFLASHgtex2.html), I proposed several workflows for fitting MASH and FLASH objects to GTEx data. Here and in the next few analyses I examine differences among fits. I begin by comparing the MASH fit to the OHF fit. 
+
+For the code used to obtain the fits, see the [previous analysis](MASHvFLASHgtex2.html#code). For additional code used in this analysis, see [below](#code).
+
+```{r load_everything}
+library(mashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
+
+gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
+strong <- t(gtex$strong.z)
+
+fpath <- "./output/MASHvFLASHgtex2/"
+m_final <- readRDS(paste0(fpath, "m.rds"))
+fl_final <- readRDS(paste0(fpath, "OHF.rds"))
+
+m_lfsr <- t(get_lfsr(m_final))
+m_pm <- t(get_pm(m_final))
+
+fl_lfsr <- readRDS(paste0(fpath, "fllfsr.rds"))
+fl_lfsr <- fl_lfsr[[1]]
+fl_pm <- flash_get_fitted_values(fl_final)
+```
+
+
+## Introduction to plots
+
+The main tool I will use in these analyses is a function that plots observed values vs. MASH or FLASH posterior means for a single test (over all 44 conditions). 
+
+The observed $z$-scores are plotted as hollow circles. Posterior means are plotted as triangles if the effect is judged to be significant (LFSR $\le .05$) and as squares otherwise. Larger triangles indicate lower LFSRs, with the largest triangles corresponding to "highly significant" effects (LFSR $\le .01$). The posterior means are colored using the GTEx colors used in previous analyses. 
+
+```{r gtexcode, echo=F, include=F}
+knitr::read_chunk("./code/gtexanalysis.R")
+```
+```{r gtexanalysis}
+```
+
+
+## Significant for OHF, not MASH
+
+By far the most common case is one in which FLASH finds a combination of a small equal effect and a large unique effect, while MASH only finds the unique effect to be significant. (Here, it is possibly relevant to recall that my [simulation study](MASHvFLASHsims2.html) suggested that FLASH outperforms MASH when the "true" effect is a combination of an equal effect and a unique effect.) In such cases, FLASH usually (but not always) applies far less shrinkage to the unique effect. Some typical examples follow.
+
+```{r ohf_not_mash}
+ohf.v.mash <- compare_methods(fl_lfsr, m_lfsr)
+
+identical.plus.unique <- c(15828, 1480, 15711, 10000)
+
+par(mfrow=c(1, 2))
+for (n in identical.plus.unique) {
+  plot_test(n, fl_lfsr, fl_pm, "OHF")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
+
+
+## Significant for MASH, not OHF
+
+To understand the typical situation where MASH finds significant effects but OHF does not, recall from my [analysis of GTEx workflows](MASHvFLASHgtex2.html) that the MASH fit puts large mixture weights on data-driven covariance matrices (around 0.6 on "ED_tPCA" and 0.25 on "ED_PCA_2") and a comparatively small weight (around 0.1) on the "equal effects" covariance structure. In contrast, the equal effects loading accounts for about 70% of the variance explained by the OHF fit. This, I think, is why OHF is so much more likely to find an equal effect in the tests above. MASH, on the contrary, is more likely to find a pattern of covariance that derives from the data-driven structures. Notice the similarity of the MASH estimates in the following tests (in the last example, signs are reversed):
+
+```{r mash_not_ohf}
+par(mfrow=c(1, 2))
+
+mash.covar <- c(2868, 9716, 10368, 9716)
+
+for (n in mash.covar) {
+  plot_test(n, fl_lfsr, fl_pm, "OHF")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
+
+At first, it seems bizarre that effects with posterior means near zero are judged to be significant. My guess is that in each of these cases, the observations follow a pattern that closely matches the data-driven covariance structures, so that MASH can be highly confident in the sign of the effect even if the effect is not very large.
