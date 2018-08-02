@@ -222,7 +222,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/1f335861d987a2571909ee7c0216a2b04dbe8d9f" target="_blank">1f33586</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/0e165ca9657c7b0798613ad8914cd2b5cc442da7" target="_blank">0e165ca</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -241,8 +241,8 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
 
 Untracked files:
-    Untracked:  analysis/MASHvFLASHgtex3.Rmd
     Untracked:  code/gtex3.R
+    Untracked:  code/gtexanalysis.R
     Untracked:  docs/figure/MASHvFLASHgtex3.Rmd/
 
 </code></pre>
@@ -272,6 +272,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/0e165ca9657c7b0798613ad8914cd2b5cc442da7/analysis/index.Rmd" target="_blank">0e165ca</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/MASHvOHF.Rmd”, “analysis/index.Rmd”))
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/73c0870d4523d2f7ac530dae598d0ba020719f9a/docs/index.html" target="_blank">73c0870</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -912,6 +946,7 @@ Start workflowr project.
 <p><a href="MASHvFLASHgtex.html">MASH v FLASH on GTEx (strong tests).</a> Compares MASH and FLASH fits to “strong” tests from the GTEx dataset.</p>
 <p><a href="MASHvFLASHrandom.html">MASH v FLASH on GTEx (random tests).</a> Same, but uses random tests from the GTEx dataset.</p>
 <p><a href="MASHvFLASHgtex2.html">MASH v FLASH workflows for GTEx.</a> Proposes improved workflows to obtain MASH and FLASH fits to GTEx data.</p>
+<p><a href="MASHvOHF.html">MASH v FLASH detailed analysis: MASH v OHF.</a> The first of several analyses that identify specific differences between fits.</p>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
