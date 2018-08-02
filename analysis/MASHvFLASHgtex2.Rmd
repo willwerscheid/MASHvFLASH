@@ -50,7 +50,7 @@ m_final <- readRDS(paste0(fpath, "m.rds"))
 
 It took 2.4 minutes to run Extreme Deconvolution to find data-driven covariance matrices. The MASH fit on the random subset of tests (to determine mixture weights) required 2.7 minutes, and the final MASH fit on the strong tests required only 16 seconds. The total fitting time was 5.3 minutes. 
 
-The estimated mixture weights were as follows. Note in particular that there are large weights on the data-driven matrices "ED_tPCA" and "ED_PCA_2," as well as on the canonical "equal_effects" matrix. There are moderate weights on the null matrix, some unique effects (including Testis, Thyroid, and Transformed fibroblasts), and two of the canonical "simple_het" matrices (where effect sizes are assumed to be of equal variance and equally correlated, with correlation coefficients of, respectively, 0.25 and 0.5).
+The estimated mixture weights were as follows. Note in particular that there are large weights on the data-driven matrices "ED_tPCA" and "ED_PCA_2," as well as on the canonical "equal_effects" matrix. There are moderate weights on the null matrix, some unique effects (including testis, thyroid, and transformed fibroblasts), and two of the canonical "simple_het" matrices (where effect sizes are assumed to be of equal variance and equally correlated, with correlation coefficients of, respectively, 0.25 and 0.5).
 ```{r mixwts}
 barplot(get_estimated_pi(m_final), las = 2, cex.names = 0.4)
 ```
@@ -85,7 +85,15 @@ fl_final[[5]] <- readRDS(paste0(fpath, "zero.rds"))
 
 ### Data-driven loadings (step 1)
 
-14.3 minutes were required to backfit the 45 canonical loadings and then greedily obtain 2 additional factor/loading pairs using the "OHF" method. The loadings thus obtained were as follows:
+#### OHF
+
+14.3 minutes were required to backfit the 45 canonical loadings and then greedily obtain 2 additional factor/loading pairs using the "OHF" method. The loadings thus obtained are plotted below. Clearly, they are not as "nice" (sparse, interpretable) as many of the factor/loading pairs obtained using the "Zero" method. 
+
+To understand what's happening, I want to pause to re-consider how the OHF method works. First, OHF backfits the canonical loadings. At this stage, the effect estimates have a simple interpretation: for each test, the effect in each condition is shrunken towards the mean effect (or rather, a shrunken estimate of the mean). This shrinkage is performed as if the deviations from the mean were independent. Second, data-driven loadings are greedily fitted to the residuals obtained from the backfit. These loadings will capture covariance structures that are more complex than the simple dependency structure captured by the canonical loadings (that is, dependence via the mean).
+
+I believe that the first data-driven loading (#46) is capturing two (or more) separate dependency structures. Clearly, it is capturing covariance among brain tissues. But notice also that the tissues that are negatively loaded are the same tissues that have large weights in the MASH "ED_tPCA" structure depicted above. Further, notice that the non-brain tissues that are positively loaded are anti-correlated with brain tissues according to the second data-driven loading (#47). Thus, a linear combination of #46 and #47 might yield a covariance structure that captures positive correlation among brain tissues alone (which is more or less what is described by the MASH "ED_PCA_2" structure illustrated above).
+
+In brief, I think that the dependencies implied by the OHF method are not so different from those implied by MASH as might at first appear. I think that this similarity could be further explored by placing non-negativity constraints on the loadings, which I intend to do in a future analysis.
 
 ```{r dd.OHF}
 missing.tissues <- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
@@ -98,6 +106,8 @@ for (i in 46:47) {
           cex.names = 0.4, col=as.character(gtex.colors), names="")
 }
 ```
+
+#### Zero
 
 6.3 minutes were required to greedily add 37 factor/loading pairs using the "Zero" method. To view plots of the loadings, scroll down to the "FLASH loadings" section [below](#flash_loadings). Note in particular that most of the loadings beyond the first 16 or so are strongly loaded on a single condition. This observation motivated my desire to discard the majority of data-driven loadings. I reasoned that retaining only the "top" data-driven loadings would cut down on the time needed to backfit but would not change the final fit very much.
 
@@ -115,7 +125,7 @@ t_random <- data.frame(fit = as.character(1:5),
 knitr::kable(t_random, digits=1)
 ```
 
-To inspect the fitted priors, I plot $w = 1 - \pi_0$ for each $g_f$ (that is, the proportion of genes that we expect to have nonnull loadings for each factor/loading pair).
+To inspect the fitted priors $g_f \sim (1 - w_f) \delta_0 + w_f N(0, \sigma^2_f)$, I plot the $w_f$s (that is, the proportion of genes that we expect to have nonnull loadings for each factor/loading pair). The "equal effects" factor is colored black, while the "unique effects" factors are colored with the GTEx colors used in the factor plots above. The data-driven factors are colored brown (OHF) or in grayscale (Zero).
 
 ```{r plot_w}
 par(mfrow = c(1, 2))
@@ -125,47 +135,62 @@ plot_gf.w <- function(fl, names, colors, main) {
           cex.names=0.4, names=names, col=colors, main=main)
 }
 canonical.names <- c("EE", as.character(1:44))
-c.col <- "blue"
-d.col <- "red"
+canonical.colors <- c("black", as.character(gtex.colors))
+OHF.colors <- c("tan4", "tan3")
+zero.colors <- c("black", gray.colors(19, 0.2, 0.9), 
+                 gray.colors(17, 0.95, 1))
 plot_gf.w(fl_final[[1]], 
           c(canonical.names, paste0("D", 1:2)),
-          c(rep(c.col, 45), rep(d.col, 2)),
+          c(canonical.colors, OHF.colors),
           main="Canonical + OHF")
 plot_gf.w(fl_final[[2]], 
           c(canonical.names, paste0("D", 1:5)),
-          c(rep(c.col, 45), rep(d.col, 5)),
+          c(canonical.colors, zero.colors[1:5]),
           main="Canonical + Top 5")
 plot_gf.w(fl_final[[3]], 
           c(canonical.names, paste0("D", 1:10)),
-          c(rep(c.col, 45), rep(d.col, 10)),
+          c(canonical.colors, zero.colors[1:10]),
           main="Canonical + Top 10")
 plot_gf.w(fl_final[[4]], 
           c(canonical.names, paste0("D", 1:20)),
-          c(rep(c.col, 45), rep(d.col, 20)),
+          c(canonical.colors, zero.colors[1:20]),
           main="Canonical + Top 20")
 plot_gf.w(fl_final[[5]], 
           paste0("D", 1:37),
-          rep(d.col, 37),
+          zero.colors,
           main="Zero")
 ```
 
-It is also instructive to plot $\sigma = 1 / \sqrt{a}$ for the $g_f$s that correspond to canonical factors (I don't include data-driven factors here because the value of $a$ is meaningless unless the factors have been normalized). These plots roughly describe how large we can expect non-null identical and unique effects to be.
+It is also instructive to plot the $\sigma_f$s, normalized so that the $\ell_\infty$-norm for each loading is equal to one. These plots roughly describe how large we can expect non-null identical and unique effects to be. Note in particular that the "unique effects" loadings capture rare but large effects, whereas the data-driven loadings capture smaller but more common effects.
 
 ```{r plot_s}
 par(mfrow = c(1, 2))
-plot_gf.s <- function(fl, main) {
-  s <- sqrt(1 / sapply(fl$gf, function(g) {g$a}))
-  barplot(s[1:45], ylim=c(0, 6), ylab="sigma", xlab="factor/loading",
-          cex.names=0.4, names=canonical.names, col="blue", main=main)
+plot_gf.s <- function(fl, names, colors, main) {
+  nrm <- apply(abs(fl$EL), 2, max)
+  s <- sqrt(1 / sapply(fl$gf, function(g) {g$a})) * nrm
+  barplot(s, ylim=c(0, 6), ylab="sigma", xlab="factor/loading",
+          cex.names=0.4, names=names, col=colors, main=main)
 }
 plot_gf.s(fl_final[[1]], 
+          c(canonical.names, paste0("D", 1:2)),
+          c(canonical.colors, OHF.colors),
           main="Canonical + OHF")
-plot_gf.s(fl_final[[2]],
+plot_gf.s(fl_final[[2]], 
+          c(canonical.names, paste0("D", 1:5)),
+          c(canonical.colors, zero.colors[1:5]),
           main="Canonical + Top 5")
-plot_gf.s(fl_final[[3]],
+plot_gf.s(fl_final[[3]], 
+          c(canonical.names, paste0("D", 1:10)),
+          c(canonical.colors, zero.colors[1:10]),
           main="Canonical + Top 10")
-plot_gf.s(fl_final[[4]],
+plot_gf.s(fl_final[[4]], 
+          c(canonical.names, paste0("D", 1:20)),
+          c(canonical.colors, zero.colors[1:20]),
           main="Canonical + Top 20")
+plot_gf.s(fl_final[[5]], 
+          paste0("D", 1:37),
+          zero.colors,
+          main="Zero")
 ```
 
 ### Final backfit (step 4)
@@ -192,25 +217,26 @@ plot_pve <- function(fl, names, colors, main) {
           names=names, col=colors, main=main)
 }
 canonical.names <- as.character(1:44)
+canonical.colors <- canonical.colors[2:45]
 plot_pve(fl_final[[1]], 
          c(canonical.names, paste0("D", 1:2)),
-         c(rep(c.col, 44), rep(d.col, 2)),
+         c(canonical.colors, OHF.colors),
          main="Canonical + OHF")
 plot_pve(fl_final[[2]], 
          c(canonical.names, paste0("D", 1:5)),
-         c(rep(c.col, 44), rep(d.col, 5)),
+         c(canonical.colors, zero.colors[1:5]),
          main="Canonical + Top 5")
 plot_pve(fl_final[[3]], 
          c(canonical.names, paste0("D", 1:10)),
-         c(rep(c.col, 44), rep(d.col, 10)),
+         c(canonical.colors, zero.colors[1:10]),
          main="Canonical + Top 10")
 plot_pve(fl_final[[4]], 
          c(canonical.names, paste0("D", 1:20)),
-         c(rep(c.col, 44), rep(d.col, 20)),
+         c(canonical.colors, zero.colors[1:20]),
          main="Canonical + Top 20")
 plot_pve(fl_final[[5]], 
          paste0("D", 2:37),
-         rep(d.col, 36),
+         zero.colors[2:37],
          main="Zero")
 ```
 
