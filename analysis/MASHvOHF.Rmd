@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In the [previous analysis](MASHvFLASHgtex2.html), I proposed several workflows for fitting MASH and FLASH objects to GTEx data. Here and in the next few analyses I examine differences among fits. I begin by comparing the MASH fit to the OHF fit. 
 
-For the code used to obtain the fits, see the [previous analysis](MASHvFLASHgtex2.html#code). For additional code used in this analysis, see [below](#code).
+For the code used to obtain the fits, see the [previous analysis](MASHvFLASHgtex2.html#code).
 
 ```{r load_everything}
 library(mashr)
@@ -81,3 +81,4 @@ for (n in mash.covar) {
 ```
 
 At first, it seems bizarre that effects with posterior means near zero are judged to be significant. My guess is that in each of these cases, the observations follow a pattern that closely matches the data-driven covariance structures, so that MASH can be highly confident in the sign of the effect even if the effect is not very large.
+
