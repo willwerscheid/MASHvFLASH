@@ -53,11 +53,11 @@ knitr::read_chunk("./code/gtexanalysis.R")
 By far the most common case is one in which FLASH finds a combination of a small equal effect and a large unique effect, while MASH only finds the unique effect to be significant. (Here, it is possibly relevant to recall that my [simulation study](MASHvFLASHsims2.html) suggested that FLASH outperforms MASH when the "true" effect is a combination of an equal effect and a unique effect.) In such cases, FLASH usually (but not always) applies far less shrinkage to the unique effect. Some typical examples follow.
 
 ```{r ohf_not_mash}
-ohf.v.mash <- compare_methods(fl_lfsr, m_lfsr)
-
-identical.plus.unique <- c(15828, 1480, 15711, 10000)
+# interesting.tests <- compare_methods(fl_lfsr, m_lfsr, fl_pm, m_pm)
 
 par(mfrow=c(1, 2))
+
+identical.plus.unique <- c(15828, 1480, 15711, 10000)
 for (n in identical.plus.unique) {
   plot_test(n, fl_lfsr, fl_pm, "OHF")
   plot_test(n, m_lfsr, m_pm, "MASH")
@@ -73,7 +73,6 @@ To understand the typical situation where MASH finds significant effects but OHF
 par(mfrow=c(1, 2))
 
 mash.covar <- c(2868, 9716, 10368, 9716)
-
 for (n in mash.covar) {
   plot_test(n, fl_lfsr, fl_pm, "OHF")
   plot_test(n, m_lfsr, m_pm, "MASH")
@@ -82,3 +81,19 @@ for (n in mash.covar) {
 
 At first, it seems bizarre that effects with posterior means near zero are judged to be significant. My guess is that in each of these cases, the observations follow a pattern that closely matches the data-driven covariance structures, so that MASH can be highly confident in the sign of the effect even if the effect is not very large.
 
+
+## Different posterior means
+
+I conclude with some examples of tests with a large mean squared difference in posterior means. As might be expected, these are all tests where effect sizes are large for many conditions. Interestingly, MASH applies little to no shrinkage in such cases (even for small effects). FLASH does a better job applying a reasonable amount of shrinkage to small and moderate effects, but can be overly aggressive in shrinking large effects. 
+
+In test #2857, for example, FLASH applies a huge amount of shrinkage to the large effects observed in visceral adipose omental tissue and in mammary tissue, shrinking the $z$-scores from -9.0 to -2.3 and from -8.1 to -2.3, respectively. These are both tissues for which the prior on the unique effect is heavily concentrated near zero (see [here](MASHvFLASHgtex2.html#priors_on_factors_(steps_2-3))), so the results make sense given the FLASH fit, but the shrinkage still seems extreme. In contrast, the MASH posterior mixture weights for test #2857 are heavily concentrated on the `simple_het` matrices, which posit only weak correlations among conditions.
+
+```{r diff_pms}
+par(mfrow=c(1, 2))
+
+diff.pms <- c(2857, 697, 384, 1680)
+for (n in diff.pms) {
+  plot_test(n, fl_lfsr, fl_pm, "OHF")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
