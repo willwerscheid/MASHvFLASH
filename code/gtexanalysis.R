@@ -16,12 +16,13 @@ plot_test <- function(n, lfsr, pm, method_name) {
   abline(0, 0)
 }
 
-compare_methods <- function(lfsr1, lfsr2) {
+compare_methods <- function(lfsr1, lfsr2, pm1, pm2) {
   res <- list()
   res$first_not_second <- find_A_not_B(lfsr1, lfsr2)
   res$lg_first_not_second <- find_large_A_not_B(lfsr1, lfsr2)
   res$second_not_first <- find_A_not_B(lfsr2, lfsr1)
   res$lg_second_not_first <- find_large_A_not_B(lfsr2, lfsr1)
+  res$diff_pms <- find_overall_pm_diff(pm1, pm2)
   return(res)
 }
 
@@ -35,6 +36,11 @@ find_A_not_B <- function(lfsrA, lfsrB) {
 #   method A but are not significant according to method B.
 find_large_A_not_B <- function(lfsrA, lfsrB) {
   select_tests(colSums(lfsrA <= 0.01 & lfsrB > 0.05))
+}
+
+find_overall_pm_diff <- function(pmA, pmB, n = 4) {
+  pm_diff <- colSums((pmA - pmB)^2)
+  return(order(pm_diff, decreasing = TRUE)[1:4])
 }
 
 # Get at least four (or min_n) "top" tests.
