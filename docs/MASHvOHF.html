@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-02</p>
+<p><strong>Last updated:</strong> 2018-08-03</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/0e165ca9657c7b0798613ad8914cd2b5cc442da7" target="_blank">0e165ca</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/c5d0c86fb2b720f9eb6b652eec9b6428cebecfc2" target="_blank">c5d0c86</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -371,9 +371,11 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
 
 Untracked files:
-    Untracked:  code/gtex3.R
-    Untracked:  code/gtexanalysis.R
-    Untracked:  docs/figure/MASHvFLASHgtex3.Rmd/
+    Untracked:  analysis/OHFvTop20.Rmd
+
+Unstaged changes:
+    Modified:   analysis/MASHvTop20.Rmd
+    Modified:   code/gtexanalysis.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -402,6 +404,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/c5d0c86fb2b720f9eb6b652eec9b6428cebecfc2/analysis/MASHvOHF.Rmd" target="_blank">c5d0c86</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-03
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvOHF.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/e78875ccee6156479deb7b221b05bf43f1e9d442/docs/MASHvOHF.html" target="_blank">e78875c</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-02
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -500,12 +536,13 @@ plot_test &lt;- function(n, lfsr, pm, method_name) {
   abline(0, 0)
 }
 
-compare_methods &lt;- function(lfsr1, lfsr2) {
+compare_methods &lt;- function(lfsr1, lfsr2, pm1, pm2) {
   res &lt;- list()
   res$first_not_second &lt;- find_A_not_B(lfsr1, lfsr2)
   res$lg_first_not_second &lt;- find_large_A_not_B(lfsr1, lfsr2)
   res$second_not_first &lt;- find_A_not_B(lfsr2, lfsr1)
   res$lg_second_not_first &lt;- find_large_A_not_B(lfsr2, lfsr1)
+  res$diff_pms &lt;- find_overall_pm_diff(pm1, pm2)
   return(res)
 }
 
@@ -519,6 +556,11 @@ find_A_not_B &lt;- function(lfsrA, lfsrB) {
 #   method A but are not significant according to method B.
 find_large_A_not_B &lt;- function(lfsrA, lfsrB) {
   select_tests(colSums(lfsrA &lt;= 0.01 &amp; lfsrB &gt; 0.05))
+}
+
+find_overall_pm_diff &lt;- function(pmA, pmB, n = 4) {
+  pm_diff &lt;- colSums((pmA - pmB)^2)
+  return(order(pm_diff, decreasing = TRUE)[1:4])
 }
 
 # Get at least four (or min_n) &quot;top&quot; tests.
@@ -535,11 +577,11 @@ select_tests &lt;- function(colsums, min_n = 4) {
 <div id="significant-for-ohf-not-mash" class="section level2">
 <h2>Significant for OHF, not MASH</h2>
 <p>By far the most common case is one in which FLASH finds a combination of a small equal effect and a large unique effect, while MASH only finds the unique effect to be significant. (Here, it is possibly relevant to recall that my <a href="MASHvFLASHsims2.html">simulation study</a> suggested that FLASH outperforms MASH when the “true” effect is a combination of an equal effect and a unique effect.) In such cases, FLASH usually (but not always) applies far less shrinkage to the unique effect. Some typical examples follow.</p>
-<pre class="r"><code>ohf.v.mash &lt;- compare_methods(fl_lfsr, m_lfsr)
-
-identical.plus.unique &lt;- c(15828, 1480, 15711, 10000)
+<pre class="r"><code># interesting.tests &lt;- compare_methods(fl_lfsr, m_lfsr, fl_pm, m_pm)
 
 par(mfrow=c(1, 2))
+
+identical.plus.unique &lt;- c(15828, 1480, 15711, 10000)
 for (n in identical.plus.unique) {
   plot_test(n, fl_lfsr, fl_pm, &quot;OHF&quot;)
   plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
@@ -672,7 +714,6 @@ Jason Willwerscheid
 <pre class="r"><code>par(mfrow=c(1, 2))
 
 mash.covar &lt;- c(2868, 9716, 10368, 9716)
-
 for (n in mash.covar) {
   plot_test(n, fl_lfsr, fl_pm, &quot;OHF&quot;)
   plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
@@ -799,6 +840,19 @@ Jason Willwerscheid
 </table>
 <p></details></p>
 <p>At first, it seems bizarre that effects with posterior means near zero are judged to be significant. My guess is that in each of these cases, the observations follow a pattern that closely matches the data-driven covariance structures, so that MASH can be highly confident in the sign of the effect even if the effect is not very large.</p>
+</div>
+<div id="different-posterior-means" class="section level2">
+<h2>Different posterior means</h2>
+<p>I conclude with some examples of tests with a large mean squared difference in posterior means. As might be expected, these are all tests where effect sizes are large for many conditions. Interestingly, MASH applies little to no shrinkage in such cases (even for small effects). FLASH does a better job applying a reasonable amount of shrinkage to small and moderate effects, but can be overly aggressive in shrinking large effects.</p>
+<p>In test #2857, for example, FLASH applies a huge amount of shrinkage to the large effects observed in visceral adipose omental tissue and in mammary tissue, shrinking the <span class="math inline">\(z\)</span>-scores from -9.0 to -2.3 and from -8.1 to -2.3, respectively. These are both tissues for which the prior on the unique effect is heavily concentrated near zero (see <a href="MASHvFLASHgtex2.html#priors_on_factors_(steps_2-3)">here</a>), so the results make sense given the FLASH fit, but the shrinkage still seems extreme. In contrast, the MASH posterior mixture weights for test #2857 are heavily concentrated on the <code>simple_het</code> matrices, which posit only weak correlations among conditions.</p>
+<pre class="r"><code>par(mfrow=c(1, 2))
+
+diff.pms &lt;- c(2857, 697, 384, 1680)
+for (n in diff.pms) {
+  plot_test(n, fl_lfsr, fl_pm, &quot;OHF&quot;)
+  plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
+}</code></pre>
+<p><img src="figure/MASHvOHF.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvOHF.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvOHF.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvOHF.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
