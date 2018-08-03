@@ -1,0 +1,75 @@
+---
+title: 'MASH v FLASH GTEx analysis: MASH v “Top 20"'
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This analysis compares the MASH fit to the "Top 20" fit. See [here](MASHvFLASHgtex2.html) for fitting details and [here](MASHvOHF.html#introduction_to_plots) for an introduction to the plots.
+
+```{r load_everything}
+library(mashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
+
+gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
+strong <- t(gtex$strong.z)
+
+fpath <- "./output/MASHvFLASHgtex2/"
+m_final <- readRDS(paste0(fpath, "m.rds"))
+fl_final <- readRDS(paste0(fpath, "Top20.rds"))
+
+m_lfsr <- t(get_lfsr(m_final))
+m_pm <- t(get_pm(m_final))
+
+all_fl_lfsr <- readRDS(paste0(fpath, "fllfsr.rds"))
+fl_lfsr <- all_fl_lfsr[[4]]
+fl_pm <- flash_get_fitted_values(fl_final)
+```
+
+```{r gtexcode, echo=F, include=F}
+knitr::read_chunk("./code/gtexanalysis.R")
+```
+```{r gtexanalysis}
+```
+
+
+## Significant for Top 20, not MASH
+
+As in the [previous analysis](MASHvOHF.html), the most common case involves a combination of a small equal effect and a large unique effect. Some of the more interesting examples follow. 
+
+```{r ohf_not_mash}
+ohf.v.top20 <- compare_methods(fl_lfsr, m_lfsr)
+
+identical.plus.unique <- c(2184, 4752, 10000, 13684)
+
+par(mfrow=c(1, 2))
+for (n in identical.plus.unique) {
+  plot_test(n, fl_lfsr, fl_pm, "Top 20")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
+
+
+## Significant for MASH, not OHF
+
+The most typical case here has MASH finding a significant equal effect, while FLASH finds a significant unique effect and an insignificant equal effect. In each of the following tests, there is a single outlying effect (with a raw $z$-score of around 4 or 5), which FLASH identifies as unique but which MASH "assigns" to the equal effect (or rather, to the data-driven covariance structure described in the [previous analysis](MASHvOHF.html#signficant_for_mash,_not_ohf)). Roughly, the other observations borrow strength from the outlying observation in MASH but not in FLASH.
+
+```{r mash_not_ohf}
+par(mfrow=c(1, 2))
+
+shrink.unique <- c(1115, 5174, 8578, 9928)
+
+for (n in shrink.unique) {
+  plot_test(n, fl_lfsr, fl_pm, "OHF")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
+
+
+
