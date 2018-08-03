@@ -58,7 +58,7 @@ for (n in identical.plus.unique) {
 
 ## Significant for MASH, not OHF
 
-The most typical case here has MASH finding a significant equal effect, while FLASH finds a significant unique effect and an insignificant equal effect. In each of the following tests, there is a single outlying effect (with a raw $z$-score of around 4 or 5), which FLASH identifies as unique but which MASH "assigns" to the equal effect (or rather, to the data-driven covariance structure described in the [previous analysis](MASHvOHF.html#signficant_for_mash,_not_ohf)). Roughly, the other observations borrow strength from the outlying observation in MASH but not in FLASH.
+The most typical case here has MASH finding a significant equal effect, while FLASH finds a significant unique effect and an insignificant equal effect. In each of the following tests, there is a single outlying effect (with a raw $z$-score of around 4 or 5), which FLASH identifies as unique but which MASH "assigns" to the equal effect (or rather, to the data-driven covariance structure described in the [previous analysis](MASHvOHF.html#significant_for_mash,_not_ohf)). Roughly, the other observations borrow strength from the outlying observation in MASH but not in FLASH.
 
 ```{r mash_not_ohf}
 par(mfrow=c(1, 2))
@@ -70,6 +70,4 @@ for (n in shrink.unique) {
   plot_test(n, m_lfsr, m_pm, "MASH")
 }
 ```
-
-
 

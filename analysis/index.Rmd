@@ -18,7 +18,7 @@ output:
 
 [MASH v FLASH workflows for GTEx.](MASHvFLASHgtex2.html) Proposes improved workflows to obtain MASH and FLASH fits to GTEx data.
 
-Next up are analyses that identify specific differences between fits:
+Next up are several analyses that identify specific differences between fits:
 
 * [MASH v FLASH GTEx analysis: MASH v OHF.](MASHvOHF.html)
 
