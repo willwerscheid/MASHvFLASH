@@ -6,19 +6,19 @@ output:
     toc: false
 ---
 
-[Introduction.](intro.html) An introductory vignette.
+[An introductory vignette.](intro.html)
 
 [MASH v FLASH simulation results.](MASHvFLASHsims.html) Compares MASH and FLASH fits to data simulated from MASH and FLASH models.
 
 [MASH v FLASH detailed simulation study.](MASHvFLASHsims2.html) Compares the performance of MASH and FLASH on different covariance structures in a single simulation setting.
 
-[MASH v FLASH on GTEx (strong tests).](MASHvFLASHgtex.html) Compares MASH and FLASH fits to "strong" tests from the GTEx dataset.
+[MASH v FLASH analysis of GTEx data (strong tests).](MASHvFLASHgtex.html) Compares MASH and FLASH fits to "strong" tests from the GTEx dataset.
 
-[MASH v FLASH on GTEx (random tests).](MASHvFLASHrandom.html) Same, but uses random tests from the GTEx dataset.
+[MASH v FLASH analysis of GTEx data (random tests).](MASHvFLASHrandom.html) Same, but uses random tests from the GTEx dataset.
 
-[MASH v FLASH workflows for GTEx.](MASHvFLASHgtex2.html) Proposes improved workflows to obtain MASH and FLASH fits to GTEx data.
+[MASH v FLASH workflows for GTEx.](MASHvFLASHgtex2.html) Proposes improved workflows to obtain MASH and FLASH fits to GTEx data. Describes the MASH fit and five different FLASH fits ("OHF", "Top 5", "Top 10", "Top 20", and "Zero") in detail.
 
-Next up are several analyses that identify specific differences between fits:
+Next up are several analyses that examine individual tests in an effort to identify salient differences among fits:
 
 * [MASH v FLASH GTEx analysis: MASH v OHF.](MASHvOHF.html)
 
