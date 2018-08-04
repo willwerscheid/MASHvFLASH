@@ -1,5 +1,5 @@
 ---
-title: 'MASH v FLASH GTEx analysis: MASH v “Top 20"'
+title: 'MASH v FLASH GTEx analysis: OHF v “Top 20"'
 output: 
   workflowr::wflow_html:
     code_folding: hide
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This analysis compares the "OHF" FLASH fit to the "Top 20" FLASH fit. See [here](MASHvFLASHgtex2.html) for fitting details.
 
-In general, differences among FLASH fits are much subtler than differences between the MASH fit and any given FLASH fit. To interpret the differences, I introduce a new plotting tool that compares loadings between fits. The plots chart normalized absolute values of loadings, with loadings for the OHF method displayed above the x-axis and loadings for the "Top 20" method displayed below. The leftmost black bar corresponds to the "equal effects" loading; the colored bars correspond to unique effects; and the rightmost numbered bars correspond to data-driven loadings.
+In general, differences among FLASH fits are much subtler than differences between the MASH fit and any given FLASH fit. To interpret the differences, I introduce a new plotting tool that compares loadings. Bar heights correspond to normalized absolute values of loadings, with loadings for the OHF method displayed above the x-axis and loadings for the "Top 20" method displayed below. The leftmost black bar corresponds to the "equal effects" loading; the colored bars correspond to unique effects; and the rightmost numbered bars correspond to data-driven loadings.
 
 ```{r load_everything}
 library(mashr)
