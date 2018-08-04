@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/b2aa853ac2739a95bc559d79edf918167c97833d" target="_blank">b2aa853</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/312476b990c8ec8b600434b175e84da2fb500c8b" target="_blank">312476b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -371,7 +371,10 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
 
 Untracked files:
-    Untracked:  analysis/OHFvTop20.Rmd
+    Untracked:  docs/figure/OHFvTop20.Rmd/
+
+Unstaged changes:
+    Modified:   code/gtexanalysis.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -400,6 +403,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/5401954739b380856f398e937eb2939ee82e649e/docs/MASHvOHF.html" target="_blank">5401954</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -552,9 +572,13 @@ fl_pm &lt;- flash_get_fitted_values(fl_final)</code></pre>
 <p>The observed <span class="math inline">\(z\)</span>-scores are plotted as hollow circles. Posterior means are plotted as triangles if the effect is judged to be significant (LFSR <span class="math inline">\(\le .05\)</span>) and as squares otherwise. Larger triangles indicate lower LFSRs, with the largest triangles corresponding to “highly significant” effects (LFSR <span class="math inline">\(\le .01\)</span>). The posterior means are colored using the GTEx colors used in previous analyses.</p>
 <pre class="r"><code>missing.tissues &lt;- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
 gtex.colors &lt;- read.table(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE&quot;, sep = &#39;\t&#39;, comment.char = &#39;&#39;)[-missing.tissues, 2]
+OHF.colors &lt;- c(&quot;tan4&quot;, &quot;tan3&quot;)
+zero.colors &lt;- c(&quot;black&quot;, gray.colors(19, 0.2, 0.9),
+                 gray.colors(17, 0.95, 1))
 
 plot_test &lt;- function(n, lfsr, pm, method_name) {
   plot(strong[, n], pch=1, col=&quot;black&quot;, xlab=&quot;&quot;, ylab=&quot;&quot;, cex=0.6,
+       ylim=c(min(c(strong[, n], 0)), max(c(strong[, n], 0))),
        main=paste0(&quot;Test #&quot;, n, &quot;; &quot;, method_name))
   size = rep(0.6, 44)
   shape = rep(15, 44)
@@ -564,6 +588,28 @@ plot_test &lt;- function(n, lfsr, pm, method_name) {
   size &lt;- pmin(size, 1.2)
   points(pm[, n], pch=shape, col=as.character(gtex.colors), cex=size)
   abline(0, 0)
+}
+
+plot_ohf_v_ohl_loadings &lt;- function(n, ohf_fit, ohl_fit, ohl_name,
+                                    legend_pos = &quot;bottomright&quot;) {
+  ohf &lt;- abs(ohf_fit$EF[n, ] * apply(abs(ohf_fit$EL), 2, max))
+  ohl &lt;- -abs(ohl_fit$EF[n, ] * apply(abs(ohl_fit$EL), 2, max))
+  data &lt;- rbind(c(ohf, rep(0, length(ohl) - 45)),
+                c(ohl[1:45], rep(0, length(ohf) - 45),
+                  ohl[46:length(ohl)]))
+  colors &lt;- c(&quot;black&quot;,
+              as.character(gtex.colors),
+              OHF.colors,
+              zero.colors[1:(length(ohl) - 45)])
+  x &lt;- barplot(data, beside=T, col=rep(colors, each=2),
+               main=paste0(&quot;Test #&quot;, n, &quot; loadings&quot;),
+               legend.text = c(&quot;OHF&quot;, ohl_name),
+               args.legend = list(x = legend_pos, bty = &quot;n&quot;, pch=&quot;+-&quot;,
+                                  fill=NULL, border=&quot;white&quot;))
+  text(x[2*(46:47) - 1], min(data) / 10,
+       labels=as.character(1:2), cex=0.4)
+  text(x[2*(48:ncol(data))], max(data) / 10,
+       labels=as.character(1:(length(ohl) - 45)), cex=0.4)
 }
 
 compare_methods &lt;- function(lfsr1, lfsr2, pm1, pm2) {

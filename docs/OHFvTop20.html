@@ -370,9 +370,6 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
 
-Untracked files:
-    Untracked:  docs/figure/OHFvTop20.Rmd/
-
 Unstaged changes:
     Modified:   code/gtexanalysis.R
 
@@ -405,10 +402,10 @@ Message
 <tbody>
 <tr>
 <td style="text-align:left;">
-html
+Rmd
 </td>
 <td style="text-align:left;">
-<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/5401954739b380856f398e937eb2939ee82e649e/docs/MASHvTop20.html" target="_blank">5401954</a>
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/312476b990c8ec8b600434b175e84da2fb500c8b/analysis/OHFvTop20.Rmd" target="_blank">312476b</a>
 </td>
 <td style="text-align:left;">
 Jason Willwerscheid
@@ -417,92 +414,7 @@ Jason Willwerscheid
 2018-08-04
 </td>
 <td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/b2aa853ac2739a95bc559d79edf918167c97833d/analysis/MASHvTop20.Rmd" target="_blank">b2aa853</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-04
-</td>
-<td style="text-align:left;">
-wflow_publish(c(“analysis/MASHvTop20.Rmd”,
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/592a42791c375fab8495f9283f938c631a2b2178/docs/MASHvTop20.html" target="_blank">592a427</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/0d2b9b52619ff9879d3f16e9bc7cb414cc48dafc/analysis/MASHvTop20.Rmd" target="_blank">0d2b9b5</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-<td style="text-align:left;">
-wflow_publish(c(“analysis/index.Rmd”, “analysis/MASHvTop20.Rmd”))
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-html
-</td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/MASHvTop20.html" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-<td style="text-align:left;">
-Build site.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Rmd
-</td>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/5f31e169d5e4f1b25d9d6d4eda289171ae60f46e/analysis/MASHvTop20.Rmd" target="_blank">5f31e16</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-<td style="text-align:left;">
-wflow_publish(c(“analysis/index.Rmd”, “analysis/MASHvTop20.Rmd”))
+wflow_publish(c(“analysis/OHFvTop20.Rmd”, “analysis/MASHvOHF.Rmd”,
 </td>
 </tr>
 </tbody>
@@ -512,7 +424,8 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/MASHvTop20.Rmd”))
 <hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This analysis compares the MASH fit to the “Top 20” fit. See <a href="MASHvFLASHgtex2.html">here</a> for fitting details and <a href="MASHvOHF.html#introduction_to_plots">here</a> for an introduction to the plots.</p>
+<p>This analysis compares the “OHF” FLASH fit to the “Top 20” FLASH fit. See <a href="MASHvFLASHgtex2.html">here</a> for fitting details.</p>
+<p>In general, differences among FLASH fits are much subtler than differences between the MASH fit and any given FLASH fit. To interpret the differences, I introduce a new plotting tool that compares loadings between fits. The plots chart normalized absolute values of loadings, with loadings for the OHF method displayed above the x-axis and loadings for the “Top 20” method displayed below. The leftmost black bar corresponds to the “equal effects” loading; the colored bars correspond to unique effects; and the rightmost numbered bars correspond to data-driven loadings.</p>
 <pre class="r"><code>library(mashr)</code></pre>
 <pre><code>Loading required package: ashr</code></pre>
 <pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)</code></pre>
@@ -521,15 +434,14 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/MASHvTop20.Rmd”))
 strong &lt;- t(gtex$strong.z)
 
 fpath &lt;- &quot;./output/MASHvFLASHgtex2/&quot;
-m_final &lt;- readRDS(paste0(fpath, &quot;m.rds&quot;))
-fl_final &lt;- readRDS(paste0(fpath, &quot;Top20.rds&quot;))
-
-m_lfsr &lt;- t(get_lfsr(m_final))
-m_pm &lt;- t(get_pm(m_final))
+ohf_final &lt;- readRDS(paste0(fpath, &quot;ohf.rds&quot;))
+top20_final &lt;- readRDS(paste0(fpath, &quot;top20.rds&quot;))
 
 all_fl_lfsr &lt;- readRDS(paste0(fpath, &quot;fllfsr.rds&quot;))
-fl_lfsr &lt;- all_fl_lfsr[[4]]
-fl_pm &lt;- flash_get_fitted_values(fl_final)</code></pre>
+ohf_lfsr &lt;- all_fl_lfsr[[1]]
+top20_lfsr &lt;- all_fl_lfsr[[4]]
+ohf_pm &lt;- flash_get_fitted_values(ohf_final)
+top20_pm &lt;- flash_get_fitted_values(top20_final)</code></pre>
 <pre class="r"><code>missing.tissues &lt;- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
 gtex.colors &lt;- read.table(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE&quot;, sep = &#39;\t&#39;, comment.char = &#39;&#39;)[-missing.tissues, 2]
 OHF.colors &lt;- c(&quot;tan4&quot;, &quot;tan3&quot;)
@@ -609,375 +521,46 @@ select_tests &lt;- function(colsums, min_n = 4) {
   }
   return(which(colsums &gt;= n))
 }</code></pre>
-</div>
-<div id="significant-for-top-20-not-mash" class="section level2">
-<h2>Significant for Top 20, not MASH</h2>
-<p>As in the <a href="MASHvOHF.html#significant_for_ohf,_not_mash">previous analysis</a>, the most common case involves a combination of a small equal effect and a large unique effect. Some typical examples follow.</p>
-<pre class="r"><code># mash.v.top20 &lt;- compare_methods(fl_lfsr, m_lfsr, fl_pm, m_pm)
-
-identical.plus.unique &lt;- c(2184, 4752, 10000, 13684)
-
-par(mfrow=c(1, 2))
-for (n in identical.plus.unique) {
-  plot_test(n, fl_lfsr, fl_pm, &quot;Top 20&quot;)
-  plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
+<pre class="r"><code>plot_it &lt;- function(n, legend.pos = &quot;bottomright&quot;) {
+  par(mfrow=c(1, 2))
+  plot_test(n, ohf_lfsr, ohf_pm, &quot;OHF&quot;)
+  plot_test(n, top20_lfsr, top20_pm, &quot;Top 20&quot;)
+  
+  par(mfrow=c(1, 1))
+  plot_ohf_v_ohl_loadings(n, ohf_final, top20_final, &quot;Top 20&quot;,
+                          legend.pos)
 }</code></pre>
-<p><img src="figure/MASHvTop20.Rmd/ohf_not_mash-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of ohf_not_mash-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/ohf_not_mash-1.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/ohf_not_mash-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of ohf_not_mash-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/ohf_not_mash-2.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/ohf_not_mash-3.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of ohf_not_mash-3.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/ohf_not_mash-3.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/ohf_not_mash-4.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of ohf_not_mash-4.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/ohf_not_mash-4.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
 </div>
-<div id="significant-for-mash-not-ohf" class="section level2">
-<h2>Significant for MASH, not OHF</h2>
-<p>The most typical case here has MASH finding a significant equal effect, while FLASH finds a significant unique effect and an insignificant equal effect. In each of the following tests, there is a single outlying effect (with a raw <span class="math inline">\(z\)</span>-score of around 4 or 5), which FLASH identifies as unique but which MASH “assigns” to the equal effect (or rather, to the data-driven covariance structure described in the <a href="MASHvOHF.html#significant_for_mash,_not_ohf">previous analysis</a>). Roughly, the other observations borrow strength from the outlying observation in MASH but not in FLASH.</p>
-<pre class="r"><code>par(mfrow=c(1, 2))
+<div id="significant-for-ohf-not-top-20" class="section level2">
+<h2>Significant for OHF, not Top 20</h2>
+<p>The fact that the OHF fit only has two data-driven loadings can constrain its estimates to follow the patterns prescribed by those loadings (depicted <a href="MASHvFLASHgtex2.html#data-driven_loadings_(step_1)">here</a>). Typically, when estimates are deemed significant by OHF but not by the “Top 20” method, OHF places a large weight on a single data-driven loading, whereas the “Top 20” method disperses weight across several data-driven loadings. The following examples are typical.</p>
+<pre class="r"><code># ohf.v.top20 &lt;- compare_methods(ohf_lfsr, top20_lfsr, ohf_pm, top20_pm)
 
-shrink.unique &lt;- c(1115, 5174, 8578, 9928)
-
-for (n in shrink.unique) {
-  plot_test(n, fl_lfsr, fl_pm, &quot;OHF&quot;)
-  plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
+ohl.first.loading &lt;- c(2180, 3727, 5746)
+legend.pos &lt;- c(&quot;topleft&quot;, &quot;bottomright&quot;, &quot;topleft&quot;)
+for (i in 1:length(ohl.first.loading)) {
+  plot_it(ohl.first.loading[i], legend.pos[i])
 }</code></pre>
-<p><img src="figure/MASHvTop20.Rmd/mash_not_ohf-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of mash_not_ohf-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/mash_not_ohf-1.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/mash_not_ohf-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of mash_not_ohf-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/mash_not_ohf-2.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/mash_not_ohf-3.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of mash_not_ohf-3.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/mash_not_ohf-3.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/mash_not_ohf-4.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of mash_not_ohf-4.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/98676689d40c4c3fe5a83ef87c561bb1d181fd45/docs/figure/MASHvTop20.Rmd/mash_not_ohf-4.png" target="_blank">9867668</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-03
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/OHFvTop20.Rmd/ohf_not_mash-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/ohf_not_mash-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/ohf_not_mash-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/ohf_not_mash-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/ohf_not_mash-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/ohf_not_mash-6.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="significant-for-top-20-not-ohf" class="section level2">
+<h2>Significant for Top 20, not OHF</h2>
+<p>Another consequence of the fact that the OHF fit only has two data-driven loadings is that it will fail to find any patterns that are not prescribed by those loadings. In the following examples, OHF places virtually no weight on its data-driven loadings, whereas the “Top 20” method places moderate to large weights on at least a few data-driven loadings.</p>
+<pre class="r"><code>ohf.no.dd &lt;- c(2072, 14689, 10205)
+legend.pos &lt;- c(&quot;topright&quot;, &quot;topleft&quot;, &quot;topright&quot;)
+for (i in 1:length(ohf.no.dd)) {
+  plot_it(ohf.no.dd[i], legend.pos[i])
+}</code></pre>
+<p><img src="figure/OHFvTop20.Rmd/mash_not_ohf-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/mash_not_ohf-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/mash_not_ohf-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/mash_not_ohf-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/mash_not_ohf-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/mash_not_ohf-6.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="different-posterior-means" class="section level2">
 <h2>Different posterior means</h2>
-<p>The following examples differ from the examples in the <a href="MASHvOHF.html#different_posterior_means">previous analysis</a> in that <em>all</em> effect sizes are large. As a result, the MASH estimates do not coincide with the raw observations as neatly. Notice, for example, that in each case some of the MASH estimates are even larger than the observed effect sizes. This is because the posterior mixture weights are primarily concentrated on the <code>ED_tPCA</code> matrices rather than on the <code>simple_het</code> matrices (see <a href="MASHvFLASHgtex2.html#comments_on_mash_fit">here</a> for a description of these matrices).</p>
-<pre class="r"><code>par(mfrow=c(1, 2))
-
-diff.pms &lt;- c(11467, 246, 6701)
-for (n in diff.pms) {
-  plot_test(n, fl_lfsr, fl_pm, &quot;OHF&quot;)
-  plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
+<p>This category of tests is perhaps the most intriguing of the three. In each of the following examples, the “Top 20” method assigns much larger weights to many unique effects, so that there is in general less shrinkage for the largest effects. As a result, it is also able to shrink the relatively smaller effects more aggressively.</p>
+<pre class="r"><code>diff.pms &lt;- c(8284, 6899, 12528, 2410)
+for (i in 1:length(diff.pms)) {
+  plot_it(diff.pms[i])
 }</code></pre>
-<p><img src="figure/MASHvTop20.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of diff_pms-1.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/5401954739b380856f398e937eb2939ee82e649e/docs/figure/MASHvTop20.Rmd/diff_pms-1.png" target="_blank">5401954</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-04
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of diff_pms-2.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/5401954739b380856f398e937eb2939ee82e649e/docs/figure/MASHvTop20.Rmd/diff_pms-2.png" target="_blank">5401954</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-04
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvTop20.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of diff_pms-3.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/5401954739b380856f398e937eb2939ee82e649e/docs/figure/MASHvTop20.Rmd/diff_pms-3.png" target="_blank">5401954</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-04
-</td>
-</tr>
-</tbody>
-</table>
-<p></details></p>
+<p><img src="figure/OHFvTop20.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/diff_pms-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/diff_pms-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/diff_pms-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/OHFvTop20.Rmd/diff_pms-8.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
