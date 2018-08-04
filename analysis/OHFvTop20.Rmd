@@ -1,0 +1,92 @@
+---
+title: 'MASH v FLASH GTEx analysis: MASH v “Top 20"'
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This analysis compares the "OHF" FLASH fit to the "Top 20" FLASH fit. See [here](MASHvFLASHgtex2.html) for fitting details.
+
+In general, differences among FLASH fits are much subtler than differences between the MASH fit and any given FLASH fit. To interpret the differences, I introduce a new plotting tool that compares loadings between fits. The plots chart normalized absolute values of loadings, with loadings for the OHF method displayed above the x-axis and loadings for the "Top 20" method displayed below. The leftmost black bar corresponds to the "equal effects" loading; the colored bars correspond to unique effects; and the rightmost numbered bars correspond to data-driven loadings.
+
+```{r load_everything}
+library(mashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
+
+gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
+strong <- t(gtex$strong.z)
+
+fpath <- "./output/MASHvFLASHgtex2/"
+ohf_final <- readRDS(paste0(fpath, "ohf.rds"))
+top20_final <- readRDS(paste0(fpath, "top20.rds"))
+
+all_fl_lfsr <- readRDS(paste0(fpath, "fllfsr.rds"))
+ohf_lfsr <- all_fl_lfsr[[1]]
+top20_lfsr <- all_fl_lfsr[[4]]
+ohf_pm <- flash_get_fitted_values(ohf_final)
+top20_pm <- flash_get_fitted_values(top20_final)
+```
+
+```{r gtexcode, echo=F, include=F}
+knitr::read_chunk("./code/gtexanalysis.R")
+```
+```{r gtexanalysis}
+```
+
+```{r plot_it}
+plot_it <- function(n, legend.pos = "bottomright") {
+  par(mfrow=c(1, 2))
+  plot_test(n, ohf_lfsr, ohf_pm, "OHF")
+  plot_test(n, top20_lfsr, top20_pm, "Top 20")
+  
+  par(mfrow=c(1, 1))
+  plot_ohf_v_ohl_loadings(n, ohf_final, top20_final, "Top 20",
+                          legend.pos)
+}
+```
+
+
+## Significant for OHF, not Top 20
+
+The fact that the OHF fit only has two data-driven loadings can constrain its estimates to follow the patterns prescribed by those loadings (depicted [here](MASHvFLASHgtex2.html#data-driven_loadings_(step_1))). Typically, when estimates are deemed significant by OHF but not by the "Top 20" method, OHF places a large weight on a single data-driven loading, whereas the "Top 20" method disperses weight across several data-driven loadings. The following examples are typical.
+
+```{r ohf_not_mash, fig.height=3}
+# ohf.v.top20 <- compare_methods(ohf_lfsr, top20_lfsr, ohf_pm, top20_pm)
+
+ohl.first.loading <- c(2180, 3727, 5746)
+legend.pos <- c("topleft", "bottomright", "topleft")
+for (i in 1:length(ohl.first.loading)) {
+  plot_it(ohl.first.loading[i], legend.pos[i])
+}
+```
+
+
+## Significant for Top 20, not OHF
+
+Another consequence of the fact that the OHF fit only has two data-driven loadings is that it will fail to find any patterns that are not prescribed by those loadings. In the following examples, OHF places virtually no weight on its data-driven loadings, whereas the "Top 20" method places moderate to large weights on at least a few data-driven loadings.
+
+```{r mash_not_ohf, fig.height=3}
+ohf.no.dd <- c(2072, 14689, 10205)
+legend.pos <- c("topright", "topleft", "topright")
+for (i in 1:length(ohf.no.dd)) {
+  plot_it(ohf.no.dd[i], legend.pos[i])
+}
+```
+
+
+## Different posterior means
+
+This category of tests is perhaps the most intriguing of the three. In each of the following examples, the "Top 20" method assigns much larger weights to many unique effects, so that there is in general less shrinkage for the largest effects. As a result, it is also able to shrink the relatively smaller effects more aggressively.
+
+```{r diff_pms, fig.height=3}
+diff.pms <- c(8284, 6899, 12528, 2410)
+for (i in 1:length(diff.pms)) {
+  plot_it(diff.pms[i])
+}
+```
