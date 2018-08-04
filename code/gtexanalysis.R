@@ -2,9 +2,13 @@
 
 missing.tissues <- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
 gtex.colors <- read.table("https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE", sep = '\t', comment.char = '')[-missing.tissues, 2]
+OHF.colors <- c("tan4", "tan3")
+zero.colors <- c("black", gray.colors(19, 0.2, 0.9),
+                 gray.colors(17, 0.95, 1))
 
 plot_test <- function(n, lfsr, pm, method_name) {
   plot(strong[, n], pch=1, col="black", xlab="", ylab="", cex=0.6,
+       ylim=c(min(c(strong[, n], 0)), max(c(strong[, n], 0))),
        main=paste0("Test #", n, "; ", method_name))
   size = rep(0.6, 44)
   shape = rep(15, 44)
@@ -14,6 +18,28 @@ plot_test <- function(n, lfsr, pm, method_name) {
   size <- pmin(size, 1.2)
   points(pm[, n], pch=shape, col=as.character(gtex.colors), cex=size)
   abline(0, 0)
+}
+
+plot_ohf_v_ohl_loadings <- function(n, ohf_fit, ohl_fit, ohl_name,
+                                    legend_pos = "bottomright") {
+  ohf <- abs(ohf_fit$EF[n, ] * apply(abs(ohf_fit$EL), 2, max))
+  ohl <- -abs(ohl_fit$EF[n, ] * apply(abs(ohl_fit$EL), 2, max))
+  data <- rbind(c(ohf, rep(0, length(ohl) - 45)),
+                c(ohl[1:45], rep(0, length(ohf) - 45),
+                  ohl[46:length(ohl)]))
+  colors <- c("black",
+              as.character(gtex.colors),
+              OHF.colors,
+              zero.colors[1:(length(ohl) - 45)])
+  x <- barplot(data, beside=T, col=rep(colors, each=2),
+               main=paste0("Test #", n, " loadings"),
+               legend.text = c("OHF", ohl_name),
+               args.legend = list(x = legend_pos, bty = "n", pch="+-",
+                                  fill=NULL, border="white"))
+  text(x[2*(46:47) - 1], min(data) / 10,
+       labels=as.character(1:2), cex=0.4)
+  text(x[2*(48:ncol(data))], max(data) / 10,
+       labels=as.character(1:(length(ohl) - 45)), cex=0.4)
 }
 
 compare_methods <- function(lfsr1, lfsr2, pm1, pm2) {
