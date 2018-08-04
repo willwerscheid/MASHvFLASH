@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-03</p>
+<p><strong>Last updated:</strong> 2018-08-04</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/c5d0c86fb2b720f9eb6b652eec9b6428cebecfc2" target="_blank">c5d0c86</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/b2aa853ac2739a95bc559d79edf918167c97833d" target="_blank">b2aa853</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -372,10 +372,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/OHFvTop20.Rmd
-
-Unstaged changes:
-    Modified:   analysis/MASHvTop20.Rmd
-    Modified:   code/gtexanalysis.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -404,6 +400,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/b2aa853ac2739a95bc559d79edf918167c97833d/analysis/MASHvOHF.Rmd" target="_blank">b2aa853</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/MASHvTop20.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/ea857fed6060fadfe06b9b6f4d7273ec8b960823/docs/MASHvOHF.html" target="_blank">ea857fe</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-03
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -710,7 +740,7 @@ Jason Willwerscheid
 </div>
 <div id="significant-for-mash-not-ohf" class="section level2">
 <h2>Significant for MASH, not OHF</h2>
-<p>To understand the typical situation where MASH finds significant effects but OHF does not, recall from my <a href="MASHvFLASHgtex2.html">analysis of GTEx workflows</a> that the MASH fit puts large mixture weights on data-driven covariance matrices (around 0.6 on “ED_tPCA” and 0.25 on “ED_PCA_2”) and a comparatively small weight (around 0.1) on the “equal effects” covariance structure. In contrast, the equal effects loading accounts for about 70% of the variance explained by the OHF fit. This, I think, is why OHF is so much more likely to find an equal effect in the tests above. MASH, on the contrary, is more likely to find a pattern of covariance that derives from the data-driven structures. Notice the similarity of the MASH estimates in the following tests (in the last example, signs are reversed):</p>
+<p>To understand the typical situation where MASH declares effects to be significant but OHF does not, recall from my <a href="MASHvFLASHgtex2.html">analysis of GTEx workflows</a> that the MASH fit puts large mixture weights on data-driven covariance matrices (around 0.6 on “ED_tPCA” and 0.25 on “ED_PCA_2”) and a comparatively small weight (around 0.1) on the “equal effects” covariance structure. In contrast, the equal effects loading accounts for about 70% of the variance explained by the OHF fit. This, I think, is why OHF is so much more likely to find an equal effect in the tests above. MASH, on the contrary, is more likely to find a pattern of covariance that derives from the data-driven structures. Notice the similarity of the MASH estimates in the following tests (in the last example, signs are reversed):</p>
 <pre class="r"><code>par(mfrow=c(1, 2))
 
 mash.covar &lt;- c(2868, 9716, 10368, 9716)
@@ -844,7 +874,8 @@ Jason Willwerscheid
 <div id="different-posterior-means" class="section level2">
 <h2>Different posterior means</h2>
 <p>I conclude with some examples of tests with a large mean squared difference in posterior means. As might be expected, these are all tests where effect sizes are large for many conditions. Interestingly, MASH applies little to no shrinkage in such cases (even for small effects). FLASH does a better job applying a reasonable amount of shrinkage to small and moderate effects, but can be overly aggressive in shrinking large effects.</p>
-<p>In test #2857, for example, FLASH applies a huge amount of shrinkage to the large effects observed in visceral adipose omental tissue and in mammary tissue, shrinking the <span class="math inline">\(z\)</span>-scores from -9.0 to -2.3 and from -8.1 to -2.3, respectively. These are both tissues for which the prior on the unique effect is heavily concentrated near zero (see <a href="MASHvFLASHgtex2.html#priors_on_factors_(steps_2-3)">here</a>), so the results make sense given the FLASH fit, but the shrinkage still seems extreme. In contrast, the MASH posterior mixture weights for test #2857 are heavily concentrated on the <code>simple_het</code> matrices, which posit only weak correlations among conditions.</p>
+<p>In test #2857, for example, FLASH applies a huge amount of shrinkage to the large effects observed in visceral adipose omental tissue and in mammary tissue, shrinking the <span class="math inline">\(z\)</span>-scores from -9.0 to -2.3 and from -8.1 to -2.3, respectively. These are both tissues for which the prior on the unique effect is heavily concentrated near zero (see <a href="MASHvFLASHgtex2.html#priors_on_factors_(steps_2-3)">here</a>), so the results make sense given the FLASH fit, but the shrinkage still seems extreme. I think that this problem could be mitigated by training on a larger subset of random tests (so that some examples of large effects in these tissues get included).</p>
+<p>In contrast, the MASH posterior mixture weights for test #2857 are heavily concentrated on the <code>simple_het</code> matrices, which posit only weak correlations among conditions.</p>
 <pre class="r"><code>par(mfrow=c(1, 2))
 
 diff.pms &lt;- c(2857, 697, 384, 1680)
@@ -852,7 +883,127 @@ for (n in diff.pms) {
   plot_test(n, fl_lfsr, fl_pm, &quot;OHF&quot;)
   plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
 }</code></pre>
-<p><img src="figure/MASHvOHF.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvOHF.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvOHF.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvOHF.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvOHF.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/ea857fed6060fadfe06b9b6f4d7273ec8b960823/docs/figure/MASHvOHF.Rmd/diff_pms-1.png" target="_blank">ea857fe</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvOHF.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/ea857fed6060fadfe06b9b6f4d7273ec8b960823/docs/figure/MASHvOHF.Rmd/diff_pms-2.png" target="_blank">ea857fe</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvOHF.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/ea857fed6060fadfe06b9b6f4d7273ec8b960823/docs/figure/MASHvOHF.Rmd/diff_pms-3.png" target="_blank">ea857fe</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvOHF.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/ea857fed6060fadfe06b9b6f4d7273ec8b960823/docs/figure/MASHvOHF.Rmd/diff_pms-4.png" target="_blank">ea857fe</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-03
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
