@@ -18,7 +18,7 @@ output:
 
 [MASH v FLASH workflows for GTEx.](MASHvFLASHgtex2.html) Proposes improved workflows to obtain MASH and FLASH fits to GTEx data. Describes the MASH fit and five different FLASH fits ("OHF", "Top 5", "Top 10", "Top 20", and "Zero") in detail.
 
-Next up are several analyses that examine individual tests in an effort to identify salient differences among fits:
+Next up is a series of analyses that examine individual tests in an effort to identify salient differences among fits:
 
 * [MASH v FLASH GTEx analysis: MASH v OHF.](MASHvOHF.html)
 
@@ -26,3 +26,4 @@ Next up are several analyses that examine individual tests in an effort to ident
 
 * [MASH v FLASH GTEx analysis: OHF v "Top 20".](OHFvTop20.html)
 
+* [MASH v FLASH GTEx analysis: "Top 20" v "Zero".](Top20vZero.html)

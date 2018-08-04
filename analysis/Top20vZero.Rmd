@@ -1,0 +1,99 @@
+---
+title: 'MASH v FLASH GTEx analysis: “Top 20" v Zero'
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This analysis compares the "Top 20" FLASH fit to the "Zero" FLASH fit (which does not include any canonical loadings). See [here](MASHvFLASHgtex2.html) for fitting details. See [here](MASHvOHF.html#introduction_to_plots) and [here](OHFvTop20.html#introduction) for introductions to the plots. Because the first data-driven loading in the "Zero" fit generally acts as a surrogate for the "equal effects" loading in the "Top 20" fit, I combine the two loadings in the plots below for ease of interpretation.
+
+```{r load_everything}
+library(mashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
+
+gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
+strong <- t(gtex$strong.z)
+
+fpath <- "./output/MASHvFLASHgtex2/"
+top20_final <- readRDS(paste0(fpath, "top20.rds"))
+zero_final <- readRDS(paste0(fpath, "zero.rds"))
+
+all_fl_lfsr <- readRDS(paste0(fpath, "fllfsr.rds"))
+top20_lfsr <- all_fl_lfsr[[4]]
+zero_lfsr <- all_fl_lfsr[[5]]
+top20_pm <- flash_get_fitted_values(top20_final)
+zero_pm <- flash_get_fitted_values(zero_final)
+```
+
+```{r gtexcode, echo=F, include=F}
+knitr::read_chunk("./code/gtexanalysis.R")
+```
+```{r gtexanalysis}
+```
+
+```{r plot_it}
+plot_it <- function(n, legend.pos = "topright") {
+  par(mfrow=c(1, 2))
+  plot_test(n, top20_lfsr, top20_pm, "Top 20")
+  plot_test(n, zero_lfsr, zero_pm, "Zero")
+  
+  par(mfrow=c(1, 1))
+  plot_ohl_v_zero_loadings(n, top20_final, zero_final, "Top 20",
+                           legend.pos)
+}
+```
+
+
+## Significant for Top 20, not Zero
+
+It is possible to distinguish three classes of cases where the "Top 20" method picks out significant effects but the "Zero" method does not. I give a typical example for each class.
+
+1. Because the "Zero" fit does not include canonical loadings, it generally shrinks large effects more aggressively than the "Top 20" fit. In the following example, the canonical loadings allow for a very simple interpretation of the "Top 20" fit: there are two large unique effects, plus a moderately-sized identical effect (none of the data-driven loadings are very important). The "Zero" fit, in contrast, is a fairly complicated combination of data-driven factors.
+
+```{r lg_uniq, fig.height=3}
+# top20.v.zero <- compare_methods(top20_lfsr, zero_lfsr, top20_pm, zero_pm)
+
+plot_it(2838)
+```
+
+2. In a second, infrequent class of cases, at least one of the additional 17 data-driven factors in the "Zero" fit turns out to be important. In the following example, the 21st loading, which quite plausibly introduces correlations among ovarian, uterine, and vaginal tissues (see [here](MASHvFLASHgtex2.html#flash_loadings)), has a moderate weight. This pushes the estimates for these tissues down just enough to make the effects more significant than effects in other non-brain tissues. As in the previous example, the "Top 20" fit has a much simpler interpretation: in this case, only the "equal effects" loading is important.
+
+```{r extra_dd, fig.height=3}
+plot_it(2821)
+```
+
+3. Finally, there is a class of cases where posterior means are very similar but one method finds significance where the other does not. What's happening, I think, is that because it does not include a canonical equal-effects loading, the "Zero" fit generally loads the second data-driven factor as well as the first. In other words, the "Zero" fit makes up for the absence of an equal-effects factor by combining the first two data-driven factors, which increases the degree of uncertainty in the point estimates. 
+
+```{r not_interpretable, fig.height=3}
+plot_it(14572)
+```
+
+
+## Significant for Zero, not Top 20
+
+When the "Zero" method picks out significant effects but the "Top 20" method does not, the culprit is most often one or two outlying effects, as in the first class of cases discussed above. Three typical examples follow.
+
+```{r zero_not_top20}
+lg.uniq <- c(3728, 14862, 1735)
+for (n in lg.uniq) {
+  plot_it(n)
+}
+```
+
+
+## Different posterior means
+
+Each of the following examples illustrates how the additional canonical loadings can create large differences in posterior means (the extra data-driven loadings are unimportant in each case). It is difficult to generalize any further: sometimes the result is a small equal-effects loading (#617); sometimes, the data-driven loadings become unimportant, so that the comparatively smaller effects are aggressively shrunken towards their mean (#10904, #10581). I think that these examples point up one of the principal weaknesses of the "Zero" fit, which is that without the canonical loadings, many of the results become difficult to interpret (and therefore less plausible).
+
+```{r diff_pms}
+diff.pms <- c(617, 10904, 10581)
+for (n in diff.pms) {
+  plot_it(n)
+}
+```
