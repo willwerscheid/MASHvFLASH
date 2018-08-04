@@ -42,6 +42,25 @@ plot_ohf_v_ohl_loadings <- function(n, ohf_fit, ohl_fit, ohl_name,
        labels=as.character(1:(length(ohl) - 45)), cex=0.4)
 }
 
+plot_ohl_v_zero_loadings <- function(n, ohl_fit, zero_fit, ohl_name,
+                                    legend_pos = "topright") {
+  ohl <- abs(ohl_fit$EF[n, ] * apply(abs(ohl_fit$EL), 2, max))
+  # Combine equal effects and first data-driven loading
+  ohl[1] <- ohl[1] + ohl[46]
+  ohl <- ohl[-46]
+  zero <- -abs(zero_fit$EF[n, ] * apply(abs(zero_fit$EL), 2, max))
+  data <- rbind(c(ohl, rep(0, length(zero) - length(ohl) + 44)),
+                c(zero[1], rep(0, 44), zero[2:length(zero)]))
+  colors <- c("black", as.character(gtex.colors), zero.colors)
+  x <- barplot(data, beside=T, col=rep(colors, each=2),
+               main=paste0("Test #", n, " loadings"),
+               legend.text = c(ohl_name, "Zero"),
+               args.legend = list(x = legend_pos, bty = "n", pch="+-",
+                                  fill=NULL, border="white"))
+  text(x[2*(seq(46, ncol(data), by=2)) - 1], min(data) / 10,
+       labels=as.character(seq(2, length(zero), by=2)), cex=0.4)
+}
+
 compare_methods <- function(lfsr1, lfsr2, pm1, pm2) {
   res <- list()
   res$first_not_second <- find_A_not_B(lfsr1, lfsr2)
