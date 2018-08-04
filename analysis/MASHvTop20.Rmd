@@ -41,10 +41,10 @@ knitr::read_chunk("./code/gtexanalysis.R")
 
 ## Significant for Top 20, not MASH
 
-As in the [previous analysis](MASHvOHF.html), the most common case involves a combination of a small equal effect and a large unique effect. Some of the more interesting examples follow. 
+As in the [previous analysis](MASHvOHF.html#significant_for_ohf,_not_mash), the most common case involves a combination of a small equal effect and a large unique effect. Some typical examples follow. 
 
 ```{r ohf_not_mash}
-ohf.v.top20 <- compare_methods(fl_lfsr, m_lfsr)
+# mash.v.top20 <- compare_methods(fl_lfsr, m_lfsr, fl_pm, m_pm)
 
 identical.plus.unique <- c(2184, 4752, 10000, 13684)
 
@@ -71,3 +71,17 @@ for (n in shrink.unique) {
 }
 ```
 
+
+## Different posterior means
+
+The following examples differ from the examples in the [previous analysis](MASHvOHF.html#different_posterior_means) in that *all* effect sizes are large. As a result, the MASH estimates do not coincide with the raw observations as neatly. Notice, for example, that in each case some of the MASH estimates are even larger than the observed effect sizes. This is because the posterior mixture weights are primarily concentrated on the `ED_tPCA` matrices rather than on the `simple_het` matrices (see [here](MASHvFLASHgtex2.html#comments_on_mash_fit) for a description of these matrices).
+
+```{r diff_pms}
+par(mfrow=c(1, 2))
+
+diff.pms <- c(11467, 246, 6701)
+for (n in diff.pms) {
+  plot_test(n, fl_lfsr, fl_pm, "OHF")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```

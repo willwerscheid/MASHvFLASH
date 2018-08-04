@@ -67,7 +67,7 @@ for (n in identical.plus.unique) {
 
 ## Significant for MASH, not OHF
 
-To understand the typical situation where MASH finds significant effects but OHF does not, recall from my [analysis of GTEx workflows](MASHvFLASHgtex2.html) that the MASH fit puts large mixture weights on data-driven covariance matrices (around 0.6 on "ED_tPCA" and 0.25 on "ED_PCA_2") and a comparatively small weight (around 0.1) on the "equal effects" covariance structure. In contrast, the equal effects loading accounts for about 70% of the variance explained by the OHF fit. This, I think, is why OHF is so much more likely to find an equal effect in the tests above. MASH, on the contrary, is more likely to find a pattern of covariance that derives from the data-driven structures. Notice the similarity of the MASH estimates in the following tests (in the last example, signs are reversed):
+To understand the typical situation where MASH declares effects to be significant but OHF does not, recall from my [analysis of GTEx workflows](MASHvFLASHgtex2.html) that the MASH fit puts large mixture weights on data-driven covariance matrices (around 0.6 on "ED_tPCA" and 0.25 on "ED_PCA_2") and a comparatively small weight (around 0.1) on the "equal effects" covariance structure. In contrast, the equal effects loading accounts for about 70% of the variance explained by the OHF fit. This, I think, is why OHF is so much more likely to find an equal effect in the tests above. MASH, on the contrary, is more likely to find a pattern of covariance that derives from the data-driven structures. Notice the similarity of the MASH estimates in the following tests (in the last example, signs are reversed):
 
 ```{r mash_not_ohf}
 par(mfrow=c(1, 2))
@@ -86,7 +86,9 @@ At first, it seems bizarre that effects with posterior means near zero are judge
 
 I conclude with some examples of tests with a large mean squared difference in posterior means. As might be expected, these are all tests where effect sizes are large for many conditions. Interestingly, MASH applies little to no shrinkage in such cases (even for small effects). FLASH does a better job applying a reasonable amount of shrinkage to small and moderate effects, but can be overly aggressive in shrinking large effects. 
 
-In test #2857, for example, FLASH applies a huge amount of shrinkage to the large effects observed in visceral adipose omental tissue and in mammary tissue, shrinking the $z$-scores from -9.0 to -2.3 and from -8.1 to -2.3, respectively. These are both tissues for which the prior on the unique effect is heavily concentrated near zero (see [here](MASHvFLASHgtex2.html#priors_on_factors_(steps_2-3))), so the results make sense given the FLASH fit, but the shrinkage still seems extreme. In contrast, the MASH posterior mixture weights for test #2857 are heavily concentrated on the `simple_het` matrices, which posit only weak correlations among conditions.
+In test #2857, for example, FLASH applies a huge amount of shrinkage to the large effects observed in visceral adipose omental tissue and in mammary tissue, shrinking the $z$-scores from -9.0 to -2.3 and from -8.1 to -2.3, respectively. These are both tissues for which the prior on the unique effect is heavily concentrated near zero (see [here](MASHvFLASHgtex2.html#priors_on_factors_(steps_2-3))), so the results make sense given the FLASH fit, but the shrinkage still seems extreme. I think that this problem could be mitigated by training on a larger subset of random tests (so that some examples of large effects in these tissues get included). 
+
+In contrast, the MASH posterior mixture weights for test #2857 are heavily concentrated on the `simple_het` matrices, which posit only weak correlations among conditions.
 
 ```{r diff_pms}
 par(mfrow=c(1, 2))
