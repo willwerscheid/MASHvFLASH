@@ -1,0 +1,21 @@
+---
+title: "Some conclusions"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. In general, I find results obtained using FLASH to be more appealing than those obtained using MASH. While the [simulation study](MASHvFLASHsims2.html) showed that FLASH does poorly on independent effects, one doesn't really expect to see large independent effects in the GTEx data. The situation where an identical effect is combined with a large unique effect is a much more plausible scenario, and FLASH outperforms MASH in such cases.
+
+2. The canonical loadings of the OHF and "Top k" fits are essential to the success of FLASH. They make for more interpretable results and, at least visually, better explain the data.
+
+3. It would be a good idea to increase the size of the random subset to get reasonable priors for all unique effects. With the present random subset, the prior for many tissues is effectively a point mass at zero, which guarantees that the final fit will miss any unique effects in those tissues. Alternatively, one might perform some *post hoc* manipulation of the priors by, for example, enforcing some minimum for each $w_f$ and $\sigma^2_f$.
+
+4. Getting good loadings for the FLASH fits is crucial. (By "good", I mean that they reflect some reality, but also that they are interpretable and, in general, sparse.) I think the loadings could be improved by adding nonnegativity constraints (particularly with the OHF approach). The next step, I think, is to experiment with fitting FLASH objects using "+uniform" ash priors.
+
+5. Although the FLASH results are somewhat nicer than results for MASH, I'm not really comparing apples and apples since I've used ED rather than FLASH to generate data-driven covariance matrices for MASH. It would be a good idea to repeat the analysis using covariance matrices derived from FLASH loadings.
