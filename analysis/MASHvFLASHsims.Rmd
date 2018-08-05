@@ -33,7 +33,7 @@ All simulated datasets $Y$ are of dimension 25 x 1000. In each case, $Y = X + E$
 
 The MASH fits are evaluated using built-in functions `get_pm()` to calculate MSE, `get_psd()` to calculate confidence intervals, and `get_lfsr()` to calculate true and false positive rates. 
 
-For the FLASH fits, only MSE is calculated using a built-in function (`flash_get_fitted_values()`). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function `flash_sampler()`. For details, see the code below.
+For the FLASH fits, only MSE is calculated using a built-in function (`flash_get_fitted_values()`). Confidence intervals and true and false positive rates are calculated by sampling from the posterior using function `flash_sampler()`. For details, see the code [below](#code).
 
 
 ## Results: null model
@@ -76,7 +76,7 @@ knitr::kable(tmp, digits=2)
 
 ### Independent and shared effects
 
-Again 80% of the columns of $X$ are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. $N(0, 2^2)$. The other half have entries that are identical across rows, with a value that is drawn from a $N(0, 2)$ distribution. (In other words, the covariance matrix for these columns is a matrix whose entries are all equal to 2.)
+Again 80% of the columns of $X$ are identically zero. But now, only half of the nonzero columns have entries that are i.i.d. $N(0, 2^2).$ The other half have entries that are identical across rows, with a value that is drawn from a $N(0, 2)$ distribution. (In other words, the covariance matrix for these columns is a matrix whose entries are all equal to 2.)
 
 ```{r sim3, echo=F}
 tmp <- readRDS(paste0(fpath, "sim3res.rds"))
@@ -118,7 +118,7 @@ knitr::kable(tmp, digits=2)
 
 ### Rank 5 model 
 
-This is the same as above with $k = 5$, with only 80% of the entries in $L$ equal to zero, and with the other entries i.i.d. $N(0, 1)$.
+This is the same as above with $k = 5$, with 80% of the entries in $L$ equal to zero, and with the other entries i.i.d. $N(0, 1)$.
 
 ```{r sim6, echo=F}
 tmp <- readRDS(paste0(fpath, "sim6res.rds"))
