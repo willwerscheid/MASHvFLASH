@@ -49,16 +49,16 @@ so that $I_{jm} = 1$ if column $j$ is "active" for factor $m$ and $I_{jm} = 0$ o
 Now, if one regards the variables $I_{jm}$ (as well as $L$) as fixed, then one obtains
 $$ \begin{aligned}
 \text{Cov} (X_{:, j}) 
-&= I_{j 1} \tau_1^2 \ell_1 \ell_1' + \ldots + I_{j_m} \tau_k^2 \ell_k \ell_k'
+&= I_{j 1} \tau_1^2 \ell_1 \ell_1' + \ldots + I_{j_k} \tau_k^2 \ell_k \ell_k'
 \end{aligned}$$
 
-In other words, depending on the values of $I_{j1}, \ldots, I_{jm}$, the elements of column $X_{:, j}$ will covary in one of $2^m$ possible ways.  
+In other words, depending on the values of $I_{j1}, \ldots, I_{jk}$, the elements of column $X_{:, j}$ will covary in one of $2^k$ possible ways.  
 
 ## Relation to mash
 
 In fact, if the priors on factors $f_1, \ldots, f_k$ are arbitrary mixtures of normals (including the point-normal priors discussed in the previous section), then fixing $L$ (and again assuming that the columns of $L$ are mutually orthogonal) results in the columns of $X$ being distributed (exchangeably) as a mixture of multivariate normals. In the point-normal case, 
-$$ X_{:, j} \sim \sum_{r = 1}^{2^m} N_n(0, \Sigma_r), $$
-where each $\Sigma_r$ is a conical combination of the rank-one covariance matrices $\ell_1 \ell_1', \ldots, \ell_m \ell_m'$.
+$$ X_{:, j} \sim \sum_{r = 1}^{\prod_{m=1}^k \gamma_m} N_n(0, \Sigma_r), $$
+where $\gamma_m$ is the number of components in the mixture prior on factor $f_m$ and each $\Sigma_r$ is a conical combination of the rank-one covariance matrices $\ell_1 \ell_1', \ldots, \ell_k \ell_k'$.
 
 `mashr` (see [here](https://stephenslab.github.io/mashr/index.html)) similarly models $X$ as a mixture of multivariate normals, so it makes sense to attempt to use `flashr` (which is, on its face, much simpler than `mashr`) to similar ends.
 
@@ -91,7 +91,7 @@ To fix standard errors in `flashr`, it is necessary to pass the data into `flash
 
 ## Fitting the flash object
 
-Finally, the recommended procedure is as follows:
+One way to fit the flash object is as follows:
 
 1. Create a flash data object, using parameter `S` to specify standard errors.
 
@@ -100,6 +100,8 @@ Finally, the recommended procedure is as follows:
 3. Add $n$ fixed one-hot loadings vectors to the flash fit object.
 
 4. Refine the flash fit object via backfitting, again using parameter option `var_type = "zero"`. The parameter option `nullcheck = FALSE` should also be used so that the canonical covariance structures are retained.
+
+Variations of this procedure are discussed in subsequent analyses (see, in particular, [here](MASHvFLASHsims.html#fitting_methods)).
 
 
 ## Example with simulated data
@@ -187,4 +189,4 @@ mash_mse <- sum((t(get_pm(m)) - X)^2)/(n * p)
 mash_mse / baseline_mse
 ```
 
-This is as expected, since the data were after all generated from the mash model. More generally, however, the two methods often perform quite similarly. See the simulation study [here](MASHvFLASHsims.html) and a comparison using GTEx data [here](MASHvFLASHgtex.html). 
+This is as expected, since the data were after all generated from the mash model. More generally, however, the two methods often perform quite similarly. 
