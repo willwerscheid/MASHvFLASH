@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-07-30</p>
+<p><strong>Last updated:</strong> 2018-08-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,34 +352,23 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/3d07af8c891b93cb224098857e523ba83e5cf564" target="_blank">3d07af8</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/4977a134b78603fea188e30742450731b46424ed" target="_blank">4977a13</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    data/.DS_Store
+    Ignored:    data/
     Ignored:    docs/.DS_Store
     Ignored:    docs/images/.DS_Store
     Ignored:    docs/images/.Rapp.history
     Ignored:    output/.DS_Store
     Ignored:    output/.Rapp.history
     Ignored:    output/MASHvFLASHgtex/.DS_Store
-    Ignored:    output/MASHvFLASHrandom/
     Ignored:    output/MASHvFLASHsims/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
-
-Untracked files:
-    Untracked:  code/MASHvFLASHgtex2.R
-    Untracked:  code/MASHvFLASHsims2.R
-    Untracked:  code/gtex3.R
-    Untracked:  output/MASHvFLASHsims2/
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
-    Deleted:    code/sims2.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -413,7 +402,24 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/3d07af8c891b93cb224098857e523ba83e5cf564/analysis/MASHvFLASHsims2.Rmd" target="_blank">3d07af8</a>
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/4977a134b78603fea188e30742450731b46424ed/analysis/MASHvFLASHsims2.Rmd" target="_blank">4977a13</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-05
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/MASHvFLASHsims2.html" target="_blank">59f8f12</a>
 </td>
 <td style="text-align:left;">
 Jason Willwerscheid
@@ -422,7 +428,7 @@ Jason Willwerscheid
 2018-07-30
 </td>
 <td style="text-align:left;">
-wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
+Build site.
 </td>
 </tr>
 <tr>
@@ -746,11 +752,11 @@ wflow_publish(“analysis/MASHvFLASHsims2.Rmd”)
 </div>
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
-<p>The fitting methods are identical to those described in my previous <a href="MASHvFLASHgtex.html">study of GTEx data</a>.</p>
+<p>The fitting methods are identical to those described in my <a href="MASHvFLASHgtex.html">study of GTEx data</a>.</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
-<p>I pre-run the script below and load the results from file.</p>
+<p>I pre-run the script <a href="#code">below</a> and load the results from file.</p>
 <pre class="r"><code>rrmses &lt;- sqrt(readRDS(&quot;./output/MASHvFLASHsims2/mses.rds&quot;))
 pr &lt;- readRDS(&quot;./output/MASHvFLASHsims2/pr.rds&quot;)</code></pre>
 <div id="rrmse-nulls" class="section level3">
@@ -800,6 +806,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_null-1.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/mse_null-1.png" target="_blank">0a83e6c</a>
 </td>
 <td style="text-align:left;">
@@ -834,6 +851,36 @@ Jason Willwerscheid
 </tbody>
 </table>
 <p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_null-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_null-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_null-2.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="rrmse-nonnulls" class="section level3">
 <h3>RRMSE (nonnulls)</h3>
@@ -893,6 +940,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-1.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-1.png" target="_blank">0a83e6c</a>
 </td>
 <td style="text-align:left;">
@@ -943,6 +1001,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-2.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-2.png" target="_blank">0a83e6c</a>
@@ -997,6 +1066,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-3.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-3.png" target="_blank">0a83e6c</a>
 </td>
 <td style="text-align:left;">
@@ -1030,12 +1110,102 @@ Jason Willwerscheid
 </tr>
 </tbody>
 </table>
-<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_nonnull-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-4.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_nonnull-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-5.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHsims2.Rmd/mse_nonnull-6.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mse_nonnull-6.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/mse_nonnull-6.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="fprtpr" class="section level3">
 <h3>FPR/TPR</h3>
 <p>As in my previous <a href="MASHvFLASHsims.html">simulation study</a>, I evaluate true and false positive rates using the built-in function <code>get_lfsr()</code> for MASH and by simulating from the posterior for FLASH. For each covariance structure, I plot the true positive rate for a given covariance structure against the <em>overall</em> false positive rate.</p>
-<p>Results are again fairly even, with a few exceptions where MASH clearly dominates FLASH. In particular, FLASH does relatively poorly on independent effects (types 1-3) and randomly generated covariance structures (types 12-14)</p>
+<p>Results are again fairly even, with a few exceptions where MASH clearly dominates FLASH. In particular, FLASH does poorly on independent effects (types 1-3) and randomly generated covariance structures (types 12-14)</p>
 <pre class="r"><code>get_fpr &lt;- function(pr) {
   nullidx &lt;- c(7, 9, 11, 13, 15)
   fp &lt;- 25 * rowSums(pr[, nullidx]) + 775 * (pr[, 23])
@@ -1075,6 +1245,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-1.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/tpr-1.png" target="_blank">0a83e6c</a>
@@ -1132,6 +1313,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-2.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/tpr-2.png" target="_blank">0a83e6c</a>
 </td>
 <td style="text-align:left;">
@@ -1185,6 +1377,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-3.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/tpr-3.png" target="_blank">0a83e6c</a>
@@ -1242,6 +1445,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-4.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/tpr-4.png" target="_blank">0a83e6c</a>
 </td>
 <td style="text-align:left;">
@@ -1284,6 +1498,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-5.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/tpr-5.png" target="_blank">0a83e6c</a>
@@ -1330,6 +1555,17 @@ Date
 <tbody>
 <tr>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-6.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0a83e6c569f6fd7cc777b26e9ee7a1e250db5932/docs/figure/MASHvFLASHsims2.Rmd/tpr-6.png" target="_blank">0a83e6c</a>
 </td>
 <td style="text-align:left;">
@@ -1356,11 +1592,101 @@ Jason Willwerscheid
 <pre class="r"><code>plot_fprvtpr(18, &quot;Random rank-10 (13)&quot;)
 plot_fprvtpr(19, &quot;Random full-rank (14)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of tpr-7.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-7.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot_fprvtpr(20, &quot;Identical plus independent (15)&quot;)
 plot_fprvtpr(21, &quot;Independent plus unique (16)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of tpr-8.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-8.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <pre class="r"><code>plot_fprvtpr(22, &quot;Identical plus unique (17)&quot;)</code></pre>
 <p><img src="figure/MASHvFLASHsims2.Rmd/tpr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of tpr-9.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/59f8f12362e4a107942064f5cd4cea2ac400eccf/docs/figure/MASHvFLASHsims2.Rmd/tpr-9.png" target="_blank">59f8f12</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-07-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 </div>
 <div id="code" class="section level2">
