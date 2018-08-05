@@ -286,7 +286,7 @@ rownames(agree_mat) <- colnames(agree_mat) <- colnames(all_fitted)
 round(agree_mat, digits=2)
 ```
 
-I will offer some explanations for the differences among fits in a subsequent analysis.
+I will offer some explanations for the differences among fits in subsequent analyses.
 
 
 ## FLASH loadings
