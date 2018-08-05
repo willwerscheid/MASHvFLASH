@@ -1,5 +1,5 @@
 ---
-title: 'MASH v FLASH GTEx analysis: “Top 20" v Zero'
+title: 'MASH v FLASH GTEx analysis: “Top 20" v "Zero"'
 output: 
   workflowr::wflow_html:
     code_folding: hide
