@@ -61,12 +61,12 @@ Finally, I included several combinations of the above types of effects. In parti
 
 ## Fitting methods
 
-The fitting methods are identical to those described in my previous [study of GTEx data](MASHvFLASHgtex.html).
+The fitting methods are identical to those described in my [study of GTEx data](MASHvFLASHgtex.html).
 
 
 ## Results
 
-I pre-run the script below and load the results from file.
+I pre-run the script [below](#code) and load the results from file.
 ```{r load_res}
 rrmses <- sqrt(readRDS("./output/MASHvFLASHsims2/mses.rds"))
 pr <- readRDS("./output/MASHvFLASHsims2/pr.rds")
@@ -152,7 +152,7 @@ for (i in 1:length(main.nonnull)) {
 
 As in my previous [simulation study](MASHvFLASHsims.html), I evaluate true and false positive rates using the built-in function `get_lfsr()` for MASH and by simulating from the posterior for FLASH. For each covariance structure, I plot the true positive rate for a given covariance structure against the *overall* false positive rate.
 
-Results are again fairly even, with a few exceptions where MASH clearly dominates FLASH. In particular, FLASH does relatively poorly on independent effects (types 1-3) and randomly generated covariance structures (types 12-14)
+Results are again fairly even, with a few exceptions where MASH clearly dominates FLASH. In particular, FLASH does poorly on independent effects (types 1-3) and randomly generated covariance structures (types 12-14)
 
 ```{r tpr}
 get_fpr <- function(pr) {
