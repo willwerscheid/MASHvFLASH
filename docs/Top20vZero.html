@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-04</p>
+<p><strong>Last updated:</strong> 2018-08-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/c018ca36e5c10476f5502b422393a8b6870a559f" target="_blank">c018ca3</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/2fb332d5ca0a5af683a1b92a522f2d9b5881b14c" target="_blank">2fb332d</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -369,9 +369,6 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
-
-Unstaged changes:
-    Modified:   code/gtexanalysis.R
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -400,6 +397,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/Top20vZero.html" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -558,17 +572,197 @@ select_tests &lt;- function(colsums, min_n = 4) {
 <pre class="r"><code># top20.v.zero &lt;- compare_methods(top20_lfsr, zero_lfsr, top20_pm, zero_pm)
 
 plot_it(2838)</code></pre>
-<p><img src="figure/Top20vZero.Rmd/lg_uniq-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/lg_uniq-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Top20vZero.Rmd/lg_uniq-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of lg_uniq-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/lg_uniq-1.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/lg_uniq-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of lg_uniq-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/lg_uniq-2.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <ol start="2" style="list-style-type: decimal">
 <li>In a second, infrequent class of cases, at least one of the additional 17 data-driven factors in the “Zero” fit turns out to be important. In the following example, the 21st loading, which quite plausibly introduces correlations among ovarian, uterine, and vaginal tissues (see <a href="MASHvFLASHgtex2.html#flash_loadings">here</a>), has a moderate weight. This pushes the estimates for these tissues down just enough to make the effects more significant than effects in other non-brain tissues. As in the previous example, the “Top 20” fit has a much simpler interpretation: in this case, only the “equal effects” loading is important.</li>
 </ol>
 <pre class="r"><code>plot_it(2821)</code></pre>
-<p><img src="figure/Top20vZero.Rmd/extra_dd-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/extra_dd-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Top20vZero.Rmd/extra_dd-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of extra_dd-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/extra_dd-1.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/extra_dd-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of extra_dd-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/extra_dd-2.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Finally, there is a class of cases where posterior means are very similar but one method finds significance where the other does not. What’s happening, I think, is that because it does not include a canonical equal-effects loading, the “Zero” fit generally loads the second data-driven factor as well as the first. In other words, the “Zero” fit makes up for the absence of an equal-effects factor by combining the first two data-driven factors, which increases the degree of uncertainty in the point estimates.</li>
 </ol>
 <pre class="r"><code>plot_it(14572)</code></pre>
-<p><img src="figure/Top20vZero.Rmd/not_interpretable-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/not_interpretable-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Top20vZero.Rmd/not_interpretable-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of not_interpretable-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/not_interpretable-1.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/not_interpretable-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of not_interpretable-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/not_interpretable-2.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="significant-for-zero-not-top-20" class="section level2">
 <h2>Significant for Zero, not Top 20</h2>
@@ -577,7 +771,187 @@ plot_it(2838)</code></pre>
 for (n in lg.uniq) {
   plot_it(n)
 }</code></pre>
-<p><img src="figure/Top20vZero.Rmd/zero_not_top20-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/zero_not_top20-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/zero_not_top20-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/zero_not_top20-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/zero_not_top20-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/zero_not_top20-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Top20vZero.Rmd/zero_not_top20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of zero_not_top20-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/zero_not_top20-1.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/zero_not_top20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of zero_not_top20-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/zero_not_top20-2.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/zero_not_top20-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of zero_not_top20-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/zero_not_top20-3.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/zero_not_top20-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of zero_not_top20-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/zero_not_top20-4.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/zero_not_top20-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of zero_not_top20-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/zero_not_top20-5.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/zero_not_top20-6.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of zero_not_top20-6.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/zero_not_top20-6.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="different-posterior-means" class="section level2">
 <h2>Different posterior means</h2>
@@ -586,7 +960,187 @@ for (n in lg.uniq) {
 for (n in diff.pms) {
   plot_it(n)
 }</code></pre>
-<p><img src="figure/Top20vZero.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/diff_pms-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Top20vZero.Rmd/diff_pms-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Top20vZero.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/diff_pms-1.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/diff_pms-2.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/diff_pms-3.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/diff_pms-4.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/diff_pms-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/diff_pms-5.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/Top20vZero.Rmd/diff_pms-6.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-6.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/1d57c0873b1cf4b4e43b78ff76e5a4f681fad8f8/docs/figure/Top20vZero.Rmd/diff_pms-6.png" target="_blank">1d57c08</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-04
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
@@ -606,7 +1160,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] flashr_0.5-12 mashr_0.2-7   ashr_2.2-10  
+[1] flashr_0.5-13 mashr_0.2-7   ashr_2.2-10  
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.17        pillar_1.2.1        compiler_3.4.3     
