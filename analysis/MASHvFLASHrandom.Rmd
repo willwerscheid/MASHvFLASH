@@ -25,7 +25,7 @@ m_diag <- readRDS("./output/MASHvFLASHrandom/mdiag.rds")
 m_t <- readRDS("./output/MASHvFLASHrandom/mt.rds")
 ```
 
-Comparisons of mean-squared error and confidence interval coverage are as follows. FLASH again outperforms MASH, but not quite so drastically it did on the "strong" tests.
+Comparisons of mean-squared error and confidence interval coverage are as follows. FLASH again outperforms MASH, but not quite so dramatically as it did on the "strong" tests.
 
 ```{r res1}
 fl_fit_names <- c("pn.zero", "pn.OHF", "ash.zero", "ash.OHF")
