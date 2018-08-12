@@ -12,9 +12,11 @@ output:
 
 [MASH v FLASH detailed simulation study.](MASHvFLASHsims2.html) Compares the performance of MASH and FLASH on different covariance structures in a single simulation setting.
 
-[MASH v FLASH analysis of GTEx data (strong tests).](MASHvFLASHgtex.html) Compares MASH and FLASH fits to "strong" tests from the GTEx dataset.
+The next two analyses compare MASH and FLASH fits using datasets from the GTEx project.
 
-[MASH v FLASH analysis of GTEx data (random tests).](MASHvFLASHrandom.html) Same, but uses random tests from the GTEx dataset.
+* [MASH v FLASH analysis of GTEx data (strong tests).](MASHvFLASHgtex.html)
+
+* [MASH v FLASH analysis of GTEx data (random tests).](MASHvFLASHrandom.html)
 
 [MASH v FLASH workflows for GTEx.](MASHvFLASHgtex2.html) Proposes improved workflows to obtain MASH and FLASH fits to GTEx data. Describes the MASH fit and five different FLASH fits ("OHF", "Top 5", "Top 10", "Top 20", and "Zero") in detail.
 
