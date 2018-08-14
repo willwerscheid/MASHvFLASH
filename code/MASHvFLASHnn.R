@@ -7,7 +7,7 @@ strong_data <- flash_set_data(strong, S = 1)
 ebnm_param = list(f = list(), l = list(mixcompdist="+uniform"))
 
 system.time(
-  fl_g <- flash_add_greedy(strong_data,
+  fl <- flash_add_greedy(strong_data,
                          100,
                          var_type="zero",
                          ebnm_fn="ebnm_ash",
