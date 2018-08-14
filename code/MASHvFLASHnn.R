@@ -7,12 +7,14 @@ strong_data <- flash_set_data(strong, S = 1)
 ebnm_param = list(f = list(), l = list(mixcompdist="+uniform"))
 
 system.time(
-  fl <- flash_add_greedy(strong_data,
+  fl_g <- flash_add_greedy(strong_data,
                          100,
                          var_type="zero",
                          ebnm_fn="ebnm_ash",
                          ebnm_param=ebnm_param)
 )
+
+saveRDS(fl, "/Users/willwerscheid/GitHub/MASHvFLASH/output/MASHvFLASHnn/fl_g.rds")
 
 system.time(
   fl <- flash_backfit(strong_data,
