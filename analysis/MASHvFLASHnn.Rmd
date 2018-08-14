@@ -1,0 +1,124 @@
+---
+title: "Nonnegative FLASH loadings"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+I argued in the [previous analysis](conclusions.html) that better loadings might be obtained if nonnegative priors were used. Here I fit a flash object to the "strong" GTEx dataset using "+uniform" ash priors on the loadings.
+
+
+## Fitting procedure
+
+I alternate between greedily adding factor/loading pairs (with "+uniform" ash priors on the loadings and normal-mixture ash priors on the factors) and backfitting the entire flash object. For the backfits, I set `tol = 1` because convergence can be very slow. I repeat these two steps until `flash_add_greedy` no longer adds any additional factor/loadings.
+
+```{r fit_table}
+iteration <- 1:7
+factors_added <- c(34, 1, 1, 1, 2, 1, 0)
+factors_zeroed_out <- c(0, 0, 1, 0, 0, 0, 0)
+objective <- -1250000 - c(7689, 7595, 7140, 6685, 6362, 6098, 6098)
+minutes_taken <- c(61, 3, 13, 26, 8, 16, 0)
+data <- data.frame("Iteration" = iteration, 
+                   "Factors added" = factors_added,
+                   "Factors deleted" = factors_zeroed_out,
+                   "Final objective" = objective,
+                   "Minutes" = minutes_taken)
+
+knitr::kable(data)
+```
+
+Finally, I tighten the tolerance to 0.1 and run a final backfit, which increases the objective to -1256080 (this takes 25 minutes).
+
+## Loadings
+
+I load the results from file.
+```{r load}
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
+fl <- readRDS("./output/MASHvFLASHnn/fl.rds")
+fl_g <- readRDS("./output/MASHvFLASHnn/fl_g.rds")
+```
+
+### Equal effects
+
+The first loading is well represented by the canonical "equal effects" loading.
+```{r mean_effect}
+missing.tissues <- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
+gtex.colors <- read.table("https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE", sep = '\t', comment.char = '')[-missing.tissues, 2]
+pve <- flash_get_pve(fl, drop_zero_factors = FALSE)
+
+par(mar=c(1,1,1,1))
+barplot(fl$EL[, 1], 
+        main=paste0('Loading 1: PVE = ', signif(pve[1], digits=3)), 
+        las=2, cex.names=0.4, yaxt='n',
+        col=as.character(gtex.colors), names="")
+```
+
+### Unique effects
+
+Many loadings are well approximated by canonical "unique effects." Loadings 3, 4, 7, 9-10, 14-16, 18-21, 26-29, and 32-40 place nearly all of their weight on a single tissue.
+```{r uniq}
+uniq <- c(3, 4, 7, 9, 10, 14:16, 18:21, 26:29, 32:40)
+uniq_order <- order(pve[uniq], decreasing = TRUE)
+tissue_names <- rownames(fl$EL)
+
+par(mar=c(1,1,1,1))
+par(mfrow=c(3,2))
+for(i in uniq[uniq_order]){
+  barplot(fl$EL[, i], 
+          main=paste0(tissue_names[which.max(fl$EL[, i])], 
+                      ': PVE = ', signif(pve[i], digits=3)), 
+          las=2, cex.names=0.4, yaxt='n',
+          col=as.character(gtex.colors), names="")
+}
+```
+
+### Multi-tissue effects
+
+The remaining loadings pick up on effects that are strongly correlated across several tissues. These are the loadings I'm especially interested in, since they correspond to correlation structures that are not covered by canonical loadings.
+```{r multi}
+multi <- c(2, 5, 6, 8, 11:13, 17, 22:25, 31)
+multi_order <- order(pve[multi], decreasing = TRUE)
+display_names <- strtrim(tissue_names, 10)
+
+for(i in multi[multi_order]){
+  plot_names <- display_names
+  plot_names[fl$EL[, i] < 0.25 * max(fl$EL[, i])] <- ""
+  barplot(fl$EL[, i], 
+          main=paste0('Loading ', i, 
+                      ': PVE = ', signif(pve[i], digits=3)), 
+          las=2, cex.names=0.8, yaxt='n',
+          col=as.character(gtex.colors), names=plot_names)
+}
+```
+
+### Greedy multi-tissue effects
+
+As indicated [above](#fitting_procedure), these loadings take about two and a half hours to obtain. However, loadings that are qualitatively very similar can be obtained via a single call to `flash_add_greedy` (with no backfitting), which takes less than 15 minutes. A comparison between these easily obtained loadings and the loadings yielded by the more laborious procedure detailed above follows:
+```{r greedy_multi}
+par(mfrow=c(2,2))
+display_names <- strtrim(tissue_names, 20)
+for(i in multi[multi_order]){
+  plot_names <- display_names
+  plot_names[fl_g$EL[, i] < 0.25 * max(fl_g$EL[, i])] <- ""
+  barplot(fl_g$EL[, i], 
+          main=paste0('Greedy loading ', i), 
+          las=2, cex.names=0.4, yaxt='n',
+          col=as.character(gtex.colors), names=plot_names)
+    barplot(fl$EL[, i], 
+          main=paste0('Backfitted loading ', i), 
+          las=2, cex.names=0.4, yaxt='n',
+          col=as.character(gtex.colors), names=plot_names)
+}
+```
+
+## Code
+
+Click "Code" to view the code used to obtain the above results.
+```{r code1, code=readLines("../code/MASHvFLASHnn.R"), eval=FALSE}
+```
