@@ -31,3 +31,5 @@ Next up is a series of analyses that examine individual tests in an effort to id
 * [MASH v FLASH GTEx analysis: "Top 20" v "Zero".](Top20vZero.html)
 
 * [Some conclusions.](conclusions.html)
+
+[Nonnegative FLASH loadings.](MASHvFLASHnn.html) Uses nonnegative priors to obtain nicer data-driven loadings.
