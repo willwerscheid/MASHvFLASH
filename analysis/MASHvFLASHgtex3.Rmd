@@ -1,0 +1,116 @@
+---
+title: 'MASH v FLASH GTEx analysis: nonnegative loadings'
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Here I fit MASH and FLASH objects to the "strong" GTEx dataset using the nonnegative loadings obtained in the [previous analysis](MASHvFLASHnn.html). See [below](#code) for code and [here](MASHvOHF.html#introduction_to_plots) for an introduction to the plots below.
+
+
+## Fitting methods
+
+The workflows are similar to those described [here](MASHvFLASHgtex2.Rmd).
+
+The workflow for FLASH is identical, except that I use the nonnegative loadings from the [previous analysis](MASHvFLASHnn.html) as my "data-driven" loadings. (To save time, I only use the loadings corresponding to "multi-tissue effects," since the other loadings are well represented by "canonical" loadings. Further, to aid interpretation, I normalize the loadings so that each has $\ell_\infty$-norm equal to 1.)
+
+<!-- Additionally, I have manually adjusted some of the unique effects priors obtained by backfitting the loadings to the random dataset. As I point out [here](conclusions.html) (conclusion #3), some of these priors are effectively a point mass at zero, which causes an excessive amount of shrinkage in tests where a unique effect is visibly present. I adjust these priors so that they have sparsity ($\pi_0$) equal to $1/20000$ (since there are 20000 tests) and conditional variance ($1/a$) equal to one (this value was chosen somewhat arbitrarily, but is similar to estimated values of $1/a$ for other unique effects). (This adjustment is somewhat analogous to adding pseudocounts to count data.) -->
+
+The workflow for MASH is also identical, except that I use rank-one matrices derived from the nonnegative loadings rather than rank-one matrices obtained using Extreme Deconvolution. More precisely, for each multi-tissue effect $\ell_i$, I add the matrix $\ell_i \ell_i^T$ to the list of matrices $U_i$ in the MASH mixture model.
+
+
+## Results
+
+I pre-run the code and load the fits from file.
+
+```{r load_everything}
+library(mashr)
+devtools::load_all("/Users/willwerscheid/GitHub/flashr/")
+
+source("./code/gtexanalysis.R")
+
+gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE")))
+strong <- t(gtex$strong.z)
+
+fpath <- "./output/MASHvFLASHgtex3/"
+m_final <- readRDS(paste0(fpath, "m.rds"))
+fl_final <- readRDS(paste0(fpath, "fl.rds"))
+
+m_lfsr <- t(get_lfsr(m_final))
+m_pm <- t(get_pm(m_final))
+
+fl_lfsr <- readRDS(paste0(fpath, "fllfsr.rds"))
+fl_pm <- flash_get_fitted_values(fl_final)
+```
+
+There is significant disagreement between the two fits:
+```{r confusion}
+signif_by_mash = as.vector(m_lfsr < 0.05)
+signif_by_flash = as.vector(fl_lfsr < 0.05)
+
+round(table(signif_by_mash, signif_by_flash) / length(signif_by_mash),
+      digits = 2)
+```
+
+
+### Significant for FLASH, not MASH
+
+As discussed in previous analyses (see, for example, [here](MASHvOHF.html#significant_for_ohf,_not_mash)), FLASH often finds a combination of a large unique effect and a small equal effect where MASH only finds the unique effect to be significant (or, more rarely, no effects).
+
+```{r flash_not_mash}
+# interesting.tests <- compare_methods(fl_lfsr, m_lfsr, fl_pm, m_pm)
+
+par(mfrow=c(1, 2))
+
+identical.plus.unique <- c(336, 7526, 2696, 611)
+for (n in identical.plus.unique) {
+  plot_test(n, fl_lfsr, fl_pm, "FLASH")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
+
+
+### Significant for MASH, not FLASH
+
+In many cases, MASH finds all effects to be significant where FLASH only finds a single unique effect. What happens in these cases, I think, is that MASH puts nearly all posterior weight on a single data-driven covariance matrix. Since these covariance matrices are each rank-one with no entries that are exactly equal to zero, even tiny effects will appear significant (since they are sampled away from zero nearly all of the time).
+
+In contrast, since the FLASH model allows for covariance structures that are linear combinations of these rank-one matrices, the FLASH posteriors are far less likely to follow these patterns of perfect correlation.
+
+```{r mash_not_flash}
+par(mfrow=c(1, 2))
+
+mash.not.flash <- c(228, 65, 2903, 1460)
+for (n in mash.not.flash) {
+  plot_test(n, fl_lfsr, fl_pm, "FLASH")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
+
+
+### Different posterior means
+
+As discussed [here](MASHvOHF.html#different_posterior_means), MASH often does poorly when effect sizes are uniformly large.
+
+```{r diff_pms}
+par(mfrow=c(1, 2))
+
+diff_pms <- c(9956, 5293, 13168, 3680)
+for (n in diff_pms) {
+  plot_test(n, fl_lfsr, fl_pm, "FLASH")
+  plot_test(n, m_lfsr, m_pm, "MASH")
+}
+```
+
+## Code
+
+Click "Code" to view the code used to obtain the fits used in this analysis.
+
+```{r code, code=readLines("../code/MASHvFLASHgtex3.R"), eval=FALSE}
+```
+
