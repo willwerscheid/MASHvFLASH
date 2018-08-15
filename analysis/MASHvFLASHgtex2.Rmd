@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 While I previously compared MASH and FLASH fits on [strong tests only](MASHvFLASHgtex.html) and on a [random subset of tests](MASHvFLASHrandom.html), here I propose several workflows that are analogous to the one suggested for the GTEx data in [this MASH vignette](https://stephenslab.github.io/mashr/articles/eQTL_outline.html). For the code used in this analysis, see [below](#code).
 
 
-## Fitting Methods
+## Fitting methods
 
 For MASH, I follow the workflow in the vignette linked above, except that I assume that the null tests are uncorrelated (that is, I set $V = I$). This is almost certainly not the case, but some more work needs to be done before we can handle the case $V \ne I$ in FLASH.
 
