@@ -33,3 +33,5 @@ Next up is a series of analyses that examine individual tests in an effort to id
 * [Some conclusions.](conclusions.html)
 
 [Nonnegative FLASH loadings.](MASHvFLASHnn.html) Uses nonnegative priors to obtain nicer data-driven loadings.
+
+[MASH v FLASH GTEx analysis: nonnegative loadings.](MASHvFLASHgtex3.html) Compares MASH and FLASH fits using the nonnegative data-driven loadings obtained in the previous analysis.
