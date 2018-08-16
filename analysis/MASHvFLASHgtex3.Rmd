@@ -16,7 +16,7 @@ Here I fit MASH and FLASH objects to the "strong" GTEx dataset using the nonnega
 
 ## Fitting methods
 
-The workflows are similar to those described [here](MASHvFLASHgtex2.Rmd).
+The workflows are similar to those described [here](MASHvFLASHgtex2.html).
 
 The workflow for FLASH is identical, except that I use the nonnegative loadings from the [previous analysis](MASHvFLASHnn.html) as my "data-driven" loadings. (To save time, I only use the loadings corresponding to "multi-tissue effects," since the other loadings are well represented by "canonical" loadings. Further, to aid interpretation, I normalize the loadings so that each has $\ell_\infty$-norm equal to 1.)
 
