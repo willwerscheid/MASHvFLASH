@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-15</p>
+<p><strong>Last updated:</strong> 2018-08-16</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/79641fe3c907f4d6fa101bbf1e484ca02cdf6710" target="_blank">79641fe</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/be0d4d7193a13f1b0357d58fa14f992540b25396" target="_blank">be0d4d7</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -369,11 +369,6 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
-
-Unstaged changes:
-    Modified:   code/MASHvFLASHgtex3.R
-    Modified:   output/MASHvFLASHgtex3/fl.rds
-    Modified:   output/MASHvFLASHgtex3/fllfsr.rds
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -407,6 +402,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/be0d4d7193a13f1b0357d58fa14f992540b25396/analysis/MASHvFLASHgtex3.Rmd" target="_blank">be0d4d7</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-16
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHgtex3.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/MASHvFLASHgtex3.html" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/79641fe3c907f4d6fa101bbf1e484ca02cdf6710/analysis/MASHvFLASHgtex3.Rmd" target="_blank">79641fe</a>
 </td>
 <td style="text-align:left;">
@@ -430,7 +459,7 @@ wflow_publish(“analysis/MASHvFLASHgtex3.Rmd”)
 </div>
 <div id="fitting-methods" class="section level2">
 <h2>Fitting methods</h2>
-<p>The workflows are similar to those described <a href="MASHvFLASHgtex2.Rmd">here</a>.</p>
+<p>The workflows are similar to those described <a href="MASHvFLASHgtex2.html">here</a>.</p>
 <p>The workflow for FLASH is identical, except that I use the nonnegative loadings from the <a href="MASHvFLASHnn.html">previous analysis</a> as my “data-driven” loadings. (To save time, I only use the loadings corresponding to “multi-tissue effects,” since the other loadings are well represented by “canonical” loadings. Further, to aid interpretation, I normalize the loadings so that each has <span class="math inline">\(\ell_\infty\)</span>-norm equal to 1.)</p>
 <!-- Additionally, I have manually adjusted some of the unique effects priors obtained by backfitting the loadings to the random dataset. As I point out [here](conclusions.html) (conclusion #3), some of these priors are effectively a point mass at zero, which causes an excessive amount of shrinkage in tests where a unique effect is visibly present. I adjust these priors so that they have sparsity ($\pi_0$) equal to $1/20000$ (since there are 20000 tests) and conditional variance ($1/a$) equal to one (this value was chosen somewhat arbitrarily, but is similar to estimated values of $1/a$ for other unique effects). (This adjustment is somewhat analogous to adding pseudocounts to count data.) -->
 <p>The workflow for MASH is also identical, except that I use rank-one matrices derived from the nonnegative loadings rather than rank-one matrices obtained using Extreme Deconvolution. More precisely, for each multi-tissue effect <span class="math inline">\(\ell_i\)</span>, I add the matrix <span class="math inline">\(\ell_i \ell_i^T\)</span> to the list of matrices <span class="math inline">\(U_i\)</span> in the MASH mixture model.</p>
@@ -478,7 +507,127 @@ for (n in identical.plus.unique) {
   plot_test(n, fl_lfsr, fl_pm, &quot;FLASH&quot;)
   plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
 }</code></pre>
-<p><img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_not_mash-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/flash_not_mash-1.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_not_mash-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/flash_not_mash-2.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_not_mash-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/flash_not_mash-3.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/flash_not_mash-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash_not_mash-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/flash_not_mash-4.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="significant-for-mash-not-flash" class="section level3">
 <h3>Significant for MASH, not FLASH</h3>
@@ -491,7 +640,127 @@ for (n in mash.not.flash) {
   plot_test(n, fl_lfsr, fl_pm, &quot;FLASH&quot;)
   plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
 }</code></pre>
-<p><img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mash_not_flash-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/mash_not_flash-1.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mash_not_flash-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/mash_not_flash-2.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mash_not_flash-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/mash_not_flash-3.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/mash_not_flash-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of mash_not_flash-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/mash_not_flash-4.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="different-posterior-means" class="section level3">
 <h3>Different posterior means</h3>
@@ -503,7 +772,127 @@ for (n in diff_pms) {
   plot_test(n, fl_lfsr, fl_pm, &quot;FLASH&quot;)
   plot_test(n, m_lfsr, m_pm, &quot;MASH&quot;)
 }</code></pre>
-<p><img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/diff_pms-1.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/diff_pms-2.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/diff_pms-3.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHgtex3.Rmd/diff_pms-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of diff_pms-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/48615e413c33a593baccbb7919dcacc48d3c48b6/docs/figure/MASHvFLASHgtex3.Rmd/diff_pms-4.png" target="_blank">48615e4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 </div>
 <div id="code" class="section level2">
