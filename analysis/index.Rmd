@@ -32,7 +32,7 @@ Next up is a series of analyses that examine individual tests in an effort to id
 
 * [Some conclusions.](conclusions.html)
 
-Next, I experiment with putting nonnegative priors on the loadings:
+Next, I experiment with putting nonnegative priors on loadings:
 
 * [Nonnegative FLASH loadings.](MASHvFLASHnn.html) Uses nonnegative priors to obtain nicer data-driven loadings.
 

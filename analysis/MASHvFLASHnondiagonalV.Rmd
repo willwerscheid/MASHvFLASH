@@ -19,7 +19,7 @@ I pre-run the code [below](#code) and load the results from file.
 
 ## Comparison with previous results
 
-Whereas my [earlier analysis](MASHvFLASHnn.html) (which implicitly assumed that $V = I$) found 39 data-driven loadings, here I was only able to 26 obtain loadings. 
+Whereas my [earlier analysis](MASHvFLASHnn.html) (which implicitly assumed that $V = I$) found 39 data-driven loadings, here I was only able to obtain 26. 
 
 ### Similar loadings
 
