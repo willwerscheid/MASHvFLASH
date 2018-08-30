@@ -32,6 +32,10 @@ Next up is a series of analyses that examine individual tests in an effort to id
 
 * [Some conclusions.](conclusions.html)
 
-[Nonnegative FLASH loadings.](MASHvFLASHnn.html) Uses nonnegative priors to obtain nicer data-driven loadings.
+Next, I experiment with putting nonnegative priors on the loadings:
 
-[MASH v FLASH GTEx analysis: nonnegative loadings.](MASHvFLASHgtex3.html) Compares MASH and FLASH fits using the nonnegative data-driven loadings obtained in the previous analysis.
+* [Nonnegative FLASH loadings.](MASHvFLASHnn.html) Uses nonnegative priors to obtain nicer data-driven loadings.
+
+* [MASH v FLASH GTEx analysis: nonnegative loadings.](MASHvFLASHgtex3.html) Compares MASH and FLASH fits using the nonnegative data-driven loadings obtained in the previous analysis.
+
+* [Fitting nonnegative loadings with a non-diagonal error covariance structure.](MASHvFLASHnondiagonalV.html) Uses the trick discussed [here](https://willwerscheid.github.io/FLASHvestigations/arbitraryV.html) to fit a non-diagonal $V$ and compares resulting loadings with those of previous analyses.
