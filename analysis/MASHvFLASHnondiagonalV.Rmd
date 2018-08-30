@@ -3,7 +3,7 @@ title: "Nonnegative loadings with non-diagonal V"
 output: 
   workflowr::wflow_html:
     code_folding: hide
-------
+---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
