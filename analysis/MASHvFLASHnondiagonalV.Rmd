@@ -1,0 +1,91 @@
+---
+title: "Nonnegative loadings with non-diagonal V"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+------
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Here I again fit nonnegative loadings to the "strong" GTEx dataset, but I now use the trick discussed [here](https://willwerscheid.github.io/FLASHvestigations/arbitraryV.html)
+to fit a non-diagonal error covariance matrix $V$.
+
+I pre-run the code [below](#code) and load the results from file.
+
+
+## Comparison with previous results
+
+Whereas my [earlier analysis](MASHvFLASHnn.html) (which implicitly assumed that $V = I$) found 39 data-driven loadings, here I was only able to 26 obtain loadings. 
+
+### Similar loadings
+
+I first plot the new loadings side by side with the previous loadings to which they most closely correspond. Note that, in general, the previous loadings tend to be sparser than these new loadings. Further, this new approach finds two unique effects (caudate basal ganglia and nucleus accumbens basal ganglia) where the previous approach very plausibly found correlations among three types of basal ganglia (loading 25). However, the adipose tissue effects (loading 11) do not get tangled up with the tibial nerve tissue effect (as they did in the previous approach).
+
+```{r shared}
+nondiag <- readRDS("./output/MASHvFLASHnondiagonalV/2dRepeat3.rds")
+diag <- readRDS("./output/MASHvFLASHnn/fl.rds")
+
+nondiag_order <- c(44:54, 54:nondiag$nfactors)
+diag_order <- c(1, 3, 6, 10,
+                4, 9, 7, 15,
+                5, 13, 8, 23, 20,
+                21, 12, 14, 16,
+                17, 18, 19, 2,
+                24, 25, 34, 32,
+                25, 28)
+                
+diag_not_nondiag <- setdiff(c(1:29, 31:40), diag_order)
+
+tissue_names <- rownames(diag$EL)
+
+missing.tissues <- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
+gtex.colors <- read.table("https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE", sep = '\t', comment.char = '')[-missing.tissues, 2]
+gtex.colors <- as.character(gtex.colors)
+
+par(mfrow=c(2,2))
+display_names <- strtrim(tissue_names, 20)
+for(i in 1:length(nondiag_order)) {
+  plot_names <- display_names
+  
+  next_nondiag <- nondiag$fit$EL[, nondiag_order[i]]
+  plot_names[next_nondiag < 0.25 * max(next_nondiag)] <- ""
+  barplot(next_nondiag, 
+          main=paste0('Nondiagonal V, loading ', nondiag_order[i] - 43), 
+          las=2, cex.names=0.4, yaxt='n',
+          col=gtex.colors, names=plot_names)
+          
+  barplot(diag$EL[, diag_order[i]], 
+          main=paste0('Diagonal V, loading ', diag_order[i]), 
+          las=2, cex.names=0.4, yaxt='n',
+          col=gtex.colors, names=plot_names)
+}
+```
+
+### Differences
+
+Next, I plot previous loadings that do not correspond to any of the new loadings. One of these (loading 11) may indeed be an artefactual loading that corresponds to covariance in errors rather than biological reality. However, two of the others (loadings 22 and 31) describe very plausible correlations (among ovarian, uterine, and vaginal tissues on the one hand, and among sun-exposed and non-exposed skin tissues on the other). The remaining are unique effects. 
+
+```{r extra}
+par(mfrow=c(2,2))
+for (i in 1:length(diag_not_nondiag)) {
+  plot_names <- display_names
+  
+  next_diag <- diag$EL[, diag_not_nondiag[i]]
+  plot_names[next_diag < 0.25 * max(next_diag)] <- ""
+  barplot(next_diag, 
+          main=paste0('Diagonal, loading ', diag_not_nondiag[i]), 
+          las=2, cex.names=0.4, yaxt='n',
+          col=gtex.colors, names=plot_names)
+}
+```
+
+
+## Code
+
+Click "Code" to view the code used to obtain the above results.
+```{r code, code=readLines("../code/MASHvFLASHnondiagonalV.R"), eval=FALSE}
+```
