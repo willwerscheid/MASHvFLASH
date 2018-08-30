@@ -11,7 +11,7 @@
 
 
 
-<title></title>
+<title>Nonnegative loadings with non-diagonal V</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,6 +23,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -163,6 +164,14 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 
@@ -304,12 +313,151 @@ div.section {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
+
+<h1 class="title toc-ignore">Nonnegative loadings with non-diagonal V</h1>
 
 </div>
 
 
+<p><strong>Last updated:</strong> 2018-08-30</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180609)</code> </summary></p>
+<p>The command <code>set.seed(20180609)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/861ba076ee8c29f2344fb3f6ed7e105dbc1712da" target="_blank">861ba07</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/
+    Ignored:    docs/.DS_Store
+    Ignored:    docs/images/.DS_Store
+    Ignored:    docs/images/.Rapp.history
+    Ignored:    output/.DS_Store
+    Ignored:    output/.Rapp.history
+    Ignored:    output/MASHvFLASHgtex/.DS_Store
+    Ignored:    output/MASHvFLASHsims/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
+
+Untracked files:
+    Untracked:  code/MASHvFLASHnnrefine.R
+    Untracked:  code/MASHvFLASHnondiagonalV.R
+    Untracked:  output/MASHvFLASHnondiagonalV/
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/861ba076ee8c29f2344fb3f6ed7e105dbc1712da/analysis/MASHvFLASHnondiagonalV.Rmd" target="_blank">861ba07</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHnondiagonalV.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/MASHvFLASHnondiagonalV.html" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/fad7859708bb7f76abb3d682da170d2b1d063c50/analysis/MASHvFLASHnondiagonalV.Rmd" target="_blank">fad7859</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHnondiagonalV.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>Here I again fit nonnegative loadings to the “strong” GTEx dataset, but I now use the trick discussed <a href="https://willwerscheid.github.io/FLASHvestigations/arbitraryV.html">here</a> to fit a non-diagonal error covariance matrix <span class="math inline">\(V\)</span>.</p>
@@ -358,7 +506,427 @@ for(i in 1:length(nondiag_order)) {
           las=2, cex.names=0.4, yaxt=&#39;n&#39;,
           col=gtex.colors, names=plot_names)
 }</code></pre>
-<p><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-14.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-1.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-2.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-3.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-4.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-5.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-5.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-5.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-6.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-6.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-6.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-7.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-7.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-7.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-8.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-8.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-8.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-9.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-9.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-9.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-10.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-10.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-10.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-11.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-11.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-11.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-12.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-12.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-12.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-13.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-13.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-13.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-14.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of shared-14.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/shared-14.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="differences" class="section level3">
 <h3>Differences</h3>
@@ -374,7 +942,127 @@ for (i in 1:length(diag_not_nondiag)) {
           las=2, cex.names=0.4, yaxt=&#39;n&#39;,
           col=gtex.colors, names=plot_names)
 }</code></pre>
-<p><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of extra-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/extra-1.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-2.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of extra-2.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/extra-2.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-3.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of extra-3.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/extra-3.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-4.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of extra-4.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/extra-4.png" target="_blank">273efe5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 </div>
 <div id="code" class="section level2">
