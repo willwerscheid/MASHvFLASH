@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title></title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MASHvFLASH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/willwerscheid/MASHvFLASH">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Here I again fit nonnegative loadings to the “strong” GTEx dataset, but I now use the trick discussed <a href="https://willwerscheid.github.io/FLASHvestigations/arbitraryV.html">here</a> to fit a non-diagonal error covariance matrix <span class="math inline">\(V\)</span>.</p>
+<p>I pre-run the code <a href="#code">below</a> and load the results from file.</p>
+</div>
+<div id="comparison-with-previous-results" class="section level2">
+<h2>Comparison with previous results</h2>
+<p>Whereas my <a href="MASHvFLASHnn.html">earlier analysis</a> (which implicitly assumed that <span class="math inline">\(V = I\)</span>) found 39 data-driven loadings, here I was only able to 26 obtain loadings.</p>
+<div id="similar-loadings" class="section level3">
+<h3>Similar loadings</h3>
+<p>I first plot the new loadings side by side with the previous loadings to which they most closely correspond. Note that, in general, the previous loadings tend to be sparser than these new loadings. Further, this new approach finds two unique effects (caudate basal ganglia and nucleus accumbens basal ganglia) where the previous approach very plausibly found correlations among three types of basal ganglia (loading 25). However, the adipose tissue effects (loading 11) do not get tangled up with the tibial nerve tissue effect (as they did in the previous approach).</p>
+<pre class="r"><code>nondiag &lt;- readRDS(&quot;./output/MASHvFLASHnondiagonalV/2dRepeat3.rds&quot;)
+diag &lt;- readRDS(&quot;./output/MASHvFLASHnn/fl.rds&quot;)
+
+nondiag_order &lt;- c(44:54, 54:nondiag$nfactors)
+diag_order &lt;- c(1, 3, 6, 10,
+                4, 9, 7, 15,
+                5, 13, 8, 23, 20,
+                21, 12, 14, 16,
+                17, 18, 19, 2,
+                24, 25, 34, 32,
+                25, 28)
+                
+diag_not_nondiag &lt;- setdiff(c(1:29, 31:40), diag_order)
+
+tissue_names &lt;- rownames(diag$EL)
+
+missing.tissues &lt;- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
+gtex.colors &lt;- read.table(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE&quot;, sep = &#39;\t&#39;, comment.char = &#39;&#39;)[-missing.tissues, 2]
+gtex.colors &lt;- as.character(gtex.colors)
+
+par(mfrow=c(2,2))
+display_names &lt;- strtrim(tissue_names, 20)
+for(i in 1:length(nondiag_order)) {
+  plot_names &lt;- display_names
+  
+  next_nondiag &lt;- nondiag$fit$EL[, nondiag_order[i]]
+  plot_names[next_nondiag &lt; 0.25 * max(next_nondiag)] &lt;- &quot;&quot;
+  barplot(next_nondiag, 
+          main=paste0(&#39;Nondiagonal V, loading &#39;, nondiag_order[i] - 43), 
+          las=2, cex.names=0.4, yaxt=&#39;n&#39;,
+          col=gtex.colors, names=plot_names)
+          
+  barplot(diag$EL[, diag_order[i]], 
+          main=paste0(&#39;Diagonal V, loading &#39;, diag_order[i]), 
+          las=2, cex.names=0.4, yaxt=&#39;n&#39;,
+          col=gtex.colors, names=plot_names)
+}</code></pre>
+<p><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/shared-14.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="differences" class="section level3">
+<h3>Differences</h3>
+<p>Next, I plot previous loadings that do not correspond to any of the new loadings. One of these (loading 11) may indeed be an artefactual loading that corresponds to covariance in errors rather than biological reality. However, two of the others (loadings 22 and 31) describe very plausible correlations (among ovarian, uterine, and vaginal tissues on the one hand, and among sun-exposed and non-exposed skin tissues on the other). The remaining are unique effects.</p>
+<pre class="r"><code>par(mfrow=c(2,2))
+for (i in 1:length(diag_not_nondiag)) {
+  plot_names &lt;- display_names
+  
+  next_diag &lt;- diag$EL[, diag_not_nondiag[i]]
+  plot_names[next_diag &lt; 0.25 * max(next_diag)] &lt;- &quot;&quot;
+  barplot(next_diag, 
+          main=paste0(&#39;Diagonal, loading &#39;, diag_not_nondiag[i]), 
+          las=2, cex.names=0.4, yaxt=&#39;n&#39;,
+          col=gtex.colors, names=plot_names)
+}</code></pre>
+<p><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="code" class="section level2">
+<h2>Code</h2>
+<p>Click “Code” to view the code used to obtain the above results.</p>
+<pre class="r"><code>devtools::load_all(&quot;/Users/willwerscheid/GitHub/flashr/&quot;)
+devtools::load_all(&quot;/Users/willwerscheid/GitHub/ebnm/&quot;)
+
+library(mashr)
+
+gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
+
+strong &lt;- gtex$strong.z
+random &lt;- gtex$random.z
+
+# Step 1. Estimate correlation structure using MASH.
+
+m_random &lt;- mash_set_data(random, Shat = 1)
+Vhat &lt;- estimate_null_correlation(m_random)
+
+# Step 2. Estimate data-driven loadings using FLASH.
+
+# Step 2a. Fit Vhat.
+n &lt;- nrow(Vhat)
+lambda.min &lt;- min(eigen(Vhat, symmetric=TRUE, only.values=TRUE)$values)
+
+data &lt;- flash_set_data(Y, S = sqrt(lambda.min))
+
+W.eigen &lt;- eigen(Vhat - diag(rep(lambda.min, n)), symmetric=TRUE)
+# The rank of W is at most n - 1, so we can drop the last eigenval/vec:
+W.eigen$values &lt;- W.eigen$values[-n]
+W.eigen$vectors &lt;- W.eigen$vectors[, -n, drop=FALSE]
+
+fl &lt;- flash_add_fixed_loadings(data,
+                               LL=W.eigen$vectors,
+                               init_fn=&quot;udv_svd&quot;,
+                               backfit=FALSE)
+
+ebnm_param_f &lt;- lapply(as.list(W.eigen$values),
+                       function(eigenval) {
+                         list(g = list(a=1/eigenval, pi0=0), fixg = TRUE)
+                       })
+ebnm_param_l &lt;- lapply(vector(&quot;list&quot;, n - 1),
+                       function(k) {list()})
+fl &lt;- flash_backfit(data,
+                    fl,
+                    var_type=&quot;zero&quot;,
+                    ebnm_fn=&quot;ebnm_pn&quot;,
+                    ebnm_param=(list(f = ebnm_param_f, l = ebnm_param_l)),
+                    nullcheck=FALSE)
+
+# Step 2b. Add nonnegative factors.
+ebnm_fn = list(f = &quot;ebnm_pn&quot;, l = &quot;ebnm_ash&quot;)
+ebnm_param = list(f = list(warmstart = TRUE),
+                  l = list(mixcompdist=&quot;+uniform&quot;))
+fl &lt;- flash_add_greedy(data,
+                       Kmax=50,
+                       f_init=fl,
+                       var_type=&quot;zero&quot;,
+                       init_fn=&quot;udv_svd&quot;,
+                       ebnm_fn=ebnm_fn,
+                       ebnm_param=ebnm_param)
+saveRDS(fl, &quot;./output/MASHvFLASHVhat/2bGreedy.rds&quot;)
+
+# Step 2c (optional). Backfit factors from step 2b.
+fl &lt;- flash_backfit(data,
+                    fl,
+                    kset=n:fl$nfactors,
+                    var_type=&quot;zero&quot;,
+                    ebnm_fn=ebnm_fn,
+                    ebnm_param=ebnm_param,
+                    nullcheck=FALSE)
+saveRDS(fl, &quot;./output/MASHvFLASHVhat/2cBackfit.rds&quot;)
+
+# Step 2d (optional). Repeat steps 2b and 2c as desired.
+fl &lt;- flash_add_greedy(data,
+                       Kmax=50,
+                       f_init=fl,
+                       var_type=&quot;zero&quot;,
+                       init_fn=&quot;udv_svd&quot;,
+                       ebnm_fn=ebnm_fn,
+                       ebnm_param=ebnm_param)
+fl &lt;- flash_backfit(data,
+                    fl,
+                    kset=n:fl$nfactors,
+                    var_type=&quot;zero&quot;,
+                    ebnm_fn=ebnm_fn,
+                    ebnm_param=ebnm_param,
+                    nullcheck=FALSE)
+saveRDS(fl, &quot;./output/MASHvFLASHVhat/2dRepeat3.rds&quot;)</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS High Sierra 10.13.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.0.1   Rcpp_0.12.17      digest_0.6.15    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
+[10] stringi_1.1.6     whisker_0.3-2     R.oo_1.21.0      
+[13] R.utils_2.6.0     rmarkdown_1.8     tools_3.4.3      
+[16] stringr_1.3.0     yaml_2.1.17       compiler_3.4.3   
+[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
