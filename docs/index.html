@@ -213,7 +213,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-15</p>
+<p><strong>Last updated:</strong> 2018-08-30</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -222,7 +222,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/dad2f1c0799c877758dfebeef998d2a40d08675c" target="_blank">dad2f1c</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/eda58c49cb0d203eb16e4df54da570b6b138a3ce" target="_blank">eda58c4</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -240,10 +240,10 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
 
-Unstaged changes:
-    Modified:   code/MASHvFLASHgtex3.R
-    Modified:   output/MASHvFLASHgtex3/fl.rds
-    Modified:   output/MASHvFLASHgtex3/fllfsr.rds
+Untracked files:
+    Untracked:  code/MASHvFLASHnnrefine.R
+    Untracked:  code/MASHvFLASHnondiagonalV.R
+    Untracked:  output/MASHvFLASHnondiagonalV/
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -272,6 +272,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/eda58c49cb0d203eb16e4df54da570b6b138a3ce/analysis/index.Rmd" target="_blank">eda58c4</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/index.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/e593ed5fded403dfb1d326084bea27f44ce7eee4/docs/index.html" target="_blank">e593ed5</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -1280,8 +1314,12 @@ Start workflowr project.
 <li><p><a href="Top20vZero.html">MASH v FLASH GTEx analysis: “Top 20” v “Zero”.</a></p></li>
 <li><p><a href="conclusions.html">Some conclusions.</a></p></li>
 </ul>
-<p><a href="MASHvFLASHnn.html">Nonnegative FLASH loadings.</a> Uses nonnegative priors to obtain nicer data-driven loadings.</p>
-<p><a href="MASHvFLASHgtex3.html">MASH v FLASH GTEx analysis: nonnegative loadings.</a> Compares MASH and FLASH fits using the nonnegative data-driven loadings obtained in the previous analysis.</p>
+<p>Next, I experiment with putting nonnegative priors on the loadings:</p>
+<ul>
+<li><p><a href="MASHvFLASHnn.html">Nonnegative FLASH loadings.</a> Uses nonnegative priors to obtain nicer data-driven loadings.</p></li>
+<li><p><a href="MASHvFLASHgtex3.html">MASH v FLASH GTEx analysis: nonnegative loadings.</a> Compares MASH and FLASH fits using the nonnegative data-driven loadings obtained in the previous analysis.</p></li>
+<li><p><a href="MASHvFLASHnondiagonalV.html">Fitting nonnegative loadings with a non-diagonal error covariance structure.</a> Uses the trick discussed <a href="https://willwerscheid.github.io/FLASHvestigations/arbitraryV.html">here</a> to fit a non-diagonal <span class="math inline">\(V\)</span> and compares resulting loadings with those of previous analyses.</p></li>
+</ul>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
