@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/861ba076ee8c29f2344fb3f6ed7e105dbc1712da" target="_blank">861ba07</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/4ca600bc704d14a77bc010aa2ba2a09040bbe575" target="_blank">4ca600b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -372,8 +372,6 @@ Ignored files:
 
 Untracked files:
     Untracked:  code/MASHvFLASHnnrefine.R
-    Untracked:  code/MASHvFLASHnondiagonalV.R
-    Untracked:  output/MASHvFLASHnondiagonalV/
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -402,6 +400,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/4ca600bc704d14a77bc010aa2ba2a09040bbe575/analysis/MASHvFLASHnondiagonalV.Rmd" target="_blank">4ca600b</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+wflow_publish(c(“analysis/MASHvFLASHnondiagonalV.Rmd”,
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/fb53e9211f46f0347710e7a0bb7f0d3b6904d22a/docs/MASHvFLASHnondiagonalV.html" target="_blank">fb53e92</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -465,7 +497,7 @@ wflow_publish(“analysis/MASHvFLASHnondiagonalV.Rmd”)
 </div>
 <div id="comparison-with-previous-results" class="section level2">
 <h2>Comparison with previous results</h2>
-<p>Whereas my <a href="MASHvFLASHnn.html">earlier analysis</a> (which implicitly assumed that <span class="math inline">\(V = I\)</span>) found 39 data-driven loadings, here I was only able to 26 obtain loadings.</p>
+<p>Whereas my <a href="MASHvFLASHnn.html">earlier analysis</a> (which implicitly assumed that <span class="math inline">\(V = I\)</span>) found 39 data-driven loadings, here I was only able to obtain 26.</p>
 <div id="similar-loadings" class="section level3">
 <h3>Similar loadings</h3>
 <p>I first plot the new loadings side by side with the previous loadings to which they most closely correspond. Note that, in general, the previous loadings tend to be sparser than these new loadings. Further, this new approach finds two unique effects (caudate basal ganglia and nucleus accumbens basal ganglia) where the previous approach very plausibly found correlations among three types of basal ganglia (loading 25). However, the adipose tissue effects (loading 11) do not get tangled up with the tibial nerve tissue effect (as they did in the previous approach).</p>
