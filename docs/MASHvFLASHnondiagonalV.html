@@ -328,7 +328,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-08-30</p>
+<p><strong>Last updated:</strong> 2018-09-05</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/4ca600bc704d14a77bc010aa2ba2a09040bbe575" target="_blank">4ca600b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/d17ac04750b0ac9cb6b5fac83209e31e33b85cc9" target="_blank">d17ac04</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -371,7 +371,9 @@ Ignored files:
     Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
 
 Untracked files:
+    Untracked:  code/MASHvFLASHnn2.R
     Untracked:  code/MASHvFLASHnnrefine.R
+    Untracked:  output/MASHvFLASHnn2/
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -400,6 +402,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/d17ac04750b0ac9cb6b5fac83209e31e33b85cc9/analysis/MASHvFLASHnondiagonalV.Rmd" target="_blank">d17ac04</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-09-05
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHnondiagonalV.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/603daf19146a4358b6434f546727555bc380e45b/docs/MASHvFLASHnondiagonalV.html" target="_blank">603daf1</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-08-30
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -500,12 +536,12 @@ wflow_publish(“analysis/MASHvFLASHnondiagonalV.Rmd”)
 <p>Whereas my <a href="MASHvFLASHnn.html">earlier analysis</a> (which implicitly assumed that <span class="math inline">\(V = I\)</span>) found 39 data-driven loadings, here I was only able to obtain 26.</p>
 <div id="similar-loadings" class="section level3">
 <h3>Similar loadings</h3>
-<p>I first plot the new loadings side by side with the previous loadings to which they most closely correspond. Note that, in general, the previous loadings tend to be sparser than these new loadings. Further, this new approach finds two unique effects (caudate basal ganglia and nucleus accumbens basal ganglia) where the previous approach very plausibly found correlations among three types of basal ganglia (loading 25). However, the adipose tissue effects (loading 11) do not get tangled up with the tibial nerve tissue effect (as they did in the previous approach).</p>
+<p>I first plot the new loadings side by side with the previous loadings to which they most closely correspond. Note that, in general, the previous loadings tend to be sparser than these new loadings. Further, this new approach finds two unique effects (caudate basal ganglia and nucleus accumbens basal ganglia) where the previous approach very plausibly found correlations among three types of basal ganglia (loading 25). However, the adipose tissue effects (loading 11) do not get tangled up with the tibial nerve tissue effect (as they did in the previous approach), and there is a single loading describing correlations among skin tissues (loading 3) rather than two largely overlapping loadings.</p>
 <pre class="r"><code>nondiag &lt;- readRDS(&quot;./output/MASHvFLASHnondiagonalV/2dRepeat3.rds&quot;)
 diag &lt;- readRDS(&quot;./output/MASHvFLASHnn/fl.rds&quot;)
 
-nondiag_order &lt;- c(44:54, 54:nondiag$nfactors)
-diag_order &lt;- c(1, 3, 6, 10,
+nondiag_order &lt;- c(44:46, 46:54, 54:nondiag$nfactors)
+diag_order &lt;- c(1, 3, 6, 31, 10,
                 4, 9, 7, 15,
                 5, 13, 8, 23, 20,
                 21, 12, 14, 16,
@@ -513,7 +549,7 @@ diag_order &lt;- c(1, 3, 6, 10,
                 24, 25, 34, 32,
                 25, 28)
                 
-diag_not_nondiag &lt;- setdiff(c(1:29, 31:40), diag_order)
+diag_not_nondiag &lt;- setdiff(c(1:29, 32:40), diag_order)
 
 tissue_names &lt;- rownames(diag$EL)
 
@@ -962,7 +998,7 @@ Jason Willwerscheid
 </div>
 <div id="differences" class="section level3">
 <h3>Differences</h3>
-<p>Next, I plot previous loadings that do not correspond to any of the new loadings. One of these (loading 11) may indeed be an artefactual loading that corresponds to covariance in errors rather than biological reality. However, two of the others (loadings 22 and 31) describe very plausible correlations (among ovarian, uterine, and vaginal tissues on the one hand, and among sun-exposed and non-exposed skin tissues on the other). The remaining are unique effects.</p>
+<p>Next, I plot previous loadings that do not correspond to any of the new loadings. One of these (loading 11) may indeed be an artefactual loading that corresponds to covariance in errors rather than biological reality. However, one of the others (loading 22) describes a plausible correlation among ovarian, uterine, and vaginal tissues. The remaining are unique effects.</p>
 <pre class="r"><code>par(mfrow=c(2,2))
 for (i in 1:length(diag_not_nondiag)) {
   plot_names &lt;- display_names
@@ -1054,36 +1090,6 @@ Date
 <tr>
 <td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/extra-3.png" target="_blank">273efe5</a>
-</td>
-<td style="text-align:left;">
-Jason Willwerscheid
-</td>
-<td style="text-align:left;">
-2018-08-30
-</td>
-</tr>
-</tbody>
-</table>
-<p></details> <img src="figure/MASHvFLASHnondiagonalV.Rmd/extra-4.png" width="672" style="display: block; margin: auto;" /></p>
-<details> <summary><em>Expand here to see past versions of extra-4.png:</em></summary>
-<table style="border-collapse:separate; border-spacing:5px;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Version
-</th>
-<th style="text-align:left;">
-Author
-</th>
-<th style="text-align:left;">
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-<a href="https://github.com/willwerscheid/MASHvFLASH/blob/273efe5f8f42f540d1ef3d048fbaf2b6312c25e4/docs/figure/MASHvFLASHnondiagonalV.Rmd/extra-4.png" target="_blank">273efe5</a>
 </td>
 <td style="text-align:left;">
 Jason Willwerscheid
