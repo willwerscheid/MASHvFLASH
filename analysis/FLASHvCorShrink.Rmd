@@ -15,7 +15,7 @@ This analysis was prompted by [Dey and Stephen's](https://www.biorxiv.org/conten
 
 My main thought is that data imputation produces de-noised estimates. With the GTEx data, FLASH tends to estimate missing data near the mean of the available data (or some multiple thereof). So of course the imputed data will show strong correlations.
 
-This observation leads me to wonder whether CorShrink does not proceed from flawed principles. CorShrink operates on the noisy data itself, which is necessarily less correlated than the corresponding "true" effects (unless errors are strongly correlated, but this does not seem to be the case for the GTEx data). So in fact, it seems desirable to take an approach that *increases* the empirical correlations rather than shrinking them towards zero (or towards some other mean).
+This observation leads me to wonder whether CorShrink does not proceed from somewhat flawed principles. CorShrink operates on the noisy data itself, which is necessarily less correlated than the corresponding "true" effects (unless errors are strongly correlated, but this does not seem to be the case for the GTEx data). So in fact, it seems desirable to take an approach that *increases* the empirical correlations rather than shrinking them towards zero (or towards some other mean).
 
 ## Example
 
