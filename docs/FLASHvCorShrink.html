@@ -352,7 +352,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/0b8e07bf59108f26e6d19e2a132641ec16fa63ef" target="_blank">0b8e07b</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/54b746ba70585b46ff6ef46941665596bf047368" target="_blank">54b746b</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -409,6 +409,40 @@ Message
 Rmd
 </td>
 <td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/54b746ba70585b46ff6ef46941665596bf047368/analysis/FLASHvCorShrink.Rmd" target="_blank">54b746b</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-09-15
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/FLASHvCorShrink.Rmd”)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/willwerscheid/MASHvFLASH/5dac94ec15f0ee35589b68219df686ef11083ca9/docs/FLASHvCorShrink.html" target="_blank">5dac94e</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-09-15
+</td>
+<td style="text-align:left;">
+Build site.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
 <a href="https://github.com/willwerscheid/MASHvFLASH/blob/0b8e07bf59108f26e6d19e2a132641ec16fa63ef/analysis/FLASHvCorShrink.Rmd" target="_blank">0b8e07b</a>
 </td>
 <td style="text-align:left;">
@@ -430,7 +464,7 @@ wflow_publish(“analysis/FLASHvCorShrink.Rmd”)
 <h2>Introduction</h2>
 <p>This analysis was prompted by <a href="https://www.biorxiv.org/content/early/2018/07/13/368316">Dey and Stephen’s</a> claim that data imputation (as performed by, for example, FLASH) “grossly distorts” correlation estimates.</p>
 <p>My main thought is that data imputation produces de-noised estimates. With the GTEx data, FLASH tends to estimate missing data near the mean of the available data (or some multiple thereof). So of course the imputed data will show strong correlations.</p>
-<p>This observation leads me to wonder whether CorShrink does not proceed from flawed principles. CorShrink operates on the noisy data itself, which is necessarily less correlated than the corresponding “true” effects (unless errors are strongly correlated, but this does not seem to be the case for the GTEx data). So in fact, it seems desirable to take an approach that <em>increases</em> the empirical correlations rather than shrinking them towards zero (or towards some other mean).</p>
+<p>This observation leads me to wonder whether CorShrink does not proceed from somewhat flawed principles. CorShrink operates on the noisy data itself, which is necessarily less correlated than the corresponding “true” effects (unless errors are strongly correlated, but this does not seem to be the case for the GTEx data). So in fact, it seems desirable to take an approach that <em>increases</em> the empirical correlations rather than shrinking them towards zero (or towards some other mean).</p>
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
@@ -450,10 +484,70 @@ data &lt;- true_effects + matrix(rnorm(n*p), nrow=n, ncol=p)</code></pre>
 <p>CorShrink finds no correlations in such data.</p>
 <pre class="r"><code>out &lt;- CorShrink::CorShrinkData(data, image=&quot;both&quot;)</code></pre>
 <p><img src="figure/FLASHvCorShrink.Rmd/corshrink-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of corshrink-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/5dac94ec15f0ee35589b68219df686ef11083ca9/docs/figure/FLASHvCorShrink.Rmd/corshrink-1.png" target="_blank">5dac94e</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-09-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 <p>Allowing the mode to be non-zero does not greatly improve matters.</p>
 <pre class="r"><code>out &lt;- CorShrink::CorShrinkData(data, image=&quot;both&quot;,
                                 ash.control = list(mode = &quot;estimate&quot;))</code></pre>
 <p><img src="figure/FLASHvCorShrink.Rmd/corshrink2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of corshrink2-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/5dac94ec15f0ee35589b68219df686ef11083ca9/docs/figure/FLASHvCorShrink.Rmd/corshrink2-1.png" target="_blank">5dac94e</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-09-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="flash" class="section level2">
 <h2>FLASH</h2>
@@ -471,6 +565,36 @@ fl</code></pre>
   Value of objective function: -3688.319</code></pre>
 <pre class="r"><code>barplot(fl$ldf$f[, 1], main=&quot;Factor values for factor/loading 1&quot;)</code></pre>
 <p><img src="figure/FLASHvCorShrink.Rmd/flash-1.png" width="672" style="display: block; margin: auto;" /></p>
+<details> <summary><em>Expand here to see past versions of flash-1.png:</em></summary>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/5dac94ec15f0ee35589b68219df686ef11083ca9/docs/figure/FLASHvCorShrink.Rmd/flash-1.png" target="_blank">5dac94e</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-09-15
+</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
 </div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
