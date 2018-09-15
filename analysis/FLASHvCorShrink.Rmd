@@ -1,0 +1,61 @@
+---
+title: "Thoughts on CorShrink"
+output: 
+  workflowr::wflow_html:
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This analysis was prompted by [Dey and Stephen's](https://www.biorxiv.org/content/early/2018/07/13/368316) claim that data imputation (as performed by, for example, FLASH) "grossly distorts" correlation estimates.
+
+My main thought is that data imputation produces de-noised estimates. With the GTEx data, FLASH tends to estimate missing data near the mean of the available data (or some multiple thereof). So of course the imputed data will show strong correlations.
+
+This observation leads me to wonder whether CorShrink does not proceed from flawed principles. CorShrink operates on the noisy data itself, which is necessarily less correlated than the corresponding "true" effects (unless errors are strongly correlated, but this does not seem to be the case for the GTEx data). So in fact, it seems desirable to take an approach that *increases* the empirical correlations rather than shrinking them towards zero (or towards some other mean).
+
+## Example
+
+Take the case where effects are strongly correlated across all conditions, but effect sizes are small. (This is, of course, a quite realistic scenario.)
+
+```{r sim}
+n <- 100
+p <- 25
+
+# mean of effects is 0.5, sd is 0.2; correlation is 0.8
+Sigma <- matrix(0.04 * 0.8, nrow=p, ncol=p)
+diag(Sigma) <- 0.04 
+true_effects <- MASS::mvrnorm(n = n, mu = rep(0.5, p), Sigma = Sigma)
+
+data <- true_effects + matrix(rnorm(n*p), nrow=n, ncol=p)
+```
+
+## CorShrink
+
+CorShrink finds no correlations in such data.
+
+```{r corshrink}
+out <- CorShrink::CorShrinkData(data, image="both")
+```
+
+Allowing the mode to be non-zero does not greatly improve matters.
+
+```{r corshrink2}
+out <- CorShrink::CorShrinkData(data, image="both",
+                                ash.control = list(mode = "estimate"))
+```
+
+## FLASH
+
+FLASH, however, finds a rank-one structure. A truly rank-one structure would of course mean that the data was perfectly correlated, but I think that in this case FLASH comes much closer to the truth than CorShrink.
+
+```{r flash}
+devtools::load_all("~/GitHub/flashr/")
+devtools::load_all("~/GitHub/ebnm/")
+fl <- flash(data, verbose=FALSE)
+fl
+barplot(fl$ldf$f[, 1], main="Factor values for factor/loading 1")
+```
