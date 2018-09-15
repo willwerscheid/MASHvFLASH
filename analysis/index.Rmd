@@ -39,3 +39,5 @@ Next, I experiment with putting nonnegative priors on loadings:
 * [MASH v FLASH GTEx analysis: nonnegative loadings.](MASHvFLASHgtex3.html) Compares MASH and FLASH fits using the nonnegative data-driven loadings obtained in the previous analysis.
 
 * [Fitting nonnegative loadings with a non-diagonal error covariance structure.](MASHvFLASHnondiagonalV.html) Uses the trick discussed [here](https://willwerscheid.github.io/FLASHvestigations/arbitraryV.html) to fit a non-diagonal $V$ and compares resulting loadings with those of previous analyses.
+
+* [FLASH v CorShrink.](FLASHvCorShrink.html) A response to [Dey and Stephen's](https://www.biorxiv.org/content/early/2018/07/13/368316) claim that FLASH "grossly distorts" correlation estimates.
