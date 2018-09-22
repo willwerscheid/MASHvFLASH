@@ -5,6 +5,9 @@ gtex <- readRDS(gzcon(url("https://github.com/stephenslab/gtexresults/blob/maste
 strong <- gtex$strong.z
 strong_data <- flash_set_data(strong, S = 1)
 
+# Due to the nonnegative constraints, the negative values in v will be
+#   immediately zeroed out. Thus, if the negative part of v is larger
+#   than the positive part, we should return -u and -v instead:
 my_init_fn <- function(Y, K = 1) {
   ret = udv_si(Y, K)
   pos_sum = sum(ret$v[ret$v > 0])
