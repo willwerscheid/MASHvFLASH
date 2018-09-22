@@ -40,4 +40,6 @@ Next, I experiment with putting nonnegative priors on loadings:
 
 * [Fitting nonnegative loadings with a non-diagonal error covariance structure.](MASHvFLASHnondiagonalV.html) Uses the trick discussed [here](https://willwerscheid.github.io/FLASHvestigations/arbitraryV.html) to fit a non-diagonal $V$ and compares resulting loadings with those of previous analyses.
 
+* [Nonnegative FLASH loadings (redux).](MASHvFLASHnn2.html) Repeats the above analysis but uses the new FLASH interface and some additional tricks to speed up the fitting process.
+
 [FLASH v CorShrink.](FLASHvCorShrink.html) Here I respond to [Dey and Stephen's](https://www.biorxiv.org/content/early/2018/07/13/368316) claim that FLASH "grossly distorts" correlation estimates.
