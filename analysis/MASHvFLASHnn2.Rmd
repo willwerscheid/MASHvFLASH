@@ -1,0 +1,185 @@
+---
+title: "Nonnegative FLASH loadings (redux)"
+output: 
+  workflowr::wflow_html:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+In a [previous analysis](MASHvFLASHnn.html), I used nonnegative priors to obtain a set of sparse and interpretable loadings from GTEx data. Here I repeat the analysis using the updated FLASH interface (current as of 9/21/18).
+
+## Fits
+
+I'm not sure whether `var_type = "zero"` or `var_type = "constant"` is more appropriate, so I use both. I produce three fits for each variance type. Each builds on the previous, so that the objective is guaranteed to decrease from fit to fit:
+
+1. A single round of greedily adding factors.
+2. A single round of greedily adding factors, followed by backfitting (including a nullcheck).
+3. Repeatedly greedily adding factors and then backfitting until the greedy step no longer adds any new factors.
+
+## Results
+
+I pre-run the code and load the results from file.
+
+```{r load_res}
+fl_g_zero <- readRDS("./output/MASHvFLASHnn2/fl_g_zero.rds")
+t_g_zero <- readRDS("./output/MASHvFLASHnn2/t_g_zero.rds")
+fl_b_zero <- readRDS("./output/MASHvFLASHnn2/fl_b_zero.rds")
+t_b_zero <- readRDS("./output/MASHvFLASHnn2/t_b_zero.rds")
+fl_g2_zero <- readRDS("./output/MASHvFLASHnn2/fl_g2_zero.rds")
+t_g2_zero <- readRDS("./output/MASHvFLASHnn2/t_g2_zero.rds")
+fl_b2_zero <- readRDS("./output/MASHvFLASHnn2/fl_b2_zero.rds")
+t_b2_zero <- readRDS("./output/MASHvFLASHnn2/t_b2_zero.rds")
+fl_g_const <- readRDS("./output/MASHvFLASHnn2/fl_g_const.rds")
+t_g_const <- readRDS("./output/MASHvFLASHnn2/t_g_const.rds")
+fl_b_const <- readRDS("./output/MASHvFLASHnn2/fl_b_const.rds")
+t_b_const <- readRDS("./output/MASHvFLASHnn2/t_b_const.rds")
+fl_g2_const <- readRDS("./output/MASHvFLASHnn2/fl_g2_const.rds")
+t_g2_const <- readRDS("./output/MASHvFLASHnn2/t_g2_const.rds")
+fl_b2_const <- readRDS("./output/MASHvFLASHnn2/fl_b2_const.rds")
+t_b2_const <- readRDS("./output/MASHvFLASHnn2/t_b2_const.rds")
+```
+
+### Number of factors
+
+The number of factors included in each fit is:
+
+```{r nfactors}
+nfactors <- c(fl_g_zero$nfactors,
+              fl_b_zero$nfactors,
+              fl_b2_zero$nfactors,
+              fl_g_const$nfactors,
+              fl_b_const$nfactors,
+              fl_b2_const$nfactors)
+
+arrange_res <- function(res) {
+  res <- matrix(res, nrow = 3, ncol = 2)
+  rownames(res) <- c("greedy", "backfit", "repeated")
+  colnames(res) <- c("zero", "constant")
+  return(res)
+}
+
+arrange_res(nfactors)
+```
+
+### Runtime
+
+The number of minutes required to fit each model (on my MacBook Pro) is:
+
+```{r runtime}
+runtime <- c(t_g_zero[3],
+             t_g_zero[3] + t_b_zero[3],
+             t_g_zero[3] + t_b_zero[3] + t_g2_zero[3] + t_b2_zero[3],
+             t_g_const[3],
+             t_g_const[3] + t_b_const[3],
+             t_g_const[3] + t_b_const[3] + t_g2_const[3] + t_b2_const[3])
+runtime <- round(runtime / 60, digits = 1)
+
+arrange_res(runtime)
+```
+
+### Objective
+
+The objective attained by each fit, relative to the maximum objective attained among all fits, is:
+
+```{r obj}
+obj <- c(fl_g_zero$objective,
+         fl_b_zero$objective,
+         fl_b2_zero$objective,
+         fl_g_const$objective,
+         fl_b_const$objective,
+         fl_b2_const$objective)
+obj <- round(obj - max(obj), digits = 0)
+
+arrange_res(obj)
+```
+
+Interestingly, the "zero" variance type (where standard errors are fixed) does better than the "constant" variance type (where standard errors are estimated), simply because it is able to add more factors!
+
+
+## Factors
+
+To compare qualitative results, I plot the factors from each fit side by side. I ignore factors that correspond to "unique effects." From left to right, the factors are those produced by a greedy fit, a greedy fit with backfitting, and multiple rounds of greedy addition and backfitting.
+
+```{r factors}
+missing.tissues <- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
+gtex.colors <- read.table("https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE", sep = '\t', comment.char = '')[-missing.tissues, 2]
+gtex.colors <- as.character(gtex.colors)
+
+zero_factors <- c(1:5, 8:12, 16:19, 21:22, 25)
+const_factors <- c(1:5, 8:12, 21, 13, 16, 14, 22, 20, 24)
+
+par(mfrow = c(2, 3))
+for (k in 1:length(zero_factors)) {
+  barplot(fl_g_zero$ldf$f[, zero_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+  barplot(fl_b_zero$ldf$f[, zero_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE,
+          main = paste("Factor", zero_factors[k], "(Zero)"))
+  barplot(fl_b2_zero$ldf$f[, zero_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+  barplot(fl_g_const$ldf$f[, const_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+  barplot(fl_b_const$ldf$f[, const_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE,
+          main = paste("Factor", const_factors[k], "(Constant)"))
+  barplot(fl_b2_const$ldf$f[, const_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+}
+```
+
+Most of the factors that appear in the "zero" fits but not the "constant" ones correspond to unique effects (which are added as canonical structures anyway). There is one exception, but I'm not sure it's an important one since it seems to describe correlations that are already captured by Factors 4 and (to a lesser extent) 3:
+
+```{r factors2}
+par(mfrow = c(2, 3))
+barplot(fl_g_zero$ldf$f[, 28], col=gtex.colors, 
+        names.arg = FALSE, axes = FALSE)
+barplot(fl_b_zero$ldf$f[, 28], col=gtex.colors, 
+        names.arg = FALSE, axes = FALSE,
+        main = paste("Factor 28 (Zero)"))
+barplot(fl_b2_zero$ldf$f[, 28], col=gtex.colors, 
+        names.arg = FALSE, axes = FALSE)
+```
+
+All of the factors found during the second round of fitting (for both variance types) correspond to unique effects. For example, the "zero" variance type adds:
+
+```{r factors3}
+par(mfrow = c(3, 3))
+for (k in (fl_b_zero$nfactors + 1):fl_b2_zero$nfactors) {
+  barplot(fl_b2_zero$ldf$f[, k], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE,
+          main = paste("Factor", k))
+}
+```
+
+
+## Discussion 
+
+Results are very similar, but I think I prefer the "constant" factors. One major difference is in Factor 10, where the "zero" variance structure produces something that is difficult to interpret while the "constant" structure produces a much sparser factor. The other major difference is in Factor 28, but as I argued above, I'm not sure that this factor corresponds to anything real.
+
+I think we can get away with a single round of fitting. For the most part, the factors that are added during the first round change very little, and the new factors are well represented by unique effects (which, as pointed out above) are added as canonical structures anyway. 
+
+So, if forced to choose, I'd go with the "constant" variance type and a single round of greedily adding factors and backfitting. This can be done in under 20 minutes on a modern laptop.
+
+A further recommendation would be to prune the results before converting the factors to covariance matrices. That is, I don't see any need to pass along the factors that are well-represented by unique effects. Something like the following function would do the trick (click "Code" to expand):
+
+```{r prune}
+# Only keep factors with at least two values greater than 1 / sqrt(n)
+find_nonunique_effects <- function(fl) {
+  thresh <- 1/sqrt(ncol(fl$fitted_values))
+  vals_above_avg <- colSums(fl$ldf$f > thresh)
+  nonuniq_effects <- which(vals_above_avg > 1)
+  return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
+}
+```
+
+
+## Code
+
+Click "Code" to view the code used to obtain the above results.
+```{r code1, code=readLines("../code/MASHvFLASHnn2.R"), eval=FALSE}
+```
