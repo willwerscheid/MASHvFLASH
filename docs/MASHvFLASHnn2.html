@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Nonnegative FLASH loadings (redux)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MASHvFLASH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/willwerscheid/MASHvFLASH">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Nonnegative FLASH loadings (redux)</h1>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-09-21</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180609)</code> </summary></p>
+<p>The command <code>set.seed(20180609)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/willwerscheid/MASHvFLASH/tree/ade96ef7d75948d92b40ed7d16e8d7021ee4a8b5" target="_blank">ade96ef</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/
+    Ignored:    docs/.DS_Store
+    Ignored:    docs/images/.DS_Store
+    Ignored:    docs/images/.Rapp.history
+    Ignored:    output/.DS_Store
+    Ignored:    output/.Rapp.history
+    Ignored:    output/MASHvFLASHgtex/.DS_Store
+    Ignored:    output/MASHvFLASHsims/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.DS_Store
+    Ignored:    output/MASHvFLASHsims/backfit/.Rapp.history
+
+Untracked files:
+    Untracked:  code/MASHvFLASHcorshrink.R
+    Untracked:  code/MASHvFLASHnn2.R
+    Untracked:  code/MASHvFLASHnnrefine.R
+    Untracked:  code/MASHvFLASHortho.R
+    Untracked:  output/MASHvFLASHnn2/
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/willwerscheid/MASHvFLASH/blob/ade96ef7d75948d92b40ed7d16e8d7021ee4a8b5/analysis/MASHvFLASHnn2.Rmd" target="_blank">ade96ef</a>
+</td>
+<td style="text-align:left;">
+Jason Willwerscheid
+</td>
+<td style="text-align:left;">
+2018-09-21
+</td>
+<td style="text-align:left;">
+wflow_publish(“analysis/MASHvFLASHnn2.Rmd”)
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In a <a href="MASHvFLASHnn.html">previous analysis</a>, I used nonnegative priors to obtain a set of sparse and interpretable loadings from GTEx data. Here I repeat the analysis using the updated FLASH interface (current as of 9/21/18).</p>
+</div>
+<div id="fits" class="section level2">
+<h2>Fits</h2>
+<p>I’m not sure whether <code>var_type = &quot;zero&quot;</code> or <code>var_type = &quot;constant&quot;</code> is more appropriate, so I use both. I produce three fits for each variance type. Each builds on the previous, so that the objective is guaranteed to decrease from fit to fit:</p>
+<ol style="list-style-type: decimal">
+<li>A single round of greedily adding factors.</li>
+<li>A single round of greedily adding factors, followed by backfitting (including a nullcheck).</li>
+<li>Repeatedly greedily adding factors and then backfitting until the greedy step no longer adds any new factors.</li>
+</ol>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p>I pre-run the code and load the results from file.</p>
+<pre class="r"><code>fl_g_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_g_zero.rds&quot;)
+t_g_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_g_zero.rds&quot;)
+fl_b_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_b_zero.rds&quot;)
+t_b_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_b_zero.rds&quot;)
+fl_g2_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_g2_zero.rds&quot;)
+t_g2_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_g2_zero.rds&quot;)
+fl_b2_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_b2_zero.rds&quot;)
+t_b2_zero &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_b2_zero.rds&quot;)
+fl_g_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_g_const.rds&quot;)
+t_g_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_g_const.rds&quot;)
+fl_b_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_b_const.rds&quot;)
+t_b_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_b_const.rds&quot;)
+fl_g2_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_g2_const.rds&quot;)
+t_g2_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_g2_const.rds&quot;)
+fl_b2_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/fl_b2_const.rds&quot;)
+t_b2_const &lt;- readRDS(&quot;./output/MASHvFLASHnn2/t_b2_const.rds&quot;)</code></pre>
+<div id="number-of-factors" class="section level3">
+<h3>Number of factors</h3>
+<p>The number of factors included in each fit is:</p>
+<pre class="r"><code>nfactors &lt;- c(fl_g_zero$nfactors,
+              fl_b_zero$nfactors,
+              fl_b2_zero$nfactors,
+              fl_g_const$nfactors,
+              fl_b_const$nfactors,
+              fl_b2_const$nfactors)
+
+arrange_res &lt;- function(res) {
+  res &lt;- matrix(res, nrow = 3, ncol = 2)
+  rownames(res) &lt;- c(&quot;greedy&quot;, &quot;backfit&quot;, &quot;repeated&quot;)
+  colnames(res) &lt;- c(&quot;zero&quot;, &quot;constant&quot;)
+  return(res)
+}
+
+arrange_res(nfactors)</code></pre>
+<pre><code>         zero constant
+greedy     34       25
+backfit    33       25
+repeated   40       27</code></pre>
+</div>
+<div id="runtime" class="section level3">
+<h3>Runtime</h3>
+<p>The number of minutes required to fit each model (on my MacBook Pro) is:</p>
+<pre class="r"><code>runtime &lt;- c(t_g_zero[3],
+             t_g_zero[3] + t_b_zero[3],
+             t_g_zero[3] + t_b_zero[3] + t_g2_zero[3] + t_b2_zero[3],
+             t_g_const[3],
+             t_g_const[3] + t_b_const[3],
+             t_g_const[3] + t_b_const[3] + t_g2_const[3] + t_b2_const[3])
+runtime &lt;- round(runtime / 60, digits = 1)
+
+arrange_res(runtime)</code></pre>
+<pre><code>         zero constant
+greedy    5.4      3.3
+backfit  20.4     16.4
+repeated 41.9     26.3</code></pre>
+</div>
+<div id="objective" class="section level3">
+<h3>Objective</h3>
+<p>The objective attained by each fit, relative to the maximum objective attained among all fits, is:</p>
+<pre class="r"><code>obj &lt;- c(fl_g_zero$objective,
+         fl_b_zero$objective,
+         fl_b2_zero$objective,
+         fl_g_const$objective,
+         fl_b_const$objective,
+         fl_b2_const$objective)
+obj &lt;- round(obj - max(obj), digits = 0)
+
+arrange_res(obj)</code></pre>
+<pre><code>           zero constant
+greedy   -35099   -30373
+backfit   -1754    -2577
+repeated      0    -1139</code></pre>
+<p>Interestingly, the “zero” variance type (where standard errors are fixed) does better than the “constant” variance type (where standard errors are estimated), simply because it is able to add more factors!</p>
+</div>
+</div>
+<div id="factors" class="section level2">
+<h2>Factors</h2>
+<p>To compare qualitative results, I plot the factors from each fit side by side. I ignore factors that correspond to “unique effects.” From left to right, the factors are those produced by a greedy fit, a greedy fit with backfitting, and multiple rounds of greedy addition and backfitting.</p>
+<pre class="r"><code>missing.tissues &lt;- c(7, 8, 19, 20, 24, 25, 31, 34, 37)
+gtex.colors &lt;- read.table(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/GTExColors.txt?raw=TRUE&quot;, sep = &#39;\t&#39;, comment.char = &#39;&#39;)[-missing.tissues, 2]
+gtex.colors &lt;- as.character(gtex.colors)
+
+zero_factors &lt;- c(1:5, 8:12, 16:19, 21:22, 25)
+const_factors &lt;- c(1:5, 8:12, 21, 13, 16, 14, 22, 20, 24)
+
+par(mfrow = c(2, 3))
+for (k in 1:length(zero_factors)) {
+  barplot(fl_g_zero$ldf$f[, zero_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+  barplot(fl_b_zero$ldf$f[, zero_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE,
+          main = paste(&quot;Factor&quot;, zero_factors[k], &quot;(Zero)&quot;))
+  barplot(fl_b2_zero$ldf$f[, zero_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+  barplot(fl_g_const$ldf$f[, const_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+  barplot(fl_b_const$ldf$f[, const_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE,
+          main = paste(&quot;Factor&quot;, const_factors[k], &quot;(Constant)&quot;))
+  barplot(fl_b2_const$ldf$f[, const_factors[k]], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE)
+}</code></pre>
+<p><img src="figure/MASHvFLASHnn2.Rmd/factors-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/MASHvFLASHnn2.Rmd/factors-17.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Most of the factors that appear in the “zero” fits but not the “constant” ones correspond to unique effects (which are added as canonical structures anyway). There is one exception, but I’m not sure it’s an important one since it seems to describe correlations that are already captured by Factors 4 and (to a lesser extent) 3:</p>
+<pre class="r"><code>par(mfrow = c(2, 3))
+barplot(fl_g_zero$ldf$f[, 28], col=gtex.colors, 
+        names.arg = FALSE, axes = FALSE)
+barplot(fl_b_zero$ldf$f[, 28], col=gtex.colors, 
+        names.arg = FALSE, axes = FALSE,
+        main = paste(&quot;Factor 28 (Zero)&quot;))
+barplot(fl_b2_zero$ldf$f[, 28], col=gtex.colors, 
+        names.arg = FALSE, axes = FALSE)</code></pre>
+<p><img src="figure/MASHvFLASHnn2.Rmd/factors2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>All of the factors found during the second round of fitting (for both variance types) correspond to unique effects. For example, the “zero” variance type adds:</p>
+<pre class="r"><code>par(mfrow = c(3, 3))
+for (k in (fl_b_zero$nfactors + 1):fl_b2_zero$nfactors) {
+  barplot(fl_b2_zero$ldf$f[, k], col=gtex.colors, 
+          names.arg = FALSE, axes = FALSE,
+          main = paste(&quot;Factor&quot;, k))
+}</code></pre>
+<p><img src="figure/MASHvFLASHnn2.Rmd/factors3-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<p>Results are very similar, but I think I prefer the “constant” factors. One major difference is in Factor 10, where the “zero” variance structure produces something that is difficult to interpret while the “constant” structure produces a much sparser factor. The other major difference is in Factor 28, but as I argued above, I’m not sure that this factor corresponds to anything real.</p>
+<p>I think we can get away with a single round of fitting. For the most part, the factors that are added during the first round change very little, and the new factors are well represented by unique effects (which, as pointed out above) are added as canonical structures anyway.</p>
+<p>So, if forced to choose, I’d go with the “constant” variance type and a single round of greedily adding factors and backfitting. This can be done in under 20 minutes on a modern laptop.</p>
+<p>A further recommendation would be to prune the results before converting the factors to covariance matrices. That is, I don’t see any need to pass along the factors that are well-represented by unique effects. Something like the following function would do the trick (click “Code” to expand):</p>
+<pre class="r"><code># Only keep factors with at least two values greater than 1 / sqrt(n)
+find_nonunique_effects &lt;- function(fl) {
+  thresh &lt;- 1/sqrt(ncol(fl$fitted_values))
+  vals_above_avg &lt;- colSums(fl$ldf$f &gt; thresh)
+  nonuniq_effects &lt;- which(vals_above_avg &gt; 1)
+  return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
+}</code></pre>
+</div>
+<div id="code" class="section level2">
+<h2>Code</h2>
+<p>Click “Code” to view the code used to obtain the above results.</p>
+<pre class="r"><code>devtools::load_all(&quot;~/GitHub/flashr/&quot;)
+devtools::load_all(&quot;~/GitHub/ebnm/&quot;)
+
+gtex &lt;- readRDS(gzcon(url(&quot;https://github.com/stephenslab/gtexresults/blob/master/data/MatrixEQTLSumStats.Portable.Z.rds?raw=TRUE&quot;)))
+strong &lt;- gtex$strong.z
+strong_data &lt;- flash_set_data(strong, S = 1)
+
+my_init_fn &lt;- function(Y, K = 1) {
+  ret = udv_si(Y, K)
+  pos_sum = sum(ret$v[ret$v &gt; 0])
+  neg_sum = -sum(ret$v[ret$v &lt; 0])
+  if (neg_sum &gt; pos_sum) {
+    return(list(u = -ret$u, d = ret$d, v = -ret$v))
+  } else
+    return(ret)
+}
+
+# Using mixSQP maybe requires try/catch?
+
+ebnm_fn = &quot;ebnm_ash&quot;
+ebnm_param = list(l = list(mixcompdist = &quot;normal&quot;,
+                           optmethod = &quot;mixSQP&quot;),
+                  f = list(mixcompdist = &quot;+uniform&quot;,
+                           optmethod = &quot;mixSQP&quot;))
+
+# var_type = &quot;zero&quot; -----------------------------------------------------
+
+t_g_zero &lt;- system.time(
+  fl_g_zero &lt;- flashr:::flash_greedy_workhorse(strong_data,
+                                               var_type = &quot;zero&quot;,
+                                               ebnm_fn = ebnm_fn,
+                                               ebnm_param = ebnm_param,
+                                               init_fn = &quot;my_init_fn&quot;,
+                                               stopping_rule = &quot;factors&quot;,
+                                               tol = 1e-3,
+                                               verbose_output = &quot;odF&quot;)
+) # 34 factors in 5.5 min
+saveRDS(fl_g_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_g_zero.rds&quot;)
+saveRDS(t_g_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_g_zero.rds&quot;)
+
+t_b_zero &lt;- system.time(
+  fl_b_zero &lt;- flashr::flash_backfit_workhorse(strong_data,
+                                               f_init = fl_g_zero,
+                                               var_type = &quot;zero&quot;,
+                                               ebnm_fn = ebnm_fn,
+                                               ebnm_param = ebnm_param,
+                                               stopping_rule = &quot;factors&quot;,
+                                               tol = 1e-3,
+                                               verbose_output = &quot;odF&quot;)
+) # backfit in 15.0 minutes
+saveRDS(fl_b_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_b_zero.rds&quot;)
+saveRDS(t_b_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_b_zero.rds&quot;)
+
+t_g2_zero &lt;- system.time(
+  fl_g2_zero &lt;- flashr:::flash_greedy_workhorse(strong_data,
+                                                f_init = fl_b_zero,
+                                                var_type = &quot;zero&quot;,
+                                                ebnm_fn = ebnm_fn,
+                                                ebnm_param = ebnm_param,
+                                                init_fn = &quot;my_init_fn&quot;,
+                                                stopping_rule = &quot;factors&quot;,
+                                                tol = 1e-3,
+                                                verbose_output = &quot;odF&quot;)
+) # 6 more factors in 0.8 min
+saveRDS(fl_g2_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_g2_zero.rds&quot;)
+saveRDS(t_g2_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_g2_zero.rds&quot;)
+
+t_b2_zero &lt;- system.time(
+  fl_b2_zero &lt;- flashr::flash_backfit_workhorse(strong_data,
+                                                f_init = fl_g2_zero,
+                                                var_type = &quot;zero&quot;,
+                                                ebnm_fn = ebnm_fn,
+                                                ebnm_param = ebnm_param,
+                                                stopping_rule = &quot;factors&quot;,
+                                                tol = 1e-3,
+                                                verbose_output = &quot;odF&quot;)
+) # backfit in 20.7 minutes
+saveRDS(fl_b2_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_b2_zero.rds&quot;)
+saveRDS(t_b2_zero, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_b2_zero.rds&quot;)
+
+t_g3_zero &lt;- system.time(
+  fl_g3_zero &lt;- flashr:::flash_greedy_workhorse(strong_data,
+                                                f_init = fl_b2_zero,
+                                                var_type = &quot;zero&quot;,
+                                                ebnm_fn = ebnm_fn,
+                                                ebnm_param = ebnm_param,
+                                                init_fn = &quot;my_init_fn&quot;,
+                                                stopping_rule = &quot;factors&quot;,
+                                                tol = 1e-3,
+                                                verbose_output = &quot;odF&quot;)
+)
+# Nothing added this time!
+
+
+# var_type = &quot;const&quot; ----------------------------------------------------
+
+t_g_const &lt;- system.time(
+  fl_g_const &lt;- flashr:::flash_greedy_workhorse(strong,
+                                                var_type = &quot;constant&quot;,
+                                                ebnm_fn = ebnm_fn,
+                                                ebnm_param = ebnm_param,
+                                                init_fn = &quot;my_init_fn&quot;,
+                                                stopping_rule = &quot;factors&quot;,
+                                                tol = 1e-3,
+                                                verbose_output = &quot;odF&quot;)
+) # 26 factors in 3.3 min
+saveRDS(fl_g_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_g_const.rds&quot;)
+saveRDS(t_g_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_g_const.rds&quot;)
+
+t_b_const &lt;- system.time(
+  fl_b_const &lt;- flashr::flash_backfit_workhorse(strong,
+                                                f_init = fl_g_const,
+                                                var_type = &quot;constant&quot;,
+                                                ebnm_fn = ebnm_fn,
+                                                ebnm_param = ebnm_param,
+                                                stopping_rule = &quot;factors&quot;,
+                                                tol = 1e-3,
+                                                verbose_output = &quot;odF&quot;)
+) # backfit in 13.1 min
+saveRDS(fl_b_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_b_const.rds&quot;)
+saveRDS(t_b_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_b_const.rds&quot;)
+
+t_g2_const &lt;- system.time(
+  fl_g2_const &lt;- flashr:::flash_greedy_workhorse(strong,
+                                                 f_init = fl_b_const,
+                                                 var_type = &quot;constant&quot;,
+                                                 ebnm_fn = ebnm_fn,
+                                                 ebnm_param = ebnm_param,
+                                                 init_fn = &quot;my_init_fn&quot;,
+                                                 stopping_rule = &quot;factors&quot;,
+                                                 tol = 1e-3,
+                                                 verbose_output = &quot;odF&quot;)
+) # 2 more factors in 0.4 min
+saveRDS(fl_g2_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_g2_const.rds&quot;)
+saveRDS(t_g2_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_g2_const.rds&quot;)
+
+t_b2_const &lt;- system.time(
+  fl_b2_const &lt;- flashr::flash_backfit_workhorse(strong,
+                                                 f_init = fl_g2_const,
+                                                 var_type = &quot;constant&quot;,
+                                                 ebnm_fn = ebnm_fn,
+                                                 ebnm_param = ebnm_param,
+                                                 stopping_rule = &quot;factors&quot;,
+                                                 tol = 1e-3,
+                                                 verbose_output = &quot;odF&quot;)
+) # backfit in 9.4 min
+saveRDS(fl_b2_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/fl_b2_const.rds&quot;)
+saveRDS(t_b2_const, &quot;~/GitHub/MASHvFLASH/output/MASHvFLASHnn2/t_b2_const.rds&quot;)
+
+t_g3_const &lt;- system.time(
+  fl_g3_const &lt;- flashr:::flash_greedy_workhorse(strong,
+                                                 f_init = fl_b2_const,
+                                                 var_type = &quot;constant&quot;,
+                                                 ebnm_fn = ebnm_fn,
+                                                 ebnm_param = ebnm_param,
+                                                 init_fn = &quot;my_init_fn&quot;,
+                                                 stopping_rule = &quot;factors&quot;,
+                                                 tol = 1e-3,
+                                                 verbose_output = &quot;odF&quot;)
+)
+# Nothing new added.</code></pre>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.4.3 (2017-11-30)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS High Sierra 10.13.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.0.1   Rcpp_0.12.18      digest_0.6.15    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.21.0      magrittr_1.5      evaluate_0.10.1  
+[10] stringi_1.1.6     whisker_0.3-2     R.oo_1.21.0      
+[13] R.utils_2.6.0     rmarkdown_1.8     tools_3.4.3      
+[16] stringr_1.3.0     yaml_2.1.17       compiler_3.4.3   
+[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
